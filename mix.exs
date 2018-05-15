@@ -32,9 +32,11 @@ defmodule Liquid.Mixfile do
     [
       {:credo, "~> 0.9.0", only: [:dev, :test]},
       {:benchee, "~> 0.11", only: :dev},
+      {:benchee_csv, "~> 0.7", only: :dev},
       {:benchfella, "~> 0.3.0", only: [:dev, :test]},
       {:timex, "~> 3.0"},
       {:excoveralls, "~> 0.8", only: :test},
+      {:nimble_parsec, "~> 0.3.0"},
       {:poison, "~> 3.1", only: [:dev, :test]},
       {:ex_doc, ">= 0.0.0", only: :dev}
     ]
