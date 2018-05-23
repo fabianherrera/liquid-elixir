@@ -55,6 +55,7 @@ defmodule Liquid.Parse do
     raise "No matching end for block {% #{to_string(name)} %}"
   end
 
+  # 2 corrida 
   defp do_parse(%Block{name: name} = block, [h | t], accum, %Template{} = template) do
     endblock = "end" <> to_string(name)
 
