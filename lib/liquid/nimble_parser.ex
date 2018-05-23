@@ -22,7 +22,7 @@ defmodule Liquid.NimbleParser do
     Capture
   }
 
-  defparsec(:liquid_object, General.liquid_object())
+  defparsec(:liquid_variable, General.liquid_variable())
   defparsec(:variable_definition, General.variable_definition())
   defparsec(:variable_name, General.variable_name())
   defparsec(:start_tag, General.start_tag())
@@ -31,14 +31,13 @@ defmodule Liquid.NimbleParser do
   defparsec(:filter, General.filter())
   defparsec(:single_quoted_token, General.single_quoted_token())
   defparsec(:double_quoted_token, General.double_quoted_token())
-  defparsec(:token, General.token())
-  defparsec(:math_operators, General.math_operators())
+  defparsec(:quoted_token, General.quoted_token())
+  defparsec(:comparison_operators, General.comparison_operators())
   defparsec(:logical_operators, General.logical_operators())
   defparsec(:comma_contition_value, General.comma_contition_value())
   defparsec(:ignore_whitespaces, General.ignore_whitespaces())
 
   defparsec(:number, LexicalToken.number())
-  defparsec(:number_in_string, LexicalToken.number_in_string())
   defparsec(:value_definition, LexicalToken.value_definition())
   defparsec(:value, LexicalToken.value())
   defparsec(:object_property, LexicalToken.object_property())
@@ -46,12 +45,13 @@ defmodule Liquid.NimbleParser do
   defparsec(:null_value, LexicalToken.null_value())
   defparsec(:string_value, LexicalToken.string_value())
   defparsec(:object_value, LexicalToken.object_value())
+  defparsec(:variable_value, LexicalToken.variable_value())
   defparsec(:range_value, LexicalToken.range_value())
 
   defparsec(
     :__parse__,
     General.literal()
-    |> optional(choice([parsec(:liquid_tag), parsec(:liquid_object)]))
+    |> optional(choice([parsec(:liquid_tag), parsec(:liquid_variable)]))
   )
 
   defparsec(:assign, Assign.tag())
@@ -147,7 +147,7 @@ defmodule Liquid.NimbleParser do
   )
 
   @doc """
-  Valid and parse liquid markup.
+  Validate and parse liquid markup.
   """
   @spec parse(String.t()) :: {:ok | :error, any()}
   def parse(""), do: {:ok, ""}

@@ -8,7 +8,7 @@ defmodule Liquid.Combinators.Tags.Case do
     |> concat(parsec(:ignore_whitespaces))
     |> choice([
       parsec(:value_definition),
-      parsec(:token),
+      parsec(:quoted_token),
       parsec(:variable_definition)
     ])
     |> optional(times(parsec(:logical_conditions), min: 1))
@@ -22,7 +22,7 @@ defmodule Liquid.Combinators.Tags.Case do
     |> concat(parsec(:ignore_whitespaces))
     |> choice([
       parsec(:value_definition),
-      parsec(:token),
+      parsec(:quoted_token),
       parsec(:variable_definition)
     ])
     |> optional(

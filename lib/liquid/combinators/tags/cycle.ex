@@ -9,7 +9,7 @@ defmodule Liquid.Combinators.Tags.Cycle do
     parsec(:ignore_whitespaces)
     |> concat(
       choice([
-        parsec(:token),
+        parsec(:quoted_token),
         repeat(utf8_char(not: ?,, not: ?:))
       ])
     )
@@ -20,8 +20,8 @@ defmodule Liquid.Combinators.Tags.Cycle do
   def last_cycle_value do
     parsec(:ignore_whitespaces)
     |> choice([
-      parsec(:token),
-      parsec(:number_in_string)
+      parsec(:quoted_token),
+      parsec(:number)
     ])
     |> concat(parsec(:end_tag))
     |> reduce({List, :to_string, []})
@@ -30,11 +30,11 @@ defmodule Liquid.Combinators.Tags.Cycle do
   def cycle_values do
     empty()
     |> choice([
-      parsec(:token),
-      parsec(:number_in_string)
+      parsec(:quoted_token),
+      parsec(:number)
     ])
-    |> concat(parsec(:ignore_whitespaces))
-    |> concat(utf8_char([General.codepoints().comma]) |> ignore())
+    |> parsec(:ignore_whitespaces)
+    |> ignore(utf8_char([General.codepoints().comma]))
     |> reduce({List, :to_string, []})
     |> choice([parsec(:cycle_values), parsec(:last_cycle_value)])
   end

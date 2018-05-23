@@ -1,28 +1,28 @@
 defmodule Liquid.Combinators.Tags.Increment do
   @moduledoc """
-  Temporarily disables tag processing. This is useful for generating content (eg, Mustache, Handlebars)
-  which uses conflicting syntax.
+  Creates a new number variable, and increases its value by one every time it is called. The initial value is 0.
+  Increment is used in a place where one needs to insert a counter into a template, and needs the counter to survive across
+  multiple instantiations of the template.
+  (To achieve the survival, the application must keep the context)
+  if the variable does not exist, it is created with value 0.
   Input:
   ```
-    {% raw %}
-    In Handlebars, {{ this }} will be HTML-escaped, but
-    {{{ that }}} will not.
-    {% endraw %}
+    Hello: {% increment variable %}
   ```
   Output:
   ```
-  In Handlebars, {{ this }} will be HTML-escaped, but {{{ that }}} will not.
+    Hello: 0
+    Hello: 1
+    Hello: 2
   ```
   """
   import NimbleParsec
+  alias Liquid.Combinators.Tag
 
   def tag do
-    empty()
-    |> parsec(:start_tag)
-    |> concat(ignore(string("increment")))
-    |> concat(parsec(:variable_name))
-    |> concat(parsec(:end_tag))
-    |> tag(:increment)
-    |> optional(parsec(:__parse__))
+    Tag.define(:increment, fn combinator ->
+      combinator
+      |> concat(parsec(:variable_name))
+    end)
   end
 end
