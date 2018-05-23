@@ -23,7 +23,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
               [
                 for_conditions: [
                   variable_name: "item",
-                  value: "array"
+                  value: {:variable, ["array"]}
                 ],
                 for_sentences: [""]
               ]
@@ -54,7 +54,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
               [
                 for_conditions: [
                   variable_name: "item",
-                  value: "array"
+                  value: {:variable, ["array"]}
                 ],
                 for_sentences: [""],
                 else_sentences: [""]
@@ -87,7 +87,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
               [
                 for_conditions: [
                   variable_name: "item",
-                  value: "array",
+                  value: {:variable, ["array"]},
                   limit_param: [2]
                 ],
                 for_sentences: [""],
@@ -120,7 +120,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
               [
                 for_conditions: [
                   variable_name: "item",
-                  value: "array",
+                  value: {:variable, ["array"]},
                   offset_param: [2]
                 ],
                 for_sentences: [""],
@@ -153,7 +153,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
               [
                 for_conditions: [
                   variable_name: "item",
-                  value: "array",
+                  value: {:variable, ["array"]},
                   reversed_param: []
                 ],
                 for_sentences: [""],
@@ -183,7 +183,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
           [
             {:for,
               [
-                for_conditions: [variable_name: "i", range_value: ["(1..10)"]],
+                for_conditions: [variable_name: "i", range_value: [start: 1, end: 10]],
                 for_sentences: ["", {:variable, ["i"]}, ""]
               ]},
             ""
@@ -202,7 +202,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
           [
             for_conditions: [
               variable_name: "i",
-              range_value: ["(my_var..10)"]
+              range_value: [start: "my_var", end: 10]
             ],
             for_sentences: ["", {:variable, ["i"]}, ""]
           ]},
@@ -220,7 +220,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
           [
             for_conditions: [
               variable_name: "i",
-              range_value: ["(my_var..10)"]
+              range_value: [start: "my_var", end: 10]
             ],
             for_sentences: ["", {:variable, ["i"]}, "", {:break, []}, ""]
           ]},
@@ -238,7 +238,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
           [
             for_conditions: [
               variable_name: "i",
-              range_value: ["(1..my_var)"]
+              range_value: [start: 1, end: "my_var"]
             ],
             for_sentences: [
               "",

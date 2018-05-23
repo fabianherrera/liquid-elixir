@@ -30,7 +30,7 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
     ])
 
     test_combinator("{% include 'product' with products[0] %}", &Parser.include/1, [
-      {:include, [snippet: ["'product'"], with_param: ["products[0]"]]},
+      {:include, [snippet: ["'product'"], with_param: [{:variable, ["products", {:index, 0}]}]]},
       ""
     ])
 

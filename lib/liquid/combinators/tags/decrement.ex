@@ -1,28 +1,32 @@
 defmodule Liquid.Combinators.Tags.Decrement do
   @moduledoc """
-  Temporarily disables tag processing. This is useful for generating content (eg, Mustache, Handlebars)
-  which uses conflicting syntax.
+  Creates a new number variable, and decreases its value by one every time it is called.
+  The initial value is -1.
+  Decrement is used in a place where one needs to insert a counter into a template,
+  and needs the counter to survive across
+  multiple instantiations of the template.
+  NOTE: decrement is a pre-decrement, -i, while increment is post: i+.
+  (To achieve the survival, the application must keep the context)
+
+  if the variable does not exist, it is created with value -1:
   Input:
   ```
-    {% raw %}
-    In Handlebars, {{ this }} will be HTML-escaped, but
-    {{{ that }}} will not.
-    {% endraw %}
+    Hello: {% decrement variable %}
   ```
   Output:
   ```
-  In Handlebars, {{ this }} will be HTML-escaped, but {{{ that }}} will not.
+    Hello: -1
+    Hello: -2
+    Hello: -3
   ```
   """
   import NimbleParsec
+  alias Liquid.Combinators.Tag
 
   def tag do
-    empty()
-    |> parsec(:start_tag)
-    |> concat(ignore(string("decrement")))
-    |> concat(parsec(:variable_name))
-    |> concat(parsec(:end_tag))
-    |> tag(:decrement)
-    |> optional(parsec(:__parse__))
+    Tag.define(:decrement, fn combinator ->
+      combinator
+      |> concat(parsec(:variable_name))
+    end)
   end
 end

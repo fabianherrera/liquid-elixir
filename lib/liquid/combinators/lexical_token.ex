@@ -32,15 +32,9 @@ defmodule Liquid.Combinators.LexicalToken do
   end
 
   # IntValue :: IntegerPart
-  def int_value do
-    empty()
-    |> concat(integer_part())
+  def integer_value do
+    integer_part()
     |> reduce({List, :to_integer, []})
-  end
-
-  def int_value_string do
-    empty()
-    |> concat(integer_part())
   end
 
   # FractionalPart :: . Digit+
@@ -76,14 +70,6 @@ defmodule Liquid.Combinators.LexicalToken do
     |> reduce({List, :to_float, []})
   end
 
-  def float_value_string do
-    empty()
-    |> choice([
-      integer_part() |> concat(fractional_part()) |> concat(exponent_part()),
-      integer_part() |> concat(fractional_part())
-    ])
-  end
-
   defp double_quoted_string do
     empty()
     |> ignore(ascii_char([?"]))
@@ -98,6 +84,10 @@ defmodule Liquid.Combinators.LexicalToken do
     |> ascii_char([?'])
   end
 
+  def to_atom(_rest, [h | _], context, _line, _offset) do
+    {h |> String.to_atom() |> List.wrap(), context}
+  end
+
   # StringValue ::
   #   - `"` StringCharacter* `"`
   def string_value do
@@ -108,37 +98,41 @@ defmodule Liquid.Combinators.LexicalToken do
 
   # BooleanValue : one of `true` `false`
   def boolean_value do
-    choice([
+    empty()
+    |> choice([
       string("true"),
       string("false")
     ])
+    |> traverse({Liquid.Combinators.LexicalToken, :to_atom, []})
   end
 
   # NullValue : `nil`
-  def null_value, do: choice([string("nil"), string("null")])
+  def null_value do
+    empty()
+    |> choice([string("nil"), string("null")])
+    |> replace(nil)
+  end
 
   def number do
-    choice([float_value(), int_value()])
+    choice([float_value(), integer_value()])
   end
 
-  def number_in_string do
-    choice([float_value_string(), int_value_string()])
+  defp range_part(combinator \\ empty(), tag_name) do
+    combinator
+    |> choice([integer_value(), parsec(:variable_definition)])
+    |> unwrap_and_tag(tag_name)
   end
 
-  # RangeValue : (1..10) (my_var..10) (1..my_var)
-
+  # RangeValue :: (1..10) | (var..10) | (1..var) | (var1..var2)
   def range_value do
     string("(")
+    |> ignore()
     |> parsec(:ignore_whitespaces)
-    |> concat(choice([parsec(:variable_definition), int_value_string()]))
-    |> reduce({List, :to_string, []})
-    |> concat(string("."))
-    |> concat(string("."))
-    |> concat(choice([parsec(:variable_definition), int_value_string()]))
-    |> reduce({List, :to_string, []})
+    |> range_part(:start)
+    |> ignore(string(".."))
+    |> concat(range_part(:end))
     |> parsec(:ignore_whitespaces)
-    |> concat(string(")"))
-    |> reduce({List, :to_string, []})
+    |> ignore(string(")"))
     |> tag(:range_value)
   end
 
@@ -149,51 +143,51 @@ defmodule Liquid.Combinators.LexicalToken do
   #   - NullValue
   #   - ListValue[?Const]
   #   - Variable
-
   def value_definition do
     parsec(:ignore_whitespaces)
     |> choice([
       number(),
-      string_value(),
       boolean_value(),
       null_value(),
-      object_value()
+      string_value(),
+      variable_value()
     ])
     |> concat(parsec(:ignore_whitespaces))
   end
+
+  def variable_value, do: tag(object_value(), :variable)
 
   def value do
     parsec(:value_definition)
     |> unwrap_and_tag(:value)
   end
 
-  # ObjectValue[Const] :
-  #   - [ ]
-  #   - [ Value[?Const]+ ]
   def object_property do
     string(".")
+    |> ignore()
     |> parsec(:object_value)
   end
 
   def object_value do
     parsec(:variable_definition)
     |> optional(choice([times(list_index(), min: 1), parsec(:object_property)]))
-    |> reduce({Enum, :join, []})
   end
 
   defp list_definition do
     choice([
-      int_value(),
-      parsec(:variable_definition)
+      integer_value(),
+      parsec(:variable_value)
     ])
   end
 
   defp list_index do
     string("[")
+    |> ignore()
     |> parsec(:ignore_whitespaces)
     |> concat(optional(list_definition()))
     |> parsec(:ignore_whitespaces)
-    |> concat(string("]"))
+    |> ignore(string("]"))
+    |> unwrap_and_tag(:index)
     |> optional(parsec(:object_property))
   end
 end

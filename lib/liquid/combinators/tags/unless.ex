@@ -12,7 +12,7 @@ defmodule Liquid.Combinators.Tags.Unless do
       parsec(:conditions),
       parsec(:variable_definition),
       parsec(:value_definition),
-      parsec(:token)
+      parsec(:quoted_token)
     ])
     |> optional(times(parsec(:logical_conditions), min: 1))
     |> concat(parsec(:end_tag))

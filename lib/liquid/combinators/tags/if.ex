@@ -30,7 +30,7 @@ defmodule Liquid.Combinators.Tags.If do
       parsec(:conditions),
       parsec(:variable_definition),
       parsec(:value_definition),
-      parsec(:token)
+      parsec(:quoted_token)
     ])
     |> optional(times(parsec(:logical_conditions), min: 1))
     |> concat(parsec(:end_tag))
@@ -41,7 +41,7 @@ defmodule Liquid.Combinators.Tags.If do
     parsec(:ignore_whitespaces)
     |> concat(parsec(:value_definition))
     |> concat(parsec(:ignore_whitespaces))
-    |> concat(parsec(:math_operators))
+    |> concat(parsec(:comparison_operators))
     |> concat(parsec(:ignore_whitespaces))
     |> concat(parsec(:value_definition))
     |> concat(parsec(:ignore_whitespaces))
@@ -62,7 +62,7 @@ defmodule Liquid.Combinators.Tags.If do
       parsec(:conditions),
       parsec(:variable_definition),
       parsec(:value_definition),
-      parsec(:token)
+      parsec(:quoted_token)
     ])
     |> optional(times(parsec(:logical_conditions), min: 1))
     |> concat(parsec(:end_tag))

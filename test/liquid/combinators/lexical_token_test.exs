@@ -1,20 +1,7 @@
 defmodule Liquid.Combinators.LexicalTokenTest do
   use ExUnit.Case
   import Liquid.Helpers
-
-  defmodule Parser do
-    import NimbleParsec
-    alias Liquid.Combinators.{LexicalToken, General}
-
-    defparsec(:ignore_whitespaces, General.ignore_whitespaces())
-    defparsec(:variable_definition, General.variable_definition())
-    defparsec(:variable_name, General.variable_name())
-    defparsec(:number, LexicalToken.number())
-    defparsec(:object_property, LexicalToken.object_property())
-    defparsec(:object_value, LexicalToken.object_value())
-    defparsec(:value_definition, LexicalToken.value_definition())
-    defparsec(:value, LexicalToken.value())
-  end
+  alias Liquid.NimbleParser, as: Parser
 
   test "integer value" do
     test_combinator("5", &Parser.value/1, value: 5)
@@ -37,26 +24,76 @@ defmodule Liquid.Combinators.LexicalTokenTest do
     test_combinator(~S('abc'), &Parser.value/1, value: "abc")
     test_combinator(~S(""), &Parser.value/1, value: "")
     test_combinator(~S("mom's chicken"), &Parser.value/1, value: "mom's chicken")
+
+    test_combinator(
+      ~S("text with true and false inside"),
+      &Parser.value/1,
+      value: "text with true and false inside"
+    )
+
+    test_combinator(
+      ~S("text with null inside"),
+      &Parser.value/1,
+      value: "text with null inside"
+    )
+
     test_combinator(~S("這是傳統的中文"), &Parser.value/1, value: "這是傳統的中文")
     test_combinator(~S( "هذا باللغة العربية"), &Parser.value/1, value: "هذا باللغة العربية")
     test_combinator(~S("😁😂😃😉"), &Parser.value/1, value: "😁😂😃😉")
   end
 
   test "boolean values" do
-    test_combinator("true", &Parser.value/1, value: "true")
-    test_combinator("false", &Parser.value/1, value: "false")
+    test_combinator("true", &Parser.value/1, value: true)
+    test_combinator("false", &Parser.value/1, value: false)
   end
 
-  test "null values" do
-    test_combinator("nil", &Parser.value/1, value: "nil")
-    test_combinator("null", &Parser.value/1, value: "null")
+  test "nil values" do
+    test_combinator("null", &Parser.value/1, value: nil)
+    test_combinator("nil", &Parser.value/1, value: nil)
+  end
+
+  test "range values" do
+    test_combinator("(10..1)", &Parser.range_value/1, range_value: [start: 10, end: 1])
+    test_combinator("(-10..1)", &Parser.range_value/1, range_value: [start: -10, end: 1])
+    test_combinator("(1..10)", &Parser.range_value/1, range_value: [start: 1, end: 10])
+    test_combinator("(1..var)", &Parser.range_value/1, range_value: [start: 1, end: "var"])
+
+    test_combinator(
+      "(var..10)",
+      &Parser.range_value/1,
+      range_value: [{:start, "var"}, {:end, 10}]
+    )
+
+    test_combinator(
+      "(var1..var2)",
+      &Parser.range_value/1,
+      range_value: [{:start, "var1"}, {:end, "var2"}]
+    )
   end
 
   test "object values" do
-    test_combinator("product[0][0][0]", &Parser.value/1, value: "product[0][0][0]")
-    test_combinator("product[    0][0][0]", &Parser.value/1, value: "product[0][0][0]")
-    test_combinator("product[var1][var2]", &Parser.value/1, value: "product[var1][var2]")
-    test_combinator("product[    ]", &Parser.value/1, value: "product[]")
-    test_combinator("product[0][1].name[0]", &Parser.value/1, value: "product[0][1].name[0]")
+    test_combinator("variable", &Parser.value/1, value: {:variable, ["variable"]})
+    test_combinator("variable.value", &Parser.value/1, value: {:variable, ["variable", "value"]})
+  end
+
+  test "list values" do
+    test_combinator("product[0]", &Parser.value/1, value: {:variable, ["product", {:index, 0}]})
+  end
+
+  test "object and list values" do
+    test_combinator(
+      "products[0].parts[0].providers[0]",
+      &Parser.value/1,
+      value:
+        {:variable,
+         ["products", {:index, 0}, "parts", {:index, 0}, "providers", {:index, 0}]}
+    )
+
+    test_combinator(
+      "products[parts[0].providers[0]]",
+      &Parser.value/1,
+      value:
+        {:variable, ["products", {:index, {:variable, ["parts", {:index, 0}, "providers", {:index, 0}]}}]}
+    )
   end
 end
