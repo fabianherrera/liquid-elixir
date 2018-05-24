@@ -99,11 +99,13 @@ defmodule Liquid.Combinators.Tags.IfTest do
            "",
            {:if,
             [
-              {:condition, [{:variable, ["shipping_method", "title"]}, "==", "International Shipping"]},
+              {:condition,
+               [{:variable, ["shipping_method", "title"]}, "==", "International Shipping"]},
               "You're shipping internationally. Your order should arrive in 2–3 weeks.",
               {:elsif,
                [
-                 {:condition, [{:variable, ["shipping_method", "title"]}, "==", "Domestic Shipping"]},
+                 {:condition,
+                  [{:variable, ["shipping_method", "title"]}, "==", "Domestic Shipping"]},
                  "Your order should arrive in 3–4 days."
                ]},
               {:else, ["Thank you for your order!"]}
@@ -141,11 +143,13 @@ defmodule Liquid.Combinators.Tags.IfTest do
       [
         {:if,
          [
-           {:condition, [{:variable, ["shipping_method", "title"]}, "==", "International Shipping"]},
+           {:condition,
+            [{:variable, ["shipping_method", "title"]}, "==", "International Shipping"]},
            "You're shipping internationally. Your order should arrive in 2–3 weeks.",
            {:elsif,
             [
-              {:condition, [{:variable, ["shipping_method", "title"]}, "==", "Domestic Shipping"]},
+              {:condition,
+               [{:variable, ["shipping_method", "title"]}, "==", "Domestic Shipping"]},
               "Your order should arrive in 3–4 days."
             ]},
            {:else, ["Thank you for your order!"]}

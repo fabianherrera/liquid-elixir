@@ -35,4 +35,3 @@ defmodule Liquid.Combinators.Tag do
     |> optional(parsec(:__parse__))
   end
 end
-

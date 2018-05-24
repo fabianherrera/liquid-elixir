@@ -182,10 +182,10 @@ defmodule Liquid.Combinators.Tags.ForTest do
           &Parser.for/1,
           [
             {:for,
-              [
-                for_conditions: [variable_name: "i", range_value: [start: 1, end: 10]],
-                for_sentences: ["", {:variable, ["i"]}, ""]
-              ]},
+             [
+               for_conditions: [variable_name: "i", range_value: [start: 1, end: 10]],
+               for_sentences: ["", {:variable, ["i"]}, ""]
+             ]},
             ""
           ]
         )
@@ -199,13 +199,13 @@ defmodule Liquid.Combinators.Tags.ForTest do
       &Parser.for/1,
       [
         {:for,
-          [
-            for_conditions: [
-              variable_name: "i",
-              range_value: [start: "my_var", end: 10]
-            ],
-            for_sentences: ["", {:variable, ["i"]}, ""]
-          ]},
+         [
+           for_conditions: [
+             variable_name: "i",
+             range_value: [start: "my_var", end: 10]
+           ],
+           for_sentences: ["", {:variable, ["i"]}, ""]
+         ]},
         ""
       ]
     )
@@ -217,13 +217,13 @@ defmodule Liquid.Combinators.Tags.ForTest do
       &Parser.for/1,
       [
         {:for,
-          [
-            for_conditions: [
-              variable_name: "i",
-              range_value: [start: "my_var", end: 10]
-            ],
-            for_sentences: ["", {:variable, ["i"]}, "", {:break, []}, ""]
-          ]},
+         [
+           for_conditions: [
+             variable_name: "i",
+             range_value: [start: "my_var", end: 10]
+           ],
+           for_sentences: ["", {:variable, ["i"]}, "", {:break, []}, ""]
+         ]},
         ""
       ]
     )
@@ -235,19 +235,19 @@ defmodule Liquid.Combinators.Tags.ForTest do
       &Parser.for/1,
       [
         {:for,
-          [
-            for_conditions: [
-              variable_name: "i",
-              range_value: [start: 1, end: "my_var"]
-            ],
-            for_sentences: [
-              "",
-              {:variable, ["i"]},
-              "",
-              {:continue, []},
-              ""
-            ]
-          ]},
+         [
+           for_conditions: [
+             variable_name: "i",
+             range_value: [start: 1, end: "my_var"]
+           ],
+           for_sentences: [
+             "",
+             {:variable, ["i"]},
+             "",
+             {:continue, []},
+             ""
+           ]
+         ]},
         ""
       ]
     )
