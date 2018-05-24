@@ -25,10 +25,9 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
                   variable_name: "item",
                   value: {:variable, ["array"]}
                 ],
-                tablerow_sentences: [""]
+                tablerow_sentences: []
               ]
-            },
-            ""
+            }
           ]
         )
       end
@@ -58,10 +57,9 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
                   value: {:variable, ["array"]},
                   limit_param: [2]
                 ],
-                tablerow_sentences: [""]
+                tablerow_sentences: []
               ]
-            },
-            ""
+            }
           ]
         )
       end
@@ -90,10 +88,9 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
                   value: {:variable, ["array"]},
                   offset_param: [2]
                 ],
-                tablerow_sentences: [""]
+                tablerow_sentences: []
               ]
-            },
-            ""
+            }
           ]
         )
       end
@@ -122,10 +119,9 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
                   value: {:variable, ["array"]},
                   cols_param: [2]
                 ],
-                tablerow_sentences: [""]
+                tablerow_sentences: []
               ]
-            },
-            ""
+            }
           ]
         )
       end
@@ -152,9 +148,8 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
                  variable_name: "i",
                  range_value: [start: 1, end: 10]
                ],
-               tablerow_sentences: ["", {:variable, ["i"]}, ""]
-             ]},
-            ""
+               tablerow_sentences: [{:variable, ["i"]}]
+             ]}
           ]
         )
       end
@@ -172,9 +167,8 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
              variable_name: "i",
              range_value: [start: "my_var", end: 10]
            ],
-           tablerow_sentences: ["", {:variable, ["i"]}, ""]
-         ]},
-        ""
+           tablerow_sentences: [{:variable, ["i"]}]
+         ]}
       ]
     )
   end
@@ -192,9 +186,8 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
              limit_param: [2],
              cols_param: [2]
            ],
-           tablerow_sentences: ["", {:variable, ["i"]}, ""]
-         ]},
-        ""
+           tablerow_sentences: [{:variable, ["i"]}]
+         ]}
       ]
     )
   end
