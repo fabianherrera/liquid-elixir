@@ -6,8 +6,7 @@ defmodule Liquid.Combinators.Tags.CycleTest do
 
   test "cycle tag with 2 values" do
     test_combinator("{%cycle \"one\", \"two\"%}", &Parser.cycle/1, [
-      {:cycle, ["\"one\"", "\"two\""]},
-      ""
+      {:cycle, ["\"one\"", "\"two\""]}
     ])
   end
 
@@ -15,8 +14,7 @@ defmodule Liquid.Combinators.Tags.CycleTest do
     test_combinator("{%cycle \"one\", \"two\"%} {%cycle \"one\", \"two\"%}", &Parser.cycle/1, [
       {:cycle, ["\"one\"", "\"two\""]},
       " ",
-      {:cycle, ["\"one\"", "\"two\""]},
-      ""
+      {:cycle, ["\"one\"", "\"two\""]}
     ])
   end
 
@@ -24,8 +22,7 @@ defmodule Liquid.Combinators.Tags.CycleTest do
     test_combinator("{%cycle \"\", \"two\"%} {%cycle \"\", \"two\"%}", &Parser.cycle/1, [
       {:cycle, ["\"\"", "\"two\""]},
       " ",
-      {:cycle, ["\"\"", "\"two\""]},
-      ""
+      {:cycle, ["\"\"", "\"two\""]}
     ])
   end
 
@@ -38,8 +35,7 @@ defmodule Liquid.Combinators.Tags.CycleTest do
         " ",
         {:cycle, ["\"one\"", "\"two\""]},
         " ",
-        {:cycle, ["\"one\"", "\"two\""]},
-        ""
+        {:cycle, ["\"one\"", "\"two\""]}
       ]
     )
   end
@@ -51,8 +47,7 @@ defmodule Liquid.Combinators.Tags.CycleTest do
       [
         {:cycle, ["\"text-align: left\"", "\"text-align: right\""]},
         " ",
-        {:cycle, ["\"text-align: left\"", "\"text-align: right\""]},
-        ""
+        {:cycle, ["\"text-align: left\"", "\"text-align: right\""]}
       ]
     )
   end
@@ -62,20 +57,19 @@ defmodule Liquid.Combinators.Tags.CycleTest do
       "{%cycle 1,2%} {%cycle 1,2%} {%cycle 1,2%} {%cycle 1,2,3%} {%cycle 1,2,3%} {%cycle 1,2,3%} {%cycle 1,2,3%}",
       &Parser.cycle/1,
       [
-        {:cycle, ["1", "2"]},
+        {:cycle, [<<1>>, <<2>>]},
         " ",
-        {:cycle, ["1", "2"]},
+        {:cycle, [<<1>>, <<2>>]},
         " ",
-        {:cycle, ["1", "2"]},
+        {:cycle, [<<1>>, <<2>>]},
         " ",
-        {:cycle, ["1", "2", "3"]},
+        {:cycle, [<<1>>, <<2>>, <<3>>]},
         " ",
-        {:cycle, ["1", "2", "3"]},
+        {:cycle, [<<1>>, <<2>>, <<3>>]},
         " ",
-        {:cycle, ["1", "2", "3"]},
+        {:cycle, [<<1>>, <<2>>, <<3>>]},
         " ",
-        {:cycle, ["1", "2", "3"]},
-        ""
+        {:cycle, [<<1>>, <<2>>, <<3>>]}
       ]
     )
   end
@@ -95,8 +89,7 @@ defmodule Liquid.Combinators.Tags.CycleTest do
         " ",
         {:cycle, ["1:", "\"one\"", "\"two\""]},
         " ",
-        {:cycle, ["2:", "\"one\"", "\"two\""]},
-        ""
+        {:cycle, ["2:", "\"one\"", "\"two\""]}
       ]
     )
   end
@@ -116,8 +109,7 @@ defmodule Liquid.Combinators.Tags.CycleTest do
         " ",
         {:cycle, ["var1:", "\"one\"", "\"two\""]},
         " ",
-        {:cycle, ["var2:", "\"one\"", "\"two\""]},
-        ""
+        {:cycle, ["var2:", "\"one\"", "\"two\""]}
       ]
     )
   end

@@ -79,9 +79,9 @@ defmodule Liquid.Combinators.LexicalToken do
 
   defp quoted_string do
     empty()
-    |> ignore(ascii_char([?']))
+    |> ascii_char([?'])
     |> repeat_until(utf8_char([]), [utf8_char([?'])])
-    |> ignore(ascii_char([?']))
+    |> ascii_char([?'])
   end
 
   def to_atom(_rest, [h | _], context, _line, _offset) do
@@ -93,16 +93,6 @@ defmodule Liquid.Combinators.LexicalToken do
   def string_value do
     empty()
     |> choice([double_quoted_string(), quoted_string()])
-    |> reduce({List, :to_string, []})
-  end
-
-  # SingleStringValue ::
-  #   - `'` StringCharacter* `'`
-  def single_string_value do
-    empty()
-    |> ignore(ascii_char([?']))
-    |> repeat_until(utf8_char([]), [utf8_char([?'])])
-    |> ignore(ascii_char([?']))
     |> reduce({List, :to_string, []})
   end
 

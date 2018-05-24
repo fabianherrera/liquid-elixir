@@ -11,28 +11,20 @@ defmodule Liquid.Combinators.Tags.ForTest do
       "{%     for     item    in     array    %}{%    endfor    %}"
     ]
 
-    Enum.each(
-      tags,
-      fn tag ->
-        test_combinator(
-          tag,
-          &Parser.for/1,
+    Enum.each(tags, fn tag ->
+      test_combinator(tag, &Parser.for/1, [
+        {
+          :for,
           [
-            {
-              :for,
-              [
-                for_conditions: [
-                  variable_name: "item",
-                  value: {:variable, ["array"]}
-                ],
-                for_sentences: [""]
-              ]
-            },
-            ""
+            for_conditions: [
+              variable_name: "item",
+              value: {:variable, ["array"]}
+            ],
+            for_sentences: []
           ]
-        )
-      end
-    )
+        }
+      ])
+    end)
   end
 
   test "for tag: else tag structures" do
@@ -42,29 +34,21 @@ defmodule Liquid.Combinators.Tags.ForTest do
       "{%     for     item    in     array    %}{%   else    %}{%    endfor    %}"
     ]
 
-    Enum.each(
-      tags,
-      fn tag ->
-        test_combinator(
-          tag,
-          &Parser.for/1,
+    Enum.each(tags, fn tag ->
+      test_combinator(tag, &Parser.for/1, [
+        {
+          :for,
           [
-            {
-              :for,
-              [
-                for_conditions: [
-                  variable_name: "item",
-                  value: {:variable, ["array"]}
-                ],
-                for_sentences: [""],
-                else_sentences: [""]
-              ]
-            },
-            ""
+            for_conditions: [
+              variable_name: "item",
+              value: {:variable, ["array"]}
+            ],
+            for_sentences: [],
+            else_sentences: []
           ]
-        )
-      end
-    )
+        }
+      ])
+    end)
   end
 
   test "for tag: limit parameter" do
@@ -75,30 +59,22 @@ defmodule Liquid.Combinators.Tags.ForTest do
       "{%     for     item    in     array  limit: 2  %}{%   else    %}{%    endfor    %}"
     ]
 
-    Enum.each(
-      tags,
-      fn tag ->
-        test_combinator(
-          tag,
-          &Parser.for/1,
+    Enum.each(tags, fn tag ->
+      test_combinator(tag, &Parser.for/1, [
+        {
+          :for,
           [
-            {
-              :for,
-              [
-                for_conditions: [
-                  variable_name: "item",
-                  value: {:variable, ["array"]},
-                  limit_param: [2]
-                ],
-                for_sentences: [""],
-                else_sentences: [""]
-              ]
-            },
-            ""
+            for_conditions: [
+              variable_name: "item",
+              value: {:variable, ["array"]},
+              limit_param: [2]
+            ],
+            for_sentences: [],
+            else_sentences: []
           ]
-        )
-      end
-    )
+        }
+      ])
+    end)
   end
 
   test "for tag: offset parameter" do
@@ -108,30 +84,22 @@ defmodule Liquid.Combinators.Tags.ForTest do
       "{%     for     item    in     array  offset:2  %}{%   else    %}{%    endfor    %}"
     ]
 
-    Enum.each(
-      tags,
-      fn tag ->
-        test_combinator(
-          tag,
-          &Parser.for/1,
+    Enum.each(tags, fn tag ->
+      test_combinator(tag, &Parser.for/1, [
+        {
+          :for,
           [
-            {
-              :for,
-              [
-                for_conditions: [
-                  variable_name: "item",
-                  value: {:variable, ["array"]},
-                  offset_param: [2]
-                ],
-                for_sentences: [""],
-                else_sentences: [""]
-              ]
-            },
-            ""
+            for_conditions: [
+              variable_name: "item",
+              value: {:variable, ["array"]},
+              offset_param: [2]
+            ],
+            for_sentences: [],
+            else_sentences: []
           ]
-        )
-      end
-    )
+        }
+      ])
+    end)
   end
 
   test "for tag: reversed parameter" do
@@ -141,30 +109,22 @@ defmodule Liquid.Combinators.Tags.ForTest do
       "{%     for     item    in     array  reversed  %}{%   else    %}{%    endfor    %}"
     ]
 
-    Enum.each(
-      tags,
-      fn tag ->
-        test_combinator(
-          tag,
-          &Parser.for/1,
+    Enum.each(tags, fn tag ->
+      test_combinator(tag, &Parser.for/1, [
+        {
+          :for,
           [
-            {
-              :for,
-              [
-                for_conditions: [
-                  variable_name: "item",
-                  value: {:variable, ["array"]},
-                  reversed_param: []
-                ],
-                for_sentences: [""],
-                else_sentences: [""]
-              ]
-            },
-            ""
+            for_conditions: [
+              variable_name: "item",
+              value: {:variable, ["array"]},
+              reversed_param: []
+            ],
+            for_sentences: [],
+            else_sentences: []
           ]
-        )
-      end
-    )
+        }
+      ])
+    end)
   end
 
   test "for tag: range parameter" do
@@ -174,39 +134,31 @@ defmodule Liquid.Combinators.Tags.ForTest do
       "{%     for     i     in     (1..10)      %}{{ i }}{%     endfor     %}"
     ]
 
-    Enum.each(
-      tags,
-      fn tag ->
-        test_combinator(
-          tag,
-          &Parser.for/1,
-          [
-            {:for,
-             [
-               for_conditions: [variable_name: "i", range_value: [start: 1, end: 10]],
-               for_sentences: ["", {:variable, ["i"]}, ""]
-             ]},
-            ""
-          ]
-        )
-      end
-    )
+    Enum.each(tags, fn tag ->
+      test_combinator(
+        tag,
+        &Parser.for/1,
+        for: [
+          for_conditions: [
+            variable_name: "i",
+            range_value: [start: 1, end: 10]
+          ],
+          for_sentences: [variable: ["i"]]
+        ]
+      )
+    end)
   end
 
   test "for tag: range with variables" do
     test_combinator(
       "{% for i in (my_var..10) %}{{ i }}{% endfor %}",
       &Parser.for/1,
-      [
-        {:for,
-         [
-           for_conditions: [
-             variable_name: "i",
-             range_value: [start: "my_var", end: 10]
-           ],
-           for_sentences: ["", {:variable, ["i"]}, ""]
-         ]},
-        ""
+      for: [
+        for_conditions: [
+          variable_name: "i",
+          range_value: [start: "my_var", end: 10]
+        ],
+        for_sentences: [variable: ["i"]]
       ]
     )
   end
@@ -215,16 +167,12 @@ defmodule Liquid.Combinators.Tags.ForTest do
     test_combinator(
       "{% for i in (my_var..10) %}{{ i }}{% break %}{% endfor %}",
       &Parser.for/1,
-      [
-        {:for,
-         [
-           for_conditions: [
-             variable_name: "i",
-             range_value: [start: "my_var", end: 10]
-           ],
-           for_sentences: ["", {:variable, ["i"]}, "", {:break, []}, ""]
-         ]},
-        ""
+      for: [
+        for_conditions: [
+          variable_name: "i",
+          range_value: [start: "my_var", end: 10]
+        ],
+        for_sentences: [variable: ["i"], break: []]
       ]
     )
   end
@@ -233,22 +181,12 @@ defmodule Liquid.Combinators.Tags.ForTest do
     test_combinator(
       "{% for i in (1..my_var) %}{{ i }}{% continue %}{% endfor %}",
       &Parser.for/1,
-      [
-        {:for,
-         [
-           for_conditions: [
-             variable_name: "i",
-             range_value: [start: 1, end: "my_var"]
-           ],
-           for_sentences: [
-             "",
-             {:variable, ["i"]},
-             "",
-             {:continue, []},
-             ""
-           ]
-         ]},
-        ""
+      for: [
+        for_conditions: [
+          variable_name: "i",
+          range_value: [start: 1, end: "my_var"]
+        ],
+        for_sentences: [variable: ["i"], continue: []]
       ]
     )
   end

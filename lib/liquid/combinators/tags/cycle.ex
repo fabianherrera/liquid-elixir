@@ -25,7 +25,7 @@ defmodule Liquid.Combinators.Tags.Cycle do
   end
 
   def cycle_values do
-    empty()
+    optional(parsec(:ignore_whitespaces))
     |> choice([
       parsec(:quoted_token),
       parsec(:number)
