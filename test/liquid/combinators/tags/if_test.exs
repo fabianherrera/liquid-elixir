@@ -8,20 +8,19 @@ defmodule Liquid.Combinators.Tags.IfTest do
     test_combinator(
       "{% if false %} this text should not go into the output {% endif %}",
       &Parser.if/1,
-      [{:if, ["false", " this text should not go into the output "]}, ""]
+      [{:if, ["false", " this text should not go into the output "]}]
     )
 
     test_combinator(
       "{% if true %} this text should go into the output {% endif %}",
       &Parser.if/1,
-      [{:if, ["true", " this text should go into the output "]}, ""]
+      [{:if, ["true", " this text should go into the output "]}]
     )
   end
 
   test "if else " do
     test_combinator("{% if \"foo\" %} YES {% else %} NO {% endif %}", &Parser.if/1, [
-      {:if, ["foo", " YES ", {:else, ["NO "]}]},
-      ""
+      {:if, ["foo", " YES ", {:else, ["NO "]}]}
     ])
   end
 
@@ -38,8 +37,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
            "or",
            {:condition, [{:variable, ["customer_address", "city"]}, "==", "Seatle"]},
            "hello test"
-         ]},
-        ""
+         ]}
       ]
     )
   end
@@ -52,8 +50,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
          "or",
          {:condition, [{:variable, ["b"]}, "==", 4]},
          " YES "
-       ]},
-      ""
+       ]}
     ])
   end
 
@@ -78,15 +75,13 @@ defmodule Liquid.Combinators.Tags.IfTest do
          "and",
          {:variable_name, "bar"},
          " YES "
-       ]},
-      ""
+       ]}
     ])
   end
 
   test "nested if" do
     test_combinator("{% if false %}{% if false %} NO {% endif %}{% endif %}", &Parser.if/1, [
-      {:if, ["false", "", {:if, ["false", " NO "]}, ""]},
-      ""
+      {:if, ["false", {:if, ["false", " NO "]}]}
     ])
 
     test_combinator(
@@ -96,7 +91,6 @@ defmodule Liquid.Combinators.Tags.IfTest do
         {:if,
          [
            "false",
-           "",
            {:if,
             [
               {:condition,
@@ -109,30 +103,25 @@ defmodule Liquid.Combinators.Tags.IfTest do
                  "Your order should arrive in 3–4 days."
                ]},
               {:else, ["Thank you for your order!"]}
-            ]},
-           ""
-         ]},
-        ""
+            ]}
+         ]}
       ]
     )
   end
 
   test "comparing values" do
     test_combinator("{% if null < 10 %} NO {% endif %}", &Parser.if/1, [
-      {:if, [{:condition, [nil, "<", 10]}, " NO "]},
-      ""
+      {:if, [{:condition, [nil, "<", 10]}, " NO "]}
     ])
 
     test_combinator("{% if 10 < null %} NO {% endif %}", &Parser.if/1, [
-      {:if, [{:condition, [10, "<", nil]}, " NO "]},
-      ""
+      {:if, [{:condition, [10, "<", nil]}, " NO "]}
     ])
   end
 
   test "usisng contains" do
     test_combinator("{% if 'bob' contains 'f' %}yes{% else %}no{% endif %}", &Parser.if/1, [
-      {:if, [{:condition, ["bob", "contains", "f"]}, "yes", {:else, ["no"]}]},
-      ""
+      {:if, [{:condition, ["bob", "contains", "f"]}, "yes", {:else, ["no"]}]}
     ])
   end
 
@@ -153,16 +142,14 @@ defmodule Liquid.Combinators.Tags.IfTest do
               "Your order should arrive in 3–4 days."
             ]},
            {:else, ["Thank you for your order!"]}
-         ]},
-        ""
+         ]}
       ]
     )
   end
 
   test "2 else conditions in one if" do
     test_combinator("{% if true %}test{% else %} a {% else %} b {% endif %}", &Parser.if/1, [
-      {:if, ["true", "test", {:else, ["a "]}, {:else, ["b "]}]},
-      ""
+      {:if, ["true", "test", {:else, ["a "]}, {:else, ["b "]}]}
     ])
   end
 
