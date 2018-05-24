@@ -1,11 +1,8 @@
 defmodule Liquid.Combinators.Tags.Cycle do
-  alias Liquid.Combinators.General
   import NimbleParsec
-
-  alias Liquid.Template
+  alias Liquid.Combinators.General
 
   def cycle_group do
-    # |> ignore())
     parsec(:ignore_whitespaces)
     |> concat(
       choice([

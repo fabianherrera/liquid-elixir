@@ -147,13 +147,13 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
           &Parser.tablerow/1,
           [
             {:tablerow,
-              [
-                tablerow_conditions: [
-                  variable_name: "i",
-                  range_value: [start: 1, end: 10]
-                ],
-                tablerow_sentences: ["", {:variable, ["i"]}, ""]
-              ]},
+             [
+               tablerow_conditions: [
+                 variable_name: "i",
+                 range_value: [start: 1, end: 10]
+               ],
+               tablerow_sentences: ["", {:variable, ["i"]}, ""]
+             ]},
             ""
           ]
         )
@@ -167,13 +167,13 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
       &Parser.tablerow/1,
       [
         {:tablerow,
-          [
-            tablerow_conditions: [
-              variable_name: "i",
-              range_value: [start: "my_var", end: 10]
-            ],
-            tablerow_sentences: ["", {:variable, ["i"]}, ""]
-          ]},
+         [
+           tablerow_conditions: [
+             variable_name: "i",
+             range_value: [start: "my_var", end: 10]
+           ],
+           tablerow_sentences: ["", {:variable, ["i"]}, ""]
+         ]},
         ""
       ]
     )
@@ -185,15 +185,15 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
       &Parser.tablerow/1,
       [
         {:tablerow,
-          [
-            tablerow_conditions: [
-              variable_name: "i",
-              range_value: [start: "my_var", end: 10],
-              limit_param: [2],
-              cols_param: [2]
-            ],
-            tablerow_sentences: ["", {:variable, ["i"]}, ""]
-          ]},
+         [
+           tablerow_conditions: [
+             variable_name: "i",
+             range_value: [start: "my_var", end: 10],
+             limit_param: [2],
+             cols_param: [2]
+           ],
+           tablerow_sentences: ["", {:variable, ["i"]}, ""]
+         ]},
         ""
       ]
     )
