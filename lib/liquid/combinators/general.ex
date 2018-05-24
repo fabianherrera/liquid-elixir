@@ -218,9 +218,17 @@ defmodule Liquid.Combinators.General do
     |> unwrap_and_tag(:variable_name)
   end
 
+  # def liquid_variable do
+  #   start_variable()
+  #   |> choice([parsec(:object_value), parsec(:variable_name)])
+  #   |> optional(parsec(:filter))
+  #   |> concat(end_variable())
+  #   |> optional(parsec(:__parse__))
+  # end
+
   def liquid_variable do
     start_variable()
-    |> choice([parsec(:object_value), parsec(:variable_name)])
+    |> parsec(:value_definition)
     |> optional(parsec(:filter))
     |> concat(end_variable())
     |> optional(parsec(:__parse__))

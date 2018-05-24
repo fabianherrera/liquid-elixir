@@ -57,13 +57,10 @@ defmodule Liquid.Combinators.Tags.CaseTest do
     test_combinator(
       "{% case condition %}{% when 1, 2, 3 %} its 1 or 2 or 3 {% when 4 %} its 4 {% endcase %}",
       &Parser.case/1,
-      [
-        {:case,
-         [
-           {:variable, ["condition"]},
-           {:when, [1, ",", 2, ",", 3, "its 1 or 2 or 3 "]},
-           {:when, [4, "its 4 "]}
-         ]}
+      case: [
+        variable: ["condition"],
+        when: [1, 44, 2, 44, 3, "its 1 or 2 or 3 "],
+        when: [4, "its 4 "]
       ]
     )
   end
@@ -72,13 +69,10 @@ defmodule Liquid.Combinators.Tags.CaseTest do
     test_combinator(
       "{% case condition %}{% when 1, \"string\", null %} its 1 or 2 or 3 {% when 4 %} its 4 {% endcase %}",
       &Parser.case/1,
-      [
-        {:case,
-         [
-           {:variable, ["condition"]},
-           {:when, [1, ",", "string", ",", nil, "its 1 or 2 or 3 "]},
-           {:when, [4, "its 4 "]}
-         ]}
+      case: [
+        variable: ["condition"],
+        when: [1, 44, "string", 44, nil, "its 1 or 2 or 3 "],
+        when: [4, "its 4 "]
       ]
     )
   end
@@ -87,25 +81,17 @@ defmodule Liquid.Combinators.Tags.CaseTest do
     test_combinator(
       "{% case collection.handle %}{% when 'menswear-jackets' %}{% assign ptitle = 'menswear' %}{% when 'menswear-t-shirts' %}{% assign ptitle = 'menswear' %}{% else %} {% assign ptitle = 'womenswear' %}{% endcase %}",
       &Parser.case/1,
-      [
-        {:case,
-         [
-           {:variable, ["collection", "handle"]},
-           {:when,
-            [
-              "menswear-jackets",
-              {:assign, [variable_name: "ptitle", value: "menswear"]}
-            ]},
-           {:when,
-            [
-              "menswear-t-shirts",
-              {:assign, [variable_name: "ptitle", value: "menswear"]}
-            ]},
-           {:else,
-            [
-              {:assign, [variable_name: "ptitle", value: "womenswear"]}
-            ]}
-         ]}
+      case: [
+        variable: ["collection", "handle"],
+        when: [
+          "'menswear-jackets'",
+          {:assign, [variable_name: "ptitle", value: "'menswear'"]}
+        ],
+        when: [
+          "'menswear-t-shirts'",
+          {:assign, [variable_name: "ptitle", value: "'menswear'"]}
+        ],
+        else: [assign: [variable_name: "ptitle", value: "'womenswear'"]]
       ]
     )
   end

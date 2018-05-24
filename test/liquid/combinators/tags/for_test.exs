@@ -143,7 +143,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
             variable_name: "i",
             range_value: [start: 1, end: 10]
           ],
-          for_sentences: ["i"]
+          for_sentences: [variable: ["i"]]
         ]
       )
     end)
@@ -158,7 +158,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
           variable_name: "i",
           range_value: [start: "my_var", end: 10]
         ],
-        for_sentences: ["i"]
+        for_sentences: [variable: ["i"]]
       ]
     )
   end
@@ -172,7 +172,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
           variable_name: "i",
           range_value: [start: "my_var", end: 10]
         ],
-        for_sentences: ["i", {:break, []}]
+        for_sentences: [variable: ["i"], break: []]
       ]
     )
   end
@@ -186,7 +186,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
           variable_name: "i",
           range_value: [start: 1, end: "my_var"]
         ],
-        for_sentences: ["i", {:continue, []}]
+        for_sentences: [variable: ["i"], continue: []]
       ]
     )
   end
