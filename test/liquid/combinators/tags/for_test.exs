@@ -135,58 +135,58 @@ defmodule Liquid.Combinators.Tags.ForTest do
     ]
 
     Enum.each(tags, fn tag ->
-      test_combinator(tag, &Parser.for/1, [
-        {:for,
-         [
-           for_conditions: [variable_name: "i", range_value: [start: 1, end: 10]],
-           for_sentences: [{:variable, ["i"]}]
-         ]}
-      ])
+      test_combinator(
+        tag,
+        &Parser.for/1,
+        for: [
+          for_conditions: [
+            variable_name: "i",
+            range_value: [start: 1, end: 10]
+          ],
+          for_sentences: ["i"]
+        ]
+      )
     end)
   end
 
   test "for tag: range with variables" do
-    test_combinator("{% for i in (my_var..10) %}{{ i }}{% endfor %}", &Parser.for/1, [
-      {:for,
-       [
-         for_conditions: [
-           variable_name: "i",
-           range_value: [start: "my_var", end: 10]
-         ],
-         for_sentences: [{:variable, ["i"]}]
-       ]}
-    ])
+    test_combinator(
+      "{% for i in (my_var..10) %}{{ i }}{% endfor %}",
+      &Parser.for/1,
+      for: [
+        for_conditions: [
+          variable_name: "i",
+          range_value: [start: "my_var", end: 10]
+        ],
+        for_sentences: ["i"]
+      ]
+    )
   end
 
   test "for tag: break tag" do
-    test_combinator("{% for i in (my_var..10) %}{{ i }}{% break %}{% endfor %}", &Parser.for/1, [
-      {:for,
-       [
-         for_conditions: [
-           variable_name: "i",
-           range_value: [start: "my_var", end: 10]
-         ],
-         for_sentences: [{:variable, ["i"]}, {:break, []}]
-       ]}
-    ])
+    test_combinator(
+      "{% for i in (my_var..10) %}{{ i }}{% break %}{% endfor %}",
+      &Parser.for/1,
+      for: [
+        for_conditions: [
+          variable_name: "i",
+          range_value: [start: "my_var", end: 10]
+        ],
+        for_sentences: ["i", {:break, []}]
+      ]
+    )
   end
 
   test "for tag: continue tag" do
     test_combinator(
       "{% for i in (1..my_var) %}{{ i }}{% continue %}{% endfor %}",
       &Parser.for/1,
-      [
-        {:for,
-         [
-           for_conditions: [
-             variable_name: "i",
-             range_value: [start: 1, end: "my_var"]
-           ],
-           for_sentences: [
-             {:variable, ["i"]},
-             {:continue, []}
-           ]
-         ]}
+      for: [
+        for_conditions: [
+          variable_name: "i",
+          range_value: [start: 1, end: "my_var"]
+        ],
+        for_sentences: ["i", {:continue, []}]
       ]
     )
   end
