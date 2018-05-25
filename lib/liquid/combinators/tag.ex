@@ -41,6 +41,7 @@ defmodule Liquid.Combinators.Tag do
   end
 
   defp close_tag(combinator, ""), do: combinator
+
   defp close_tag(combinator, close_tag_name) do
     combinator
     |> parsec(:start_tag)
