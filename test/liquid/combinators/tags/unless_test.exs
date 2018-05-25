@@ -31,9 +31,9 @@ defmodule Liquid.Combinators.Tags.UnlessTest do
       unless: [
         {:condition, [{:variable, ["line_item", "grams"]}, ">", 20000]},
         "and",
-        {:condition, [{:variable, ["customer_address", "city"]}, "==", "'Ottawa'"]},
+        {:condition, [{:variable, ["customer_address", "city"]}, "==", "Ottawa"]},
         "or",
-        {:condition, [{:variable, ["customer_address", "city"]}, "==", "'Seatle'"]},
+        {:condition, [{:variable, ["customer_address", "city"]}, "==", "Seatle"]},
         "hello test"
       ]
     )
@@ -59,15 +59,15 @@ defmodule Liquid.Combinators.Tags.UnlessTest do
       "{% unless #{awful_markup} %} YES {% endunless %}",
       &Parser.unless/1,
       unless: [
-        {:condition, [{:variable, ["a"]}, "==", "'and'"]},
+        {:condition, [{:variable, ["a"]}, "==", "and"]},
         "and",
-        {:condition, [{:variable, ["b"]}, "==", "'or'"]},
+        {:condition, [{:variable, ["b"]}, "==", "or"]},
         "and",
-        {:condition, [{:variable, ["c"]}, "==", "'foo and bar'"]},
+        {:condition, [{:variable, ["c"]}, "==", "foo and bar"]},
         "and",
-        {:condition, [{:variable, ["d"]}, "==", "'bar or baz'"]},
+        {:condition, [{:variable, ["d"]}, "==", "bar or baz"]},
         "and",
-        {:condition, [{:variable, ["e"]}, "==", "'foo'"]},
+        {:condition, [{:variable, ["e"]}, "==", "foo"]},
         "and",
         {:variable_name, "foo"},
         "and",
@@ -95,7 +95,7 @@ defmodule Liquid.Combinators.Tags.UnlessTest do
             [
               {:variable, ["shipping_method", "title"]},
               "==",
-              "'International Shipping'"
+              "International Shipping"
             ]},
            "You're shipping internationally. Your order should arrive in 2–3 weeks.",
            {:elsif,
@@ -104,7 +104,7 @@ defmodule Liquid.Combinators.Tags.UnlessTest do
                [
                  {:variable, ["shipping_method", "title"]},
                  "==",
-                 "'Domestic Shipping'"
+                 "Domestic Shipping"
                ]},
               "Your order should arrive in 3–4 days."
             ]},
@@ -129,7 +129,7 @@ defmodule Liquid.Combinators.Tags.UnlessTest do
       "{% unless 'bob' contains 'f' %}yes{% else %}no{% endunless %}",
       &Parser.unless/1,
       unless: [
-        {:condition, ["'bob'", "contains", "'f'"]},
+        {:condition, ["bob", "contains", "f"]},
         "yes",
         {:else, ["no"]}
       ]
@@ -145,7 +145,7 @@ defmodule Liquid.Combinators.Tags.UnlessTest do
          [
            {:variable, ["shipping_method", "title"]},
            "==",
-           "'International Shipping'"
+           "International Shipping"
          ]},
         "You're shipping internationally. Your order should arrive in 2–3 weeks.",
         {:elsif,
@@ -154,7 +154,7 @@ defmodule Liquid.Combinators.Tags.UnlessTest do
             [
               {:variable, ["shipping_method", "title"]},
               "==",
-              "'Domestic Shipping'"
+              "Domestic Shipping"
             ]},
            "Your order should arrive in 3–4 days."
          ]},

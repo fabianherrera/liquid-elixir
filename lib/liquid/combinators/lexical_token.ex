@@ -96,16 +96,6 @@ defmodule Liquid.Combinators.LexicalToken do
     |> reduce({List, :to_string, []})
   end
 
-  # SingleStringValue ::
-  #   - `'` StringCharacter* `'`
-  def single_string_value do
-    empty()
-    |> ignore(ascii_char([?']))
-    |> repeat_until(utf8_char([]), [utf8_char([?'])])
-    |> ignore(ascii_char([?']))
-    |> reduce({List, :to_string, []})
-  end
-
   # BooleanValue : one of `true` `false`
   def boolean_value do
     empty()
