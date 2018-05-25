@@ -21,7 +21,7 @@ defmodule Liquid.Combinators.LexicalTokenTest do
 
   test "string value" do
     test_combinator(~S("abc"), &Parser.value/1, value: "abc")
-    test_combinator(~S('abc'), &Parser.value/1, value: "'abc'")
+    test_combinator(~S('abc'), &Parser.value/1, value: "abc")
     test_combinator(~S(""), &Parser.value/1, value: "")
     test_combinator(~S("mom's chicken"), &Parser.value/1, value: "mom's chicken")
 
