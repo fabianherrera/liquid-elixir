@@ -79,9 +79,9 @@ defmodule Liquid.Combinators.LexicalToken do
 
   defp quoted_string do
     empty()
-    |> ascii_char([?'])
+    |> ignore(ascii_char([?']))
     |> repeat_until(utf8_char([]), [utf8_char([?'])])
-    |> ascii_char([?'])
+    |> ignore(ascii_char([?']))
   end
 
   def to_atom(_rest, [h | _], context, _line, _offset) do

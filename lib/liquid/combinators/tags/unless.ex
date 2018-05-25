@@ -9,12 +9,12 @@ defmodule Liquid.Combinators.Tags.Unless do
     |> ignore(string("unless"))
     |> concat(parsec(:ignore_whitespaces))
     |> choice([
-      parsec(:conditions),
+      parsec(:condition),
       parsec(:variable_definition),
       parsec(:value_definition),
       parsec(:quoted_token)
     ])
-    |> optional(times(parsec(:logical_conditions), min: 1))
+    |> optional(times(parsec(:logical_condition), min: 1))
     |> concat(parsec(:end_tag))
     |> optional(parsec(:__parse__))
   end

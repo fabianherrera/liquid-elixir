@@ -123,23 +123,25 @@ defmodule Liquid.Combinators.General do
   Comparison operators:
   == != > < >= <=
   """
-  def comparison_operators do
-    choice([
-      string(@equals),
-      string(@does_not_equal),
-      string(@greater_than),
-      string(@less_than),
-      string(@greater_or_equal),
-      string(@less_or_equal),
-      string("contains")
-    ])
+  def comparison_operator do
+    parsec(:ignore_whitespaces)
+    |> choice([
+        string(@equals),
+        string(@does_not_equal),
+        string(@greater_than),
+        string(@less_than),
+        string(@greater_or_equal),
+        string(@less_or_equal),
+        string("contains")
+      ])
+    |> parsec(:ignore_whitespaces)
   end
 
   @doc """
   Logical operators:
   `and` `or`
   """
-  def logical_operators do
+  def logical_operator do
     choice([string("or"), string("and")])
   end
 
@@ -218,15 +220,7 @@ defmodule Liquid.Combinators.General do
     |> unwrap_and_tag(:variable_name)
   end
 
-  # def liquid_variable do
-  #   start_variable()
-  #   |> choice([parsec(:object_value), parsec(:variable_name)])
-  #   |> optional(parsec(:filter))
-  #   |> concat(end_variable())
-  #   |> optional(parsec(:__parse__))
-  # end
-
-  def liquid_variable do
+ def liquid_variable do
     start_variable()
     |> parsec(:value_definition)
     |> optional(parsec(:filter))

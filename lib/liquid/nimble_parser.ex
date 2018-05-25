@@ -32,8 +32,8 @@ defmodule Liquid.NimbleParser do
   defparsec(:single_quoted_token, General.single_quoted_token())
   defparsec(:double_quoted_token, General.double_quoted_token())
   defparsec(:quoted_token, General.quoted_token())
-  defparsec(:comparison_operators, General.comparison_operators())
-  defparsec(:logical_operators, General.logical_operators())
+  defparsec(:comparison_operator, General.comparison_operator())
+  defparsec(:logical_operator, General.logical_operator())
   defparsec(:comma_contition_value, General.comma_contition_value())
   defparsec(:ignore_whitespaces, General.ignore_whitespaces())
 
@@ -96,8 +96,8 @@ defmodule Liquid.NimbleParser do
   defparsec(:open_tag_if, If.open_tag())
   defparsecp(:close_tag_if, If.close_tag())
   defparsecp(:output_text, If.output_text())
-  defparsecp(:conditions, If.conditions())
-  defparsecp(:logical_conditions, If.logical_conditions())
+  defparsecp(:condition, If.condition())
+  defparsecp(:logical_condition, If.logical_condition())
   defparsec(:elsif_tag, If.elsif_tag())
   defparsecp(:else_tag, If.else_tag())
   defparsecp(:if_content, If.if_content())
@@ -129,9 +129,6 @@ defmodule Liquid.NimbleParser do
   defparsec(:when_tag, Case.when_tag())
   defparsec(:case, Case.tag())
 
-  defparsec(:open_tag_capture, Capture.open_tag())
-  defparsec(:close_tag_capture, Capture.close_tag())
-  defparsecp(:capture_sentences, Capture.capture_sentences())
   defparsec(:capture, Capture.tag())
 
   defparsec(
