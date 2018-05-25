@@ -27,30 +27,28 @@ defmodule Liquid.Combinators.Tags.If do
     |> ignore(string("if"))
     |> concat(parsec(:ignore_whitespaces))
     |> choice([
-      parsec(:conditions),
+      parsec(:condition),
       parsec(:variable_definition),
       parsec(:value_definition),
       parsec(:quoted_token)
     ])
-    |> optional(times(parsec(:logical_conditions), min: 1))
+    |> optional(times(parsec(:logical_condition), min: 1))
     |> concat(parsec(:end_tag))
     |> optional(parsec(:__parse__))
   end
 
-  def conditions do
+  def condition do
     parsec(:ignore_whitespaces)
     |> concat(parsec(:value_definition))
-    |> concat(parsec(:ignore_whitespaces))
-    |> concat(parsec(:comparison_operators))
-    |> concat(parsec(:ignore_whitespaces))
+    |> concat(parsec(:comparison_operator))
     |> concat(parsec(:value_definition))
-    |> concat(parsec(:ignore_whitespaces))
+    |> parsec(:ignore_whitespaces)
     |> tag(:condition)
   end
 
-  def logical_conditions do
-    parsec(:logical_operators)
-    |> concat(choice([parsec(:conditions), parsec(:variable_name), parsec(:value_definition)]))
+  def logical_condition do
+    parsec(:logical_operator)
+    |> concat(choice([parsec(:condition), parsec(:variable_name), parsec(:value_definition)]))
   end
 
   def elsif_tag do
@@ -59,12 +57,12 @@ defmodule Liquid.Combinators.Tags.If do
     |> ignore(string("elsif"))
     |> concat(parsec(:ignore_whitespaces))
     |> choice([
-      parsec(:conditions),
+      parsec(:condition),
       parsec(:variable_definition),
       parsec(:value_definition),
       parsec(:quoted_token)
     ])
-    |> optional(times(parsec(:logical_conditions), min: 1))
+    |> optional(times(parsec(:logical_condition), min: 1))
     |> concat(parsec(:end_tag))
     |> optional(parsec(:__parse__))
     |> tag(:elsif)
