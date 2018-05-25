@@ -129,9 +129,6 @@ defmodule Liquid.NimbleParser do
   defparsec(:when_tag, Case.when_tag())
   defparsec(:case, Case.tag())
 
-  defparsec(:open_tag_capture, Capture.open_tag())
-  defparsec(:close_tag_capture, Capture.close_tag())
-  defparsecp(:capture_sentences, Capture.capture_sentences())
   defparsec(:capture, Capture.tag())
 
   defparsec(
