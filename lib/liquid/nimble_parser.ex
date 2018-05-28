@@ -39,7 +39,6 @@ defmodule Liquid.NimbleParser do
   defparsec(:condition, General.condition())
   defparsec(:logical_condition, General.logical_condition())
 
-
   defparsec(:number, LexicalToken.number())
   defparsec(:value_definition, LexicalToken.value_definition())
   defparsec(:value, LexicalToken.value())

@@ -65,7 +65,7 @@ defmodule Liquid.NimbleRender do
     me = self()
 
     nodelist
-    #|> remove_empty_items()
+    # |> remove_empty_items()
     |> Enum.map(fn elem ->
       spawn_link(fn -> send(me, {self(), process_node(elem)}) end)
     end)
@@ -187,5 +187,4 @@ defmodule Liquid.NimbleRender do
     value = Keyword.get(filter_param_value, :value)
     "| #{filter_name}: #{value}"
   end
-
 end
