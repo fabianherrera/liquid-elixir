@@ -143,19 +143,6 @@ defmodule Liquid.NimbleRender do
     end
   end
 
-  # for
-  defp process_node({:for, markup}) do
-
-
-
-
-
-
-  # end for
-
-
-
-
   defp process_node(any) do
     any
   end
