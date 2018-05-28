@@ -19,15 +19,15 @@ defmodule Liquid.NimbleRender do
   @doc """
   Function that converts passed nimble_parser AST into valid intermediate render's template and context to string
   """
-  def render({:ok, [""], _rest, _, _, _}) do
+  def render({:ok, [""]}) do
     %Template{root: %Liquid.Block{name: :document}}
   end
 
-  def render({:ok, [literal_text], _rest, _, _, _}) when is_bitstring(literal_text) do
+  def render({:ok, [literal_text]}) when is_bitstring(literal_text) do
     %Template{root: %Liquid.Block{name: :document, nodelist: [literal_text]}}
   end
 
-  def render({:ok, nodelist, _rest, _, _, _}) when is_list(nodelist) do
+  def render({:ok, nodelist}) when is_list(nodelist) do
     me = self()
 
     list =
@@ -142,6 +142,19 @@ defmodule Liquid.NimbleRender do
         }
     end
   end
+
+  # for
+  defp process_node({:for, markup}) do
+
+
+
+
+
+
+  # end for
+
+
+
 
   defp process_node(any) do
     any
