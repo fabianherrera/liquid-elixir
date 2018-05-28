@@ -82,7 +82,8 @@ defmodule Liquid.NimbleParser do
 
   defparsec(:open_tag_raw, Raw.open_tag())
   defparsec(:close_tag_raw, Raw.close_tag())
-  defparsecp(:not_close_tag_raw, Raw.not_close_tag_raw())
+  defparsec(:tag_inside_raw, Raw.tag_inside_raw())
+  # defparsecp(:not_close_tag_raw, Raw.not_close_tag_raw())
   defparsec(:raw_content, Raw.raw_content())
   defparsec(:raw, Raw.tag())
 

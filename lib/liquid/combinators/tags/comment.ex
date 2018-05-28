@@ -49,6 +49,7 @@ defmodule Liquid.Combinators.Tags.Comment do
     empty()
     |> parsec(:open_tag_comment)
     |> ignore(parsec(:comment_content))
+    |> tag(:comment)
     |> optional(parsec(:__parse__))
   end
 end

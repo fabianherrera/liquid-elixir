@@ -30,9 +30,9 @@ defmodule Liquid.NimbleRender do
   def render({:ok, nodelist, _rest, _, _, _}) when is_list(nodelist) do
     me = self()
 
+    # |> remove_empty_items()
     list =
       nodelist
-      # |> remove_empty_items()
       |> Enum.map(fn elem ->
         spawn_link(fn -> send(me, {self(), process_node(elem)}) end)
       end)
@@ -64,8 +64,8 @@ defmodule Liquid.NimbleRender do
   defp process_node(nodelist) when is_list(nodelist) do
     me = self()
 
+    # |> remove_empty_items()
     nodelist
-    #|> remove_empty_items()
     |> Enum.map(fn elem ->
       spawn_link(fn -> send(me, {self(), process_node(elem)}) end)
     end)
@@ -143,6 +143,15 @@ defmodule Liquid.NimbleRender do
     end
   end
 
+  defp process_node({:raw, markup}) do
+    value = markup |> hd
+    %Liquid.Block{name: :raw, nodelist: value, strict: false}
+  end
+
+  defp process_node({:comment, markup}) do
+    ""
+  end
+
   defp process_node(any) do
     any
   end
@@ -187,5 +196,4 @@ defmodule Liquid.NimbleRender do
     value = Keyword.get(filter_param_value, :value)
     "| #{filter_name}: #{value}"
   end
-
 end

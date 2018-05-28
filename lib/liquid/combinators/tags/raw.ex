@@ -33,9 +33,32 @@ defmodule Liquid.Combinators.Tags.Raw do
     |> concat(parsec(:end_tag))
   end
 
-  def not_close_tag_raw do
+  # def not_close_tag_raw do
+  #   empty()
+  #   |> ignore(utf8_char([]))
+  #   |> parsec(:raw_content)
+  # end
+
+  def not_ingnored_start_tag do
     empty()
-    |> ignore(utf8_char([]))
+    |> string(General.codepoints().start_tag)
+    |> parsec(:ignore_whitespaces)
+  end
+
+  @doc """
+  End of liquid Tag
+  """
+  def not_ingnored_end_tag do
+    parsec(:ignore_whitespaces)
+    |> concat(string(General.codepoints().end_tag))
+  end
+
+  def tag_inside_raw do
+    empty()
+    |> concat(not_ingnored_start_tag())
+    |> repeat_until(utf8_char([]), [string(General.codepoints().end_tag), string("endraw")])
+    |> concat(not_ingnored_end_tag())
+    |> reduce({List, :to_string, []})
     |> parsec(:raw_content)
   end
 
@@ -44,9 +67,9 @@ defmodule Liquid.Combinators.Tags.Raw do
     |> repeat_until(utf8_char([]), [
       string(General.codepoints().start_tag)
     ])
-    |> choice([parsec(:close_tag_raw), parsec(:not_close_tag_raw)])
     |> reduce({List, :to_string, []})
-    |> tag(:raw_content)
+    |> choice([parsec(:close_tag_raw), parsec(:tag_inside_raw)])
+    |> reduce({List, :to_string, []})
   end
 
   def tag do
