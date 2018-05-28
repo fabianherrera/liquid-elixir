@@ -32,10 +32,12 @@ defmodule Liquid.NimbleParser do
   defparsec(:single_quoted_token, General.single_quoted_token())
   defparsec(:double_quoted_token, General.double_quoted_token())
   defparsec(:quoted_token, General.quoted_token())
-  defparsec(:comparison_operator, General.comparison_operator())
-  defparsec(:logical_operator, General.logical_operator())
+  defparsec(:comparison_operators, General.comparison_operators())
+  defparsec(:logical_operators, General.logical_operators())
   defparsec(:comma_contition_value, General.comma_contition_value())
   defparsec(:ignore_whitespaces, General.ignore_whitespaces())
+  defparsec(:condition, General.condition())
+  defparsec(:logical_condition, General.logical_condition())
 
   defparsec(:number, LexicalToken.number())
   defparsec(:value_definition, LexicalToken.value_definition())
@@ -64,7 +66,7 @@ defmodule Liquid.NimbleParser do
   )
 
   defparsec(:assign, Assign.tag())
-
+  defparsec(:capture, Capture.tag())
   defparsec(:decrement, Decrement.tag())
 
   defparsec(:increment, Increment.tag())
@@ -93,20 +95,10 @@ defmodule Liquid.NimbleParser do
   defparsecp(:with_param, Include.with_param())
   defparsecp(:for_param, Include.for_param())
   defparsec(:include, Include.tag())
-
-  defparsec(:open_tag_if, If.open_tag())
-  defparsecp(:close_tag_if, If.close_tag())
-  defparsecp(:output_text, If.output_text())
-  defparsecp(:condition, If.condition())
-  defparsecp(:logical_condition, If.logical_condition())
-  defparsec(:elsif_tag, If.elsif_tag())
-  defparsecp(:else_tag, If.else_tag())
-  defparsecp(:if_content, If.if_content())
   defparsec(:if, If.tag())
-
-  defparsec(:open_tag_unless, Unless.open_tag())
-  defparsecp(:close_tag_unless, Unless.close_tag())
-  defparsec(:unless, Unless.tag())
+  defparsec(:elsif_tag, If.elsif_tag())
+  defparsec(:else_tag, If.else_tag())
+  defparsec(:unless, If.unless_tag())
 
   defparsecp(:offset_param, For.offset_param())
   defparsecp(:limit_param, For.limit_param())
@@ -130,13 +122,11 @@ defmodule Liquid.NimbleParser do
   defparsec(:when_tag, Case.when_tag())
   defparsec(:case, Case.tag())
 
-  defparsec(:capture, Capture.tag())
-
   defparsec(
     :liquid_tag,
     choice([
       parsec(:assign),
-      parsec(:increment),
+      parsec(:capture),
       parsec(:decrement),
       parsec(:include),
       parsec(:cycle),
@@ -149,7 +139,7 @@ defmodule Liquid.NimbleParser do
       parsec(:unless),
       parsec(:tablerow),
       parsec(:case),
-      parsec(:capture)
+      parsec(:increment)
     ])
   )
 
