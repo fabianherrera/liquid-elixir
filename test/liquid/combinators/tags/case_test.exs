@@ -32,8 +32,10 @@ defmodule Liquid.Combinators.Tags.CaseTest do
     test_combinator(
       "{% case condition %}{% when 5 %} hit {% else %} else {% endcase %}",
       &Parser.case/1,
-      [
-        {:case, [{:variable, ["condition"]}, {:when, [5, "hit "]}, {:else, ["else "]}]}
+      case: [
+        variable: ["condition"],
+        when: [5, "hit "],
+        else: [" else "]
       ]
     )
   end
@@ -42,13 +44,15 @@ defmodule Liquid.Combinators.Tags.CaseTest do
     test_combinator(
       "{% case condition %}{% when 1 or 2 or 3 %} its 1 or 2 or 3 {% when 4 %} its 4 {% endcase %}",
       &Parser.case/1,
-      [
-        {:case,
-         [
-           {:variable, ["condition"]},
-           {:when, [1, "or", 2, "or", 3, "its 1 or 2 or 3 "]},
-           {:when, [4, "its 4 "]}
-         ]}
+      case: [
+        variable: ["condition"],
+        when: [
+          1,
+          {:logical, [:or, 2]},
+          {:logical, [:or, 3]},
+          "its 1 or 2 or 3 "
+        ],
+        when: [4, "its 4 "]
       ]
     )
   end
@@ -84,14 +88,17 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       case: [
         variable: ["collection", "handle"],
         when: [
-          "'menswear-jackets'",
-          {:assign, [variable_name: "ptitle", value: "'menswear'"]}
+          "menswear-jackets",
+          {:assign, [variable_name: "ptitle", value: "menswear"]}
         ],
         when: [
-          "'menswear-t-shirts'",
-          {:assign, [variable_name: "ptitle", value: "'menswear'"]}
+          "menswear-t-shirts",
+          {:assign, [variable_name: "ptitle", value: "menswear"]}
         ],
-        else: [assign: [variable_name: "ptitle", value: "'womenswear'"]]
+        else: [
+          " ",
+          {:assign, [variable_name: "ptitle", value: "womenswear"]}
+        ]
       ]
     )
   end

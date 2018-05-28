@@ -10,10 +10,10 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
       &Parser.include/1,
       include: [
         snippet: ["'snippet'"],
-        variables: [variable_name: ["my_variable:"], value: "'apples'"],
+        variables: [variable_name: ["my_variable:"], value: "apples"],
         variables: [
           variable_name: ["my_other_variable:"],
-          value: "'oranges'"
+          value: "oranges"
         ]
       ]
     )
@@ -34,13 +34,13 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
     test_combinator(
       "{% include 'product' with 'products' %}",
       &Parser.include/1,
-      include: [snippet: ["'product'"], with_param: ["'products'"]]
+      include: [snippet: ["'product'"], with_param: ["products"]]
     )
 
     test_combinator(
       "{% include 'product' for 'products' %}",
       &Parser.include/1,
-      include: [snippet: ["'product'"], for_param: ["'products'"]]
+      include: [snippet: ["'product'"], for_param: ["products"]]
     )
   end
 end
