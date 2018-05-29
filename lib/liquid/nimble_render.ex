@@ -152,6 +152,114 @@ defmodule Liquid.NimbleRender do
     ""
   end
 
+  defp process_node({:if, markup}) do
+    list = process_node(markup)
+
+    case list do
+      [condition, nodelist] ->
+        cond do
+          is_tuple(condition) == true ->
+            condition_struct = condition |> elem(0)
+            condition_markup = condition |> elem(1)
+
+          is_map(condition) ->
+            %Liquid.Variable{name: name} = condition
+            condition_markup = name
+            condition_struct = %Liquid.Condition{left: condition}
+
+          true ->
+            condition_markup = "#{condition}"
+            variable = %Liquid.Variable{name: "#{condition}", literal: condition}
+            condition_struct = %Liquid.Condition{left: variable}
+        end
+
+        %Liquid.Block{
+          name: :if,
+          markup: condition_markup,
+          nodelist: [nodelist],
+          condition: condition_struct
+        }
+
+      [condition, nodelist, else_tag] ->
+        if is_tuple(condition) do
+          condition_struct = condition |> elem(0)
+          condition_markup = condition |> elem(1)
+        else
+          condition_markup = "#{condition}"
+          variable = %Liquid.Variable{name: "#{condition}", literal: condition}
+          condition_struct = %Liquid.Condition{left: variable}
+        end
+
+        %Liquid.Block{
+          name: :if,
+          markup: condition_markup,
+          nodelist: [nodelist],
+          condition: condition_struct,
+          elselist: else_tag |> elem(1)
+        }
+    end
+
+    # if [condition, nodelist] = list do
+    #   if is_tuple(condition) do
+    #     condition_struct = condition |> elem(0)
+    #     condition_markup = condition |> elem(1)
+    #   else
+    #     condition_markup = "#{condition}"
+    #     variable = %Liquid.Variable{name: "#{condition}", literal: condition}
+    #     condition_struct = %Liquid.Condition{left: variable}
+    #   end
+
+    #   %Liquid.Block{
+    #     name: :if,
+    #     markup: condition_markup,
+    #     nodelist: [nodelist],
+    #     condition: condition_struct
+    #   }
+    # else
+    # [condition, nodelist, else_tag] = list
+    # else_tag
+
+    # if is_tuple(condition) do
+    #   condition_struct = condition |> elem(0)
+    #   condition_markup = condition |> elem(1)
+    # else
+    #   condition_markup = "#{condition}"
+    #   variable = %Liquid.Variable{name: "#{condition}", literal: condition}
+    #   condition_struct = %Liquid.Condition{left: variable}
+
+    #   %Liquid.Block{
+    #     name: :if,
+    #     markup: condition_markup,
+    #     nodelist: [nodelist],
+    #     condition: condition_struct,
+    #     elselist: "culo"
+    #   }
+    # end
+    # end
+  end
+
+  defp process_node({:condition, markup}) do
+    {left, operator, right} = markup
+    left_value = process_node(left)
+    variable_value = left |> elem(1)
+    variable_in_string = variable_to_string(variable_value)
+
+    if is_tuple(right) do
+      right_value = process_node(right)
+      name = right
+    else
+      right_value = %Liquid.Variable{name: "'#{right}'", literal: right}
+      name = "'#{right}'"
+    end
+
+    {%Liquid.Condition{left: left_value, right: right_value, operator: String.to_atom(operator)},
+     "#{variable_in_string} #{operator} #{name}"}
+  end
+
+  defp process_node(:else, markup) do
+    markup
+  end
+
   defp process_node(any) do
     any
   end

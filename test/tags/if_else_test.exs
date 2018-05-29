@@ -32,6 +32,7 @@ defmodule IfElseTagTest do
     assert_result(" YES ", "{% if var %} YES {% endif %}", %{"var" => true})
   end
 
+  # quede aqui
   test :if_or do
     assert_result(" YES ", "{% if a or b %} YES {% endif %}", %{"a" => true, "b" => true})
     assert_result(" YES ", "{% if a or b %} YES {% endif %}", %{"a" => true, "b" => false})
