@@ -6,7 +6,7 @@ defmodule Liquid.Combinators.Tag do
 
   @doc """
   Define a tag from a tag_name and, optionally, a function to parse tag parameters,
-  an end_tag_name to close the tag and a function to parse the body inside the tag
+  the tag and a function to parse the body inside the tag
   Both functions must receive a combinator and must return a combinator
 
   The returned tag is a combinator which expect a start tag `{%` a tag name and a end tag `%}`
@@ -40,7 +40,7 @@ defmodule Liquid.Combinators.Tag do
     |> tag(String.to_atom(tag_name))
   end
 
-  def open_definition(tag_name, combinator) do
+  defp open_definition(tag_name, combinator) do
     empty()
     |> parsec(:start_tag)
     |> ignore(string(tag_name))
