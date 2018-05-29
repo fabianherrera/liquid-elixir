@@ -94,6 +94,7 @@ defmodule Liquid.NimbleParser do
   defparsecp(:with_param, Include.with_param())
   defparsecp(:for_param, Include.for_param())
   defparsec(:include, Include.tag())
+
   defparsec(:if, If.tag())
   defparsec(:elsif_tag, If.elsif_tag())
   defparsec(:else_tag, If.else_tag())
@@ -102,8 +103,6 @@ defmodule Liquid.NimbleParser do
   defparsecp(:offset_param, For.offset_param())
   defparsecp(:limit_param, For.limit_param())
   defparsecp(:reversed_param, For.reversed_param())
-  defparsecp(:open_tag_for, For.open_tag())
-  defparsecp(:close_tag_for, For.close_tag())
   defparsecp(:else_tag_for, For.else_tag())
   defparsecp(:for_sentences, For.for_sentences())
   defparsec(:break_tag_for, For.break_tag())

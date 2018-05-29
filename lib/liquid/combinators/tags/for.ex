@@ -49,6 +49,7 @@ defmodule Liquid.Combinators.Tags.For do
   """
   import NimbleParsec
   alias Liquid.Combinators.General
+  alias Liquid.Combinators.Tag
 
   @doc "For offset param: {% for products in products offset:2 %}"
   def offset_param do
@@ -89,72 +90,104 @@ defmodule Liquid.Combinators.Tags.For do
     |> tag(:for_sentences)
   end
 
-  @doc "Open For tag: {% for products in products %}"
-  def open_tag do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string("for"))
+#  @doc "Open For tag: {% for products in products %}"
+#  def open_tag do
+#    empty()
+#    |> parsec(:start_tag)
+#    |> ignore(string("for"))
+#    |> parsec(:variable_name)
+#    |> parsec(:ignore_whitespaces)
+#    |> ignore(string("in"))
+#    |> parsec(:ignore_whitespaces)
+#    |> choice([parsec(:range_value), parsec(:value)])
+#    |> optional(
+#      times(
+#        choice([parsec(:offset_param), parsec(:reversed_param), parsec(:limit_param)]),
+#        min: 1
+#      )
+#    )
+#    |> parsec(:ignore_whitespaces)
+#    |> concat(parsec(:end_tag))
+#    |> tag(:for_conditions)
+#    |> parsec(:for_sentences)
+#  end
+
+#  @doc "Close For tag: {% endfor %}"
+#  def close_tag do
+#    empty()
+#    |> parsec(:start_tag)
+#    |> ignore(string("endfor"))
+#    |> concat(parsec(:end_tag))
+#  end
+
+#  @doc "For Else tag: {% else %}"
+#  def else_tag do
+#    empty()
+#    |> parsec(:start_tag)
+#    |> ignore(string("else"))
+#    |> concat(parsec(:end_tag))
+#    |> optional(parsec(:__parse__))
+#    |> tag(:else_sentences)
+#  end
+#
+#  @doc "For Break tag: {% break %}"
+#  def break_tag do
+#    empty()
+#    |> parsec(:start_tag)
+#    |> ignore(string("break"))
+#    |> concat(parsec(:end_tag))
+#    |> tag(:break)
+#    |> optional(parsec(:__parse__))
+#  end
+#
+#  @doc "For Continue tag: {% continue %}"
+#  def continue_tag do
+#    empty()
+#    |> parsec(:start_tag)
+#    |> ignore(string("continue"))
+#    |> concat(parsec(:end_tag))
+#    |> tag(:continue)
+#    |> optional(parsec(:__parse__))
+#  end
+
+#  def tag do
+#    empty()
+#    |> parsec(:open_tag_for)
+#    |> optional(parsec(:else_tag_for))
+#    |> parsec(:close_tag_for)
+#    |> tag(:for)
+#    |> optional(parsec(:__parse__))
+#  end
+
+  def else_tag, do: Tag.define_open("else")
+
+  def continue_tag, do:  Tag.define_open("continue")
+
+  def break_tag, do:  Tag.define_open("break")
+
+  def tag, do: Tag.define_closed("for", &predicate/1, &body/1)
+
+  defp body(combinator) do
+    combinator
+    |> parsec(:for_sentences)
+    |> optional(parsec(:else_tag_for))
+  end
+
+  defp predicate(combinator) do
+    combinator
     |> parsec(:variable_name)
     |> parsec(:ignore_whitespaces)
     |> ignore(string("in"))
     |> parsec(:ignore_whitespaces)
     |> choice([parsec(:range_value), parsec(:value)])
     |> optional(
-      times(
-        choice([parsec(:offset_param), parsec(:reversed_param), parsec(:limit_param)]),
-        min: 1
-      )
-    )
+         times(
+           choice([parsec(:offset_param), parsec(:reversed_param), parsec(:limit_param)]),
+           min: 1
+         )
+       )
     |> parsec(:ignore_whitespaces)
-    |> concat(parsec(:end_tag))
     |> tag(:for_conditions)
-    |> parsec(:for_sentences)
-  end
-
-  @doc "Close For tag: {% endfor %}"
-  def close_tag do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string("endfor"))
-    |> concat(parsec(:end_tag))
-  end
-
-  @doc "For Else tag: {% else %}"
-  def else_tag do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string("else"))
-    |> concat(parsec(:end_tag))
-    |> optional(parsec(:__parse__))
-    |> tag(:else_sentences)
-  end
-
-  @doc "For Break tag: {% break %}"
-  def break_tag do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string("break"))
-    |> concat(parsec(:end_tag))
-    |> tag(:break)
-    |> optional(parsec(:__parse__))
-  end
-
-  @doc "For Continue tag: {% continue %}"
-  def continue_tag do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string("continue"))
-    |> concat(parsec(:end_tag))
-    |> tag(:continue)
-    |> optional(parsec(:__parse__))
-  end
-
-  def tag do
-    empty()
-    |> parsec(:open_tag_for)
-    |> optional(parsec(:else_tag_for))
-    |> parsec(:close_tag_for)
-    |> tag(:for)
-    |> optional(parsec(:__parse__))
   end
 end
+
