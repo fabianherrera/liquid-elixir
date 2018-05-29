@@ -48,8 +48,7 @@ defmodule Liquid.Combinators.Tags.For do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.General
-  alias Liquid.Combinators.Tag
+  alias Liquid.Combinators.{General, Tag, Var}
 
   @doc "For offset param: {% for products in products offset:2 %}"
   def offset_param do
@@ -88,6 +87,64 @@ defmodule Liquid.Combinators.Tags.For do
     empty()
     |> optional(parsec(:__parse__))
     |> tag(:for_sentences)
+  end
+
+  def forloop_first, do: Var.define_var("forloop.first")
+
+  def forloop_index, do: Var.define_var("forloop.index")
+
+  def forloop_index0, do: Var.define_var("forloop.index0")
+
+  def forloop_last, do: Var.define_var("forloop.last")
+
+  def forloop_length, do: Var.define_var("forloop.length")
+
+  def forloop_rindex, do: Var.define_var("forloop.rindex")
+
+  def forloop_rindex0, do: Var.define_var("forloop.rindex0")
+
+  def forloop_objects do
+    empty()
+    |> choice([
+        parsec(:forloop_first),
+        parsec(:forloop_index),
+        parsec(:forloop_index0),
+        parsec(:forloop_last),
+        parsec(:forloop_length),
+        parsec(:forloop_rindex),
+        parsec(:forloop_rindex0)
+        ])
+  end
+
+  def else_tag, do: Tag.define_open("else")
+
+  def continue_tag, do:  Tag.define_open("continue")
+
+  def break_tag, do:  Tag.define_open("break")
+
+  def tag, do: Tag.define_closed("for", &predicate/1, &body/1)
+
+  defp body(combinator) do
+    combinator
+    |> parsec(:for_sentences)
+    |> optional(parsec(:else_tag_for))
+  end
+
+  defp predicate(combinator) do
+    combinator
+    |> parsec(:variable_name)
+    |> parsec(:ignore_whitespaces)
+    |> ignore(string("in"))
+    |> parsec(:ignore_whitespaces)
+    |> choice([parsec(:range_value), parsec(:value)])
+    |> optional(
+         times(
+           choice([parsec(:offset_param), parsec(:reversed_param), parsec(:limit_param)]),
+           min: 1
+         )
+       )
+    |> parsec(:ignore_whitespaces)
+    |> tag(:for_conditions)
   end
 
 #  @doc "Open For tag: {% for products in products %}"
@@ -159,35 +216,5 @@ defmodule Liquid.Combinators.Tags.For do
 #    |> optional(parsec(:__parse__))
 #  end
 
-  def else_tag, do: Tag.define_open("else")
-
-  def continue_tag, do:  Tag.define_open("continue")
-
-  def break_tag, do:  Tag.define_open("break")
-
-  def tag, do: Tag.define_closed("for", &predicate/1, &body/1)
-
-  defp body(combinator) do
-    combinator
-    |> parsec(:for_sentences)
-    |> optional(parsec(:else_tag_for))
-  end
-
-  defp predicate(combinator) do
-    combinator
-    |> parsec(:variable_name)
-    |> parsec(:ignore_whitespaces)
-    |> ignore(string("in"))
-    |> parsec(:ignore_whitespaces)
-    |> choice([parsec(:range_value), parsec(:value)])
-    |> optional(
-         times(
-           choice([parsec(:offset_param), parsec(:reversed_param), parsec(:limit_param)]),
-           min: 1
-         )
-       )
-    |> parsec(:ignore_whitespaces)
-    |> tag(:for_conditions)
-  end
 end
 
