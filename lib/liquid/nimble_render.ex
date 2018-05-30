@@ -32,7 +32,6 @@ defmodule Liquid.NimbleRender do
 
     list =
       nodelist
-      # |> remove_empty_items()
       |> Enum.map(fn elem ->
         spawn_link(fn -> send(me, {self(), process_node(elem)}) end)
       end)
@@ -65,7 +64,6 @@ defmodule Liquid.NimbleRender do
     me = self()
 
     nodelist
-    # |> remove_empty_items()
     |> Enum.map(fn elem ->
       spawn_link(fn -> send(me, {self(), process_node(elem)}) end)
     end)
@@ -146,11 +144,6 @@ defmodule Liquid.NimbleRender do
   defp process_node(any) do
     any
   end
-
-  # defp remove_empty_items(nodelist) do
-  #   nodelist
-  #   |> Enum.filter(fn x -> x != "" end)
-  # end
 
   defp variable_to_string(variable_in_parts) do
     Enum.join(variable_in_parts, ".")
