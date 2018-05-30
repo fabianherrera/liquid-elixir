@@ -141,6 +141,24 @@ defmodule Liquid.NimbleRender do
     end
   end
 
+  defp process_node({:for, [for_collection: for_collection,
+    for_body: for_body,
+    else: else_body]}) do
+    %Liquid.Block{elselist: process_node(else_body),
+      iterator: process_iterator(%Block{markup: process_markup(for_collection)}),
+      markup: process_markup(for_collection),
+      name: :for,
+      nodelist: process_node(for_body)}
+  end
+
+  defp process_node({:for, [for_collection: for_collection,
+    for_body: for_body]}) do
+    %Liquid.Block{iterator: process_iterator(for_collection),
+      markup: process_markup(for_collection),
+      name: :for,
+      nodelist: process_node(for_body)}
+  end
+
   defp process_node(any) do
     any
   end
@@ -177,7 +195,29 @@ defmodule Liquid.NimbleRender do
 
   defp filters_to_string([filter_name, filter_atom]) do
     filter_param_value = filter_atom |> elem(1)
-    value = Keyword.get(filter_param_value, :value)
+    value = Keyword.get(filter_param_value, :value) |> variable_parts() |> variable_to_string()
     "| #{filter_name}: #{value}"
   end
+
+  defp process_iterator(%Block{markup: markup}) do
+    Liquid.ForElse.parse_iterator(%Block{markup: markup})
+  end
+
+  defp process_markup(for_collection) do
+    variable = Keyword.get(for_collection, :variable_name)
+    {:variable, [value]} = Keyword.get(for_collection, :value)
+    for_param = concat_for_params_in_markup(for_collection)
+    markup = ("#{variable} in #{value}" <> for_param)
+  end
+
+  defp concat_for_params_in_markup(for_collection) do
+    offset_param = Keyword.get(for_collection, :offset_param)
+    limit_param = Keyword.get(for_collection, :limit_param)
+    reversed_param = Keyword.get(for_collection, :reversed_param)
+    if is_nil(offset_param), do: offset_string = "", else: offset_string = " offset:#{to_string(List.first(offset_param))}"
+    if is_nil(limit_param), do: limit_string = "", else: limit_string = " limit:#{to_string(List.first(limit_param))}"
+    if is_nil(reversed_param), do: offset_string = "", else: reversed_string = " reversed"
+    for_params_string = "#{reversed_string}#{offset_string}#{limit_string}"
+  end
+
 end
