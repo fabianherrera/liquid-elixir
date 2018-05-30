@@ -82,11 +82,8 @@ defmodule Liquid.NimbleParser do
   defparsec(:cycle_values, Cycle.cycle_values())
   defparsec(:cycle, Cycle.tag())
 
-  defparsec(:open_tag_raw, Raw.open_tag())
-  defparsec(:close_tag_raw, Raw.close_tag())
   defparsec(:tag_inside_raw, Raw.tag_inside_raw())
-  # defparsecp(:not_close_tag_raw, Raw.not_close_tag_raw())
-  defparsec(:raw_content, Raw.raw_content())
+  defparsec(:raw_body, Raw.body() / 1)
   defparsec(:raw, Raw.tag())
 
   defparsecp(:snippet, Include.snippet())
