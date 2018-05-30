@@ -48,7 +48,7 @@ defmodule Liquid.Combinators.Tags.For do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.{General, Tag, Var}
+  alias Liquid.Combinators.{General, Tag, Variable}
 
   @doc "For offset param: {% for products in products offset:2 %}"
   def offset_param do
@@ -83,27 +83,27 @@ defmodule Liquid.Combinators.Tags.For do
     |> tag(:reversed_param)
   end
 
-  def for_sentences do
+  def for_body do
     empty()
     |> optional(parsec(:__parse__))
-    |> tag(:for_sentences)
+    |> tag(:for_body)
   end
 
-  def forloop_first, do: Var.define_var("forloop.first")
+  def forloop_first, do: Variable.define("forloop.first")
 
-  def forloop_index, do: Var.define_var("forloop.index")
+  def forloop_index, do: Variable.define("forloop.index")
 
-  def forloop_index0, do: Var.define_var("forloop.index0")
+  def forloop_index0, do: Variable.define("forloop.index0")
 
-  def forloop_last, do: Var.define_var("forloop.last")
+  def forloop_last, do: Variable.define("forloop.last")
 
-  def forloop_length, do: Var.define_var("forloop.length")
+  def forloop_length, do: Variable.define("forloop.length")
 
-  def forloop_rindex, do: Var.define_var("forloop.rindex")
+  def forloop_rindex, do: Variable.define("forloop.rindex")
 
-  def forloop_rindex0, do: Var.define_var("forloop.rindex0")
+  def forloop_rindex0, do: Variable.define("forloop.rindex0")
 
-  def forloop_objects do
+  def forloop_variables do
     empty()
     |> choice([
         parsec(:forloop_first),
@@ -122,15 +122,15 @@ defmodule Liquid.Combinators.Tags.For do
 
   def break_tag, do:  Tag.define_open("break")
 
-  def tag, do: Tag.define_closed("for", &predicate/1, &body/1)
+  def tag, do: Tag.define_closed("for", &for_collection/1, &body/1)
 
   defp body(combinator) do
     combinator
-    |> parsec(:for_sentences)
+    |> parsec(:for_body)
     |> optional(parsec(:else_tag_for))
   end
 
-  defp predicate(combinator) do
+  defp for_collection(combinator) do
     combinator
     |> parsec(:variable_name)
     |> parsec(:ignore_whitespaces)
@@ -144,77 +144,7 @@ defmodule Liquid.Combinators.Tags.For do
          )
        )
     |> parsec(:ignore_whitespaces)
-    |> tag(:for_conditions)
+    |> tag(:for_collection)
   end
-
-#  @doc "Open For tag: {% for products in products %}"
-#  def open_tag do
-#    empty()
-#    |> parsec(:start_tag)
-#    |> ignore(string("for"))
-#    |> parsec(:variable_name)
-#    |> parsec(:ignore_whitespaces)
-#    |> ignore(string("in"))
-#    |> parsec(:ignore_whitespaces)
-#    |> choice([parsec(:range_value), parsec(:value)])
-#    |> optional(
-#      times(
-#        choice([parsec(:offset_param), parsec(:reversed_param), parsec(:limit_param)]),
-#        min: 1
-#      )
-#    )
-#    |> parsec(:ignore_whitespaces)
-#    |> concat(parsec(:end_tag))
-#    |> tag(:for_conditions)
-#    |> parsec(:for_sentences)
-#  end
-
-#  @doc "Close For tag: {% endfor %}"
-#  def close_tag do
-#    empty()
-#    |> parsec(:start_tag)
-#    |> ignore(string("endfor"))
-#    |> concat(parsec(:end_tag))
-#  end
-
-#  @doc "For Else tag: {% else %}"
-#  def else_tag do
-#    empty()
-#    |> parsec(:start_tag)
-#    |> ignore(string("else"))
-#    |> concat(parsec(:end_tag))
-#    |> optional(parsec(:__parse__))
-#    |> tag(:else_sentences)
-#  end
-#
-#  @doc "For Break tag: {% break %}"
-#  def break_tag do
-#    empty()
-#    |> parsec(:start_tag)
-#    |> ignore(string("break"))
-#    |> concat(parsec(:end_tag))
-#    |> tag(:break)
-#    |> optional(parsec(:__parse__))
-#  end
-#
-#  @doc "For Continue tag: {% continue %}"
-#  def continue_tag do
-#    empty()
-#    |> parsec(:start_tag)
-#    |> ignore(string("continue"))
-#    |> concat(parsec(:end_tag))
-#    |> tag(:continue)
-#    |> optional(parsec(:__parse__))
-#  end
-
-#  def tag do
-#    empty()
-#    |> parsec(:open_tag_for)
-#    |> optional(parsec(:else_tag_for))
-#    |> parsec(:close_tag_for)
-#    |> tag(:for)
-#    |> optional(parsec(:__parse__))
-#  end
-
 end
 
