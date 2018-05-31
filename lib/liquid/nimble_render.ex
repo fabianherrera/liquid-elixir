@@ -32,7 +32,6 @@ defmodule Liquid.NimbleRender do
 
     list =
       nodelist
-      # |> remove_empty_items()
       |> Enum.map(fn elem ->
         spawn_link(fn -> send(me, {self(), process_node(elem)}) end)
       end)
@@ -65,7 +64,6 @@ defmodule Liquid.NimbleRender do
     me = self()
 
     nodelist
-    # |> remove_empty_items()
     |> Enum.map(fn elem ->
       spawn_link(fn -> send(me, {self(), process_node(elem)}) end)
     end)
@@ -143,16 +141,30 @@ defmodule Liquid.NimbleRender do
     end
   end
 
+  defp process_node({:for, [for_collection: for_collection,
+    for_body: for_body,
+    else: else_body]}) do
+    markup = process_markup(for_collection)
+    %Liquid.Block{elselist: fixer_for_types_no_list(process_node(else_body)),
+      iterator: process_iterator(%Block{markup: markup}),
+      markup: markup,
+      name: :for,
+      nodelist: fixer_for_types_only_list(process_node(for_body))}
+  end
+
+  defp process_node({:for, [for_collection: for_collection,
+    for_body: for_body]}) do
+    %Liquid.Block{iterator: process_iterator(for_collection),
+      markup: process_markup(for_collection),
+      name: :for,
+      nodelist: process_node(for_body)}
+  end
+
   defp process_node(any) do
     any
   end
 
-  # defp remove_empty_items(nodelist) do
-  #   nodelist
-  #   |> Enum.filter(fn x -> x != "" end)
-  # end
-
-  defp variable_to_string(variable_in_parts) do
+  def variable_to_string(variable_in_parts) do
     Enum.join(variable_in_parts, ".")
     |> String.replace(".[", "[")
   end
@@ -161,7 +173,7 @@ defmodule Liquid.NimbleRender do
     Enum.map(list, &variable_in_parts(&1))
   end
 
-  defp variable_in_parts(value) do
+  def variable_in_parts(value) do
     cond do
       is_binary(value) == true ->
         "#{value}"
@@ -184,7 +196,52 @@ defmodule Liquid.NimbleRender do
 
   defp filters_to_string([filter_name, filter_atom]) do
     filter_param_value = filter_atom |> elem(1)
-    value = Keyword.get(filter_param_value, :value)
+    value = Keyword.get(filter_param_value, :value) |> variable_parts() |> variable_to_string()
     "| #{filter_name}: #{value}"
   end
+
+  defp process_iterator(%Block{markup: markup}) do
+    Liquid.ForElse.parse_iterator(%Block{markup: markup})
+  end
+
+  defp process_markup(for_collection) do
+    variable = Keyword.get(for_collection, :variable_name)
+    value =  concat_for_value_in_markup(Keyword.get(for_collection, :value))
+    range_value = concat_for_value_in_markup(Keyword.get(for_collection, :range_value))
+    for_param = concat_for_params_in_markup(for_collection)
+    "#{variable} in #{value}#{range_value}" <> for_param
+  end
+
+  defp concat_for_value_in_markup(value) when is_nil(value), do: ""
+
+  defp concat_for_value_in_markup({:variable, values}) do
+    parts = Enum.map(values, &variable_in_parts(&1))
+    value_string = variable_to_string(parts)
+    value_string
+   end
+
+  defp concat_for_value_in_markup([start: start_range, end: end_range]) do
+    "(#{to_string(start_range)}..#{to_string(end_range)})"
+  end
+
+  defp concat_for_params_in_markup(for_collection) do
+    offset_param = Keyword.get(for_collection, :offset_param)
+    limit_param = Keyword.get(for_collection, :limit_param)
+    reversed_param = Keyword.get(for_collection, :reversed_param)
+    offset_string = if is_nil(offset_param), do: "", else: " offset:#{to_string(List.first(offset_param))}"
+    limit_string = if is_nil(limit_param), do: "", else: " limit:#{to_string(List.first(limit_param))}"
+    reversed_string = if is_nil(reversed_param), do: "", else: " reversed"
+    "#{reversed_string}#{offset_string}#{limit_string}"
+  end
+
+  # fix current parser for tag bug and compatibility
+  defp fixer_for_types_no_list(element) do
+    if is_list(element), do: List.first(element), else: element
+  end
+
+  # fix current parser for tag bug and compatibility
+  defp fixer_for_types_only_list(element) do
+    if is_list(element), do: element, else: [element]
+  end
+
 end
