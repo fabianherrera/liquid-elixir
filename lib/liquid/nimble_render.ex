@@ -141,9 +141,17 @@ defmodule Liquid.NimbleRender do
     end
   end
 
+  defp process_node({:include, markup}) do
+    variable_name = Keyword.get(markup, :variable_name)
+    %Liquid.Tag{name: :decrement, markup: "#{variable_name}"}
+  end
+
+  defp process_node({:comment, _markup}) do
+    %Liquid.Block{name: :comment, blank: true, strict: false}
+  end
+
   defp process_node({:for, [for_collection: for_collection, for_body: for_body, else: else_body]}) do
     markup = process_markup(for_collection)
-
     %Liquid.Block{
       elselist: fixer_for_types_no_list(process_node(else_body)),
       iterator: process_iterator(%Block{markup: markup}),
@@ -154,11 +162,12 @@ defmodule Liquid.NimbleRender do
   end
 
   defp process_node({:for, [for_collection: for_collection, for_body: for_body]}) do
+    markup = process_markup(for_collection)
     %Liquid.Block{
-      iterator: process_iterator(for_collection),
-      markup: process_markup(for_collection),
+      iterator: process_iterator(%Block{markup: markup}),
+      markup: markup,
       name: :for,
-      nodelist: process_node(for_body)
+      nodelist: fixer_for_types_only_list(process_node(for_body))
     }
   end
 

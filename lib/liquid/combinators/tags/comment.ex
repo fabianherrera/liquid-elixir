@@ -15,7 +15,7 @@ defmodule Liquid.Combinators.Tags.Comment do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.General
+  alias Liquid.Combinators.{Tag, General}
 
   @doc "Open comment tag: {% comment %}"
   def open_tag do
@@ -35,20 +35,62 @@ defmodule Liquid.Combinators.Tags.Comment do
 
   def not_close_tag_comment do
     empty()
-    |> ignore(utf8_char([]))
+    |> string(General.codepoints().start_tag)
     |> parsec(:comment_content)
+  end
+
+  def comment_body do
+    empty()
+    |> parsec(:comment_content)
+    |> tag(:comment_body)
   end
 
   def comment_content do
     empty()
     |> repeat_until(utf8_char([]), [string(General.codepoints().start_tag)])
     |> choice([parsec(:close_tag_comment), parsec(:not_close_tag_comment)])
+    |> reduce({List, :to_string, []})
   end
 
   def tag do
     empty()
     |> parsec(:open_tag_comment)
-    |> ignore(parsec(:comment_content))
+    |> parsec(:comment_body)
+    |> tag(:comment)
     |> optional(parsec(:__parse__))
   end
+
+#  def elsif_tag, do: Tag.define_open("elsif", &predicate/1)
+#
+#  def else_tag, do: Tag.define_open("else")
+#
+#  def unless_tag, do: Tag.define_closed("unless", &predicate/1, &body/1)
+#
+#  def tag, do: Tag.define_closed("comment", &predicate/1, &body/1)
+#
+#  defp body(combinator) do
+#    combinator
+#    |> repeat_until(utf8_char([]), [string(General.codepoints().start_tag)])
+#    |> reduce({List, :to_string, []})
+#    |> choice([parsec(:close_tag_comment), parsec(:not_close_tag_comment)])
+#    |> reduce({List, :to_string, []})
+#  end
+#
+#  defp predicate(combinator) do
+#    combinator
+##    |> empty()
+#  end
+#
+#
+#  empty()
+#  |> concat(not_ingnored_start_tag())
+#  |> repeat_until(utf8_char([]), [string(General.codepoints().end_tag), string("endraw")])
+#  |> concat(not_ingnored_end_tag())
+#  |> reduce({List, :to_string, []})
+#  |> parsec(:raw_body)
+#
+#  empty()
+#  |> utf8_char([])
+#  |> parsec(:comment_content)
+
 end
