@@ -124,7 +124,7 @@ defmodule Liquid.Combinators.LexicalToken do
     |> unwrap_and_tag(tag_name)
   end
 
-  # RangeValue :: (1..10) | (var..10) | (1..var) | (var1..var2)
+  # RangeValue :: (1..10) | (var..10) | (1..var) | (var1..var2) | (1..var.content[0])
   def range_value do
     string("(")
     |> ignore()
