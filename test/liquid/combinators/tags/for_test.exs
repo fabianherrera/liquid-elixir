@@ -35,7 +35,9 @@ defmodule Liquid.Combinators.Tags.ForTest do
     ]
 
     Enum.each(tags, fn tag ->
-      test_combinator(tag, &Parser.for/1, [
+      test_combinator(
+        tag,
+        &Parser.for/1,
         for: [
           for_collection: [
             variable_name: "item",
@@ -44,7 +46,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
           for_body: [],
           else: []
         ]
-      ])
+      )
     end)
   end
 
@@ -57,7 +59,9 @@ defmodule Liquid.Combinators.Tags.ForTest do
     ]
 
     Enum.each(tags, fn tag ->
-      test_combinator(tag, &Parser.for/1,  [
+      test_combinator(
+        tag,
+        &Parser.for/1,
         for: [
           for_collection: [
             variable_name: "item",
@@ -67,7 +71,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
           for_body: [],
           else: []
         ]
-      ])
+      )
     end)
   end
 
@@ -79,7 +83,9 @@ defmodule Liquid.Combinators.Tags.ForTest do
     ]
 
     Enum.each(tags, fn tag ->
-      test_combinator(tag, &Parser.for/1, [
+      test_combinator(
+        tag,
+        &Parser.for/1,
         for: [
           for_collection: [
             variable_name: "item",
@@ -89,7 +95,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
           for_body: [],
           else: []
         ]
-      ])
+      )
     end)
   end
 
@@ -101,7 +107,9 @@ defmodule Liquid.Combinators.Tags.ForTest do
     ]
 
     Enum.each(tags, fn tag ->
-      test_combinator(tag, &Parser.for/1, [
+      test_combinator(
+        tag,
+        &Parser.for/1,
         for: [
           for_collection: [
             variable_name: "item",
@@ -111,7 +119,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
           for_body: [],
           else: []
         ]
-      ])
+      )
     end)
   end
 
@@ -193,23 +201,22 @@ defmodule Liquid.Combinators.Tags.ForTest do
 
   test "for tag: forloop variables" do
     forloop_variables = [
-                    "forloop.first",
-                    "forloop.index",
-                    "forloop.index0",
-                    "forloop.last",
-                    "forloop.length",
-                    "forloop.rindex",
-                    "forloop.rindex0"]
+      "forloop.first",
+      "forloop.index",
+      "forloop.index0",
+      "forloop.last",
+      "forloop.length",
+      "forloop.rindex",
+      "forloop.rindex0"
+    ]
 
     Enum.each(forloop_variables, fn forloop_variable ->
       test_combinator(
         "{% for item in array %}{{ #{forloop_variable} }}{% endfor %}",
         &Parser.for/1,
-        [
-          for: [
-            for_collection: [variable_name: "item", value: {:variable, ["array"]}],
-            for_body: ["#{forloop_variable}": []]
-          ]
+        for: [
+          for_collection: [variable_name: "item", value: {:variable, ["array"]}],
+          for_body: ["#{forloop_variable}": []]
         ]
       )
     end)

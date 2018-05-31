@@ -141,23 +141,25 @@ defmodule Liquid.NimbleRender do
     end
   end
 
-  defp process_node({:for, [for_collection: for_collection,
-    for_body: for_body,
-    else: else_body]}) do
+  defp process_node({:for, [for_collection: for_collection, for_body: for_body, else: else_body]}) do
     markup = process_markup(for_collection)
-    %Liquid.Block{elselist: fixer_for_types_no_list(process_node(else_body)),
+
+    %Liquid.Block{
+      elselist: fixer_for_types_no_list(process_node(else_body)),
       iterator: process_iterator(%Block{markup: markup}),
       markup: markup,
       name: :for,
-      nodelist: fixer_for_types_only_list(process_node(for_body))}
+      nodelist: fixer_for_types_only_list(process_node(for_body))
+    }
   end
 
-  defp process_node({:for, [for_collection: for_collection,
-    for_body: for_body]}) do
-    %Liquid.Block{iterator: process_iterator(for_collection),
+  defp process_node({:for, [for_collection: for_collection, for_body: for_body]}) do
+    %Liquid.Block{
+      iterator: process_iterator(for_collection),
       markup: process_markup(for_collection),
       name: :for,
-      nodelist: process_node(for_body)}
+      nodelist: process_node(for_body)
+    }
   end
 
   defp process_node(any) do
@@ -206,7 +208,7 @@ defmodule Liquid.NimbleRender do
 
   defp process_markup(for_collection) do
     variable = Keyword.get(for_collection, :variable_name)
-    value =  concat_for_value_in_markup(Keyword.get(for_collection, :value))
+    value = concat_for_value_in_markup(Keyword.get(for_collection, :value))
     range_value = concat_for_value_in_markup(Keyword.get(for_collection, :range_value))
     for_param = concat_for_params_in_markup(for_collection)
     "#{variable} in #{value}#{range_value}" <> for_param
@@ -218,9 +220,9 @@ defmodule Liquid.NimbleRender do
     parts = Enum.map(values, &variable_in_parts(&1))
     value_string = variable_to_string(parts)
     value_string
-   end
+  end
 
-  defp concat_for_value_in_markup([start: start_range, end: end_range]) do
+  defp concat_for_value_in_markup(start: start_range, end: end_range) do
     "(#{to_string(start_range)}..#{to_string(end_range)})"
   end
 
@@ -228,8 +230,13 @@ defmodule Liquid.NimbleRender do
     offset_param = Keyword.get(for_collection, :offset_param)
     limit_param = Keyword.get(for_collection, :limit_param)
     reversed_param = Keyword.get(for_collection, :reversed_param)
-    offset_string = if is_nil(offset_param), do: "", else: " offset:#{to_string(List.first(offset_param))}"
-    limit_string = if is_nil(limit_param), do: "", else: " limit:#{to_string(List.first(limit_param))}"
+
+    offset_string =
+      if is_nil(offset_param), do: "", else: " offset:#{to_string(List.first(offset_param))}"
+
+    limit_string =
+      if is_nil(limit_param), do: "", else: " limit:#{to_string(List.first(limit_param))}"
+
     reversed_string = if is_nil(reversed_param), do: "", else: " reversed"
     "#{reversed_string}#{offset_string}#{limit_string}"
   end
@@ -243,5 +250,4 @@ defmodule Liquid.NimbleRender do
   defp fixer_for_types_only_list(element) do
     if is_list(element), do: element, else: [element]
   end
-
 end
