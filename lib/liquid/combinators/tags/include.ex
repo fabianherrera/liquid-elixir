@@ -4,8 +4,9 @@ defmodule Liquid.Combinators.Tags.Include do
   """
   import NimbleParsec
   alias Liquid.Combinators.General
+  alias Liquid.Combinators.Tag
 
-  def snippet do
+  defp snippet do
     parsec(:ignore_whitespaces)
     |> concat(utf8_char([General.codepoints().single_quote]))
     |> parsec(:variable_definition)
@@ -15,7 +16,7 @@ defmodule Liquid.Combinators.Tags.Include do
     |> tag(:snippet)
   end
 
-  def variable_atom do
+  defp variable_atom do
     empty()
     |> parsec(:ignore_whitespaces)
     |> parsec(:variable_definition)
@@ -27,44 +28,33 @@ defmodule Liquid.Combinators.Tags.Include do
 
   def var_assignment do
     General.cleaned_comma()
-    |> concat(parsec(:variable_atom))
-    |> concat(parsec(:ignore_whitespaces))
-    |> concat(parsec(:value))
-    |> parsec(:ignore_whitespaces)
+    |> concat(variable_atom())
+    |> parsec(:value)
     |> tag(:variables)
     |> optional(parsec(:var_assignment))
   end
 
-  #   # {% include 'color' with 'red' %}
-  def with_param do
+  defp with_param do
     empty()
     |> ignore(string("with"))
-    |> concat(parsec(:ignore_whitespaces))
-    |> concat(parsec(:value_definition))
-    |> concat(parsec(:ignore_whitespaces))
+    |> parsec(:value_definition)
     |> tag(:with_param)
   end
 
-  # {% include 'color' for 'red' %}
-  def for_param do
+  defp for_param do
     empty()
     |> ignore(string("for"))
-    |> concat(parsec(:ignore_whitespaces))
     |> concat(parsec(:value_definition))
-    |> concat(parsec(:ignore_whitespaces))
     |> tag(:for_param)
   end
 
+  defp head(combinator) do
+    combinator
+    |> concat(snippet())
+    |> optional(choice([with_param(), for_param(), var_assignment()]))
+  end
+
   def tag do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string("include"))
-    |> concat(parsec(:ignore_whitespaces))
-    |> concat(parsec(:snippet))
-    |> concat(parsec(:ignore_whitespaces))
-    |> optional(choice([parsec(:with_param), parsec(:for_param), parsec(:var_assignment)]))
-    |> concat(parsec(:end_tag))
-    |> tag(:include)
-    |> optional(parsec(:__parse__))
+    Tag.define_open("include", &head/1)
   end
 end
