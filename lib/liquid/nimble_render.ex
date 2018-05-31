@@ -141,6 +141,11 @@ defmodule Liquid.NimbleRender do
     end
   end
 
+  defp process_node({:include, markup}) do
+    variable_name = Keyword.get(markup, :variable_name)
+    %Liquid.Tag{name: :decrement, markup: "#{variable_name}"}
+  end
+
   defp process_node({:comment, _markup}) do
     %Liquid.Block{name: :comment, blank: true, strict: false}
   end
@@ -255,48 +260,3 @@ defmodule Liquid.NimbleRender do
     if is_list(element), do: element, else: [element]
   end
 end
-
-%Liquid.Template{
-  blocks: [],
-  errors: [],
-  presets: %{},
-  root: %Liquid.Block{
-    blank: false,
-    condition: nil,
-    elselist: [],
-    iterator: [],
-    markup: nil,
-    name: :document,
-    nodelist: [
-      %Liquid.Tag{
-        attributes: %{
-          "my_other_variable" => %Liquid.Variable{
-            filters: [],
-            literal: "oranges",
-            name: "'oranges'",
-            parts: []
-          },
-          "my_variable" => %Liquid.Variable{
-            filters: [],
-            literal: "apples",
-            name: "'apples'",
-            parts: []
-          }
-        },
-        blank: false,
-        markup: "'snippet', my_variable: 'apples', my_other_variable: 'oranges'",
-        name: :include,
-        parts: [
-          name: %Liquid.Variable{
-            filters: [],
-            literal: "snippet",
-            name: "'snippet'",
-            parts: []
-          }
-        ]
-      }
-    ],
-    parts: [],
-    strict: true
-  }
-}
