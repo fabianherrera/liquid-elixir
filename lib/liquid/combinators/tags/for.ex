@@ -50,7 +50,6 @@ defmodule Liquid.Combinators.Tags.For do
   import NimbleParsec
   alias Liquid.Combinators.{General, Tag, Variable}
 
-  @doc "For offset param: {% for products in products offset:2 %}"
   def offset_param do
     empty()
     |> parsec(:ignore_whitespaces)
@@ -62,7 +61,6 @@ defmodule Liquid.Combinators.Tags.For do
     |> tag(:offset_param)
   end
 
-  @doc "For limit param: {% for products in products limit:2 %}"
   def limit_param do
     empty()
     |> parsec(:ignore_whitespaces)
@@ -74,8 +72,7 @@ defmodule Liquid.Combinators.Tags.For do
     |> tag(:limit_param)
   end
 
-  @doc "For reversed param: {% for products in products reversed %}"
-  def reversed_param do
+  defp reversed_param do
     empty()
     |> parsec(:ignore_whitespaces)
     |> ignore(string("reversed"))
@@ -83,51 +80,40 @@ defmodule Liquid.Combinators.Tags.For do
     |> tag(:reversed_param)
   end
 
-  def for_body do
+  defp for_body do
     empty()
     |> optional(parsec(:__parse__))
     |> tag(:for_body)
   end
 
-  def forloop_first, do: Variable.define("forloop.first")
-
-  def forloop_index, do: Variable.define("forloop.index")
-
-  def forloop_index0, do: Variable.define("forloop.index0")
-
-  def forloop_last, do: Variable.define("forloop.last")
-
-  def forloop_length, do: Variable.define("forloop.length")
-
-  def forloop_rindex, do: Variable.define("forloop.rindex")
-
-  def forloop_rindex0, do: Variable.define("forloop.rindex0")
+  defp generate_for_variables do
+    [
+      "forloop.first",
+      "forloop.index",
+      "forloop.index0",
+      "forloop.last",
+      "forloop.length",
+      "forloop.rindex",
+      "forloop.rindex0"
+    ]
+    |> Enum.map(&Variable.define/1)
+  end
 
   def forloop_variables do
     empty()
-    |> choice([
-        parsec(:forloop_first),
-        parsec(:forloop_index),
-        parsec(:forloop_index0),
-        parsec(:forloop_last),
-        parsec(:forloop_length),
-        parsec(:forloop_rindex),
-        parsec(:forloop_rindex0)
-        ])
+    |> choice(generate_for_variables())
   end
 
-  def else_tag, do: Tag.define_open("else")
+  def continue_tag, do: Tag.define_open("continue")
 
-  def continue_tag, do:  Tag.define_open("continue")
-
-  def break_tag, do:  Tag.define_open("break")
+  def break_tag, do: Tag.define_open("break")
 
   def tag, do: Tag.define_closed("for", &for_collection/1, &body/1)
 
   defp body(combinator) do
     combinator
-    |> parsec(:for_body)
-    |> optional(parsec(:else_tag_for))
+    |> concat(for_body())
+    |> optional(Tag.define_open("else"))
   end
 
   defp for_collection(combinator) do
@@ -138,13 +124,12 @@ defmodule Liquid.Combinators.Tags.For do
     |> parsec(:ignore_whitespaces)
     |> choice([parsec(:range_value), parsec(:value)])
     |> optional(
-         times(
-           choice([parsec(:offset_param), parsec(:reversed_param), parsec(:limit_param)]),
-           min: 1
-         )
-       )
+      times(
+        choice([offset_param(), reversed_param(), limit_param()]),
+        min: 1
+      )
+    )
     |> parsec(:ignore_whitespaces)
     |> tag(:for_collection)
   end
 end
-
