@@ -77,6 +77,7 @@ defmodule Liquid.NimbleParser do
   defparsecp(:close_tag_comment, Comment.close_tag())
   defparsecp(:not_close_tag_comment, Comment.not_close_tag_comment())
   defparsecp(:comment_content, Comment.comment_content())
+  defparsecp(:comment_body, Comment.comment_body())
   defparsec(:comment, Comment.tag())
 
   defparsec(:cycle_group, Cycle.cycle_group())

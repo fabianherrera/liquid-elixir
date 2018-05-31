@@ -141,6 +141,10 @@ defmodule Liquid.NimbleRender do
     end
   end
 
+  defp process_node({:comment, _markup}) do
+    %Liquid.Block{name: :comment, blank: true, strict: false}
+  end
+
   defp process_node({:for, [for_collection: for_collection, for_body: for_body, else: else_body]}) do
     markup = process_markup(for_collection)
 
