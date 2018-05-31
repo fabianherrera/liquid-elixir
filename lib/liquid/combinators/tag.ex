@@ -37,12 +37,18 @@ defmodule Liquid.Combinators.Tag do
     tag_name
     |> open_definition_no_head()
     |> combinator_body.()
-    |> close_tag(tag_name)
     |> tag(String.to_atom(tag_name))
     |> optional(parsec(:__parse__))
   end
 
   def define_open(tag_name, combinator_head \\ & &1) do
+    tag_name
+    |> open_definition(combinator_head)
+    |> tag(String.to_atom(tag_name))
+    |> optional(parsec(:__parse__))
+  end
+
+  def define_else(tag_name, combinator_head \\ & &1) do
     tag_name
     |> open_definition(combinator_head)
     |> optional(parsec(:__parse__))
@@ -64,7 +70,7 @@ defmodule Liquid.Combinators.Tag do
     |> parsec(:end_tag)
   end
 
-  defp close_tag(combinator, tag_name) do
+  def close_tag(combinator, tag_name) do
     combinator
     |> parsec(:start_tag)
     |> ignore(string("end" <> tag_name))

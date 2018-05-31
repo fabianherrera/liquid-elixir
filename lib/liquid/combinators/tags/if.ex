@@ -21,7 +21,7 @@ defmodule Liquid.Combinators.Tags.If do
 
   def elsif_tag, do: Tag.define_open("elsif", &predicate/1)
 
-  def else_tag, do: Tag.define_open("else")
+  def else_tag, do: Tag.define_else("else")
 
   def unless_tag, do: Tag.define_closed("unless", &predicate/1, &body/1)
 
