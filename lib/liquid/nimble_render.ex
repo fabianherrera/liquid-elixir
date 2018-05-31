@@ -207,8 +207,7 @@ defmodule Liquid.NimbleRender do
             condition_markup = condition |> elem(1)
 
           is_map(condition) ->
-            %Liquid.Variable{name: name} = condition
-            condition_markup = name
+            condition_markup = Map.get(condition, :name)
             condition_struct = %Liquid.Condition{left: condition}
 
           true ->
@@ -239,7 +238,7 @@ defmodule Liquid.NimbleRender do
           markup: condition_markup,
           nodelist: [nodelist],
           condition: condition_struct,
-          elselist: else_tag |> elem(1)
+          elselist: else_tag |> elem(1) |> process_node()
         }
     end
 
@@ -260,25 +259,25 @@ defmodule Liquid.NimbleRender do
     #     condition: condition_struct
     #   }
     # else
-    # [condition, nodelist, else_tag] = list
-    # else_tag
+    #   [condition, nodelist, else_tag] = list
+    #   else_tag
 
-    # if is_tuple(condition) do
-    #   condition_struct = condition |> elem(0)
-    #   condition_markup = condition |> elem(1)
-    # else
-    #   condition_markup = "#{condition}"
-    #   variable = %Liquid.Variable{name: "#{condition}", literal: condition}
-    #   condition_struct = %Liquid.Condition{left: variable}
+    #   if is_tuple(condition) do
+    #     condition_struct = condition |> elem(0)
+    #     condition_markup = condition |> elem(1)
+    #   else
+    #     condition_markup = "#{condition}"
+    #     variable = %Liquid.Variable{name: "#{condition}", literal: condition}
+    #     condition_struct = %Liquid.Condition{left: variable}
 
-    #   %Liquid.Block{
-    #     name: :if,
-    #     markup: condition_markup,
-    #     nodelist: [nodelist],
-    #     condition: condition_struct,
-    #     elselist: "culo"
-    #   }
-    # end
+    #     %Liquid.Block{
+    #       name: :if,
+    #       markup: condition_markup,
+    #       nodelist: [nodelist],
+    #       condition: condition_struct,
+    #       elselist: "culo"
+    #     }
+    #   end
     # end
   end
 
@@ -288,7 +287,9 @@ defmodule Liquid.NimbleRender do
     if is_tuple(left) do
       left_value = process_node(left)
       variable_value = left |> elem(1)
-      variable_in_string = variable_to_string(variable_value)
+      variable_list = Enum.filter(variable_value, fn x -> have_filters(x) == false end)
+      variable_in_string_left = variable_to_string(variable_list)
+      name_left = variable_in_string_left
     else
       left_value = %Liquid.Variable{name: "'#{left}'", literal: left}
       name_left = "'#{left}'"
@@ -296,14 +297,26 @@ defmodule Liquid.NimbleRender do
 
     if is_tuple(right) do
       right_value = process_node(right)
-      name = right
+      variable_value = right |> elem(1)
+      variable_list = Enum.filter(variable_value, fn x -> have_filters(x) == false end)
+      variable_in_string_right = variable_to_string(variable_list)
+      name_right = variable_in_string_right
     else
       right_value = %Liquid.Variable{name: "'#{right}'", literal: right}
-      name = "'#{right}'"
+      name_right = "'#{right}'"
     end
 
     {%Liquid.Condition{left: left_value, right: right_value, operator: operator},
-     "#{variable_in_string} #{operator} #{name}"}
+     "#{name_left} #{operator} #{name_right}"}
+  end
+
+  defp process_node({:variable, markup}) do
+    filters_list = Enum.filter(markup, fn x -> have_filters(x) == true end)
+    filters = transform_filters(filters_list)
+    variable_list = Enum.filter(markup, fn x -> have_filters(x) == false end)
+    parts = Enum.map(variable_list, &variable_in_parts(&1))
+    name = variable_to_string(parts)
+    %Liquid.Variable{name: name, parts: parts, filters: filters}
   end
 
   defp process_node(:else, markup) do
@@ -319,12 +332,12 @@ defmodule Liquid.NimbleRender do
   #   |> Enum.filter(fn x -> x != "" end)
   # end
 
-  defp variable_to_string(variable_in_parts) do
+  def variable_to_string(variable_in_parts) do
     Enum.join(variable_in_parts, ".")
     |> String.replace(".[", "[")
   end
 
-  defp variable_in_parts(value) do
+  def variable_in_parts(value) do
     cond do
       is_binary(value) == true ->
         "#{value}"
@@ -351,26 +364,26 @@ defmodule Liquid.NimbleRender do
     "| #{filter_name}: '#{value}'"
   end
 
-  defp transform_filters(filters_list) do
+  def transform_filters(filters_list) do
     Keyword.get_values(filters_list, :filter)
     |> Enum.map(&filters_to_list(&1))
   end
 
-  defp filters_to_list({filter_name}) do
+  def filters_to_list({filter_name}) do
     [String.to_atom(filter_name), []]
   end
 
-  defp filters_to_list({filter_name, filter_param}) do
+  def filters_to_list({filter_name, filter_param}) do
     filter_param_value = filter_param |> elem(1)
     value = Keyword.get(filter_param_value, :value)
     [String.to_atom(filter_name), ["#{value}"]]
   end
 
-  defp have_filters(value) when is_binary(value) or is_number(value) or is_boolean(value) do
+  def have_filters(value) when is_binary(value) or is_number(value) or is_boolean(value) do
     false
   end
 
-  defp have_filters(value) when is_tuple(value) do
+  def have_filters(value) when is_tuple(value) do
     if value |> elem(0) == :filter do
       true
     else

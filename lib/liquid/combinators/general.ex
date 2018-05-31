@@ -297,7 +297,8 @@ defmodule Liquid.Combinators.General do
   def filter do
     # |> tag(:filter)
     # |> parsec(:variable_definition)
-    empty()
+    # empty()
+    parsec(:ignore_whitespaces)
     |> ignore(string(@start_filter))
     |> parsec(:ignore_whitespaces)
     |> repeat_until(utf8_char([]), [
