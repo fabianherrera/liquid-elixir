@@ -19,7 +19,7 @@ defmodule Liquid.Combinators.Tags.If do
   import NimbleParsec
   alias Liquid.Combinators.Tag
 
-  def elsif_tag, do: Tag.define_open("elsif", &predicate/1)
+  def elsif_tag, do: Tag.define_else("elsif", &predicate/1)
 
   def else_tag, do: Tag.define_else("else")
 
