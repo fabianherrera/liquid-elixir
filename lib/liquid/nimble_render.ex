@@ -147,7 +147,6 @@ defmodule Liquid.NimbleRender do
 
   defp process_node({:for, [for_collection: for_collection, for_body: for_body, else: else_body]}) do
     markup = process_markup(for_collection)
-
     %Liquid.Block{
       elselist: fixer_for_types_no_list(process_node(else_body)),
       iterator: process_iterator(%Block{markup: markup}),
@@ -158,11 +157,12 @@ defmodule Liquid.NimbleRender do
   end
 
   defp process_node({:for, [for_collection: for_collection, for_body: for_body]}) do
+    markup = process_markup(for_collection)
     %Liquid.Block{
-      iterator: process_iterator(for_collection),
-      markup: process_markup(for_collection),
+      iterator: process_iterator(%Block{markup: markup}),
+      markup: markup,
       name: :for,
-      nodelist: process_node(for_body)
+      nodelist: fixer_for_types_only_list(process_node(for_body))
     }
   end
 
@@ -255,3 +255,48 @@ defmodule Liquid.NimbleRender do
     if is_list(element), do: element, else: [element]
   end
 end
+
+%Liquid.Template{
+  blocks: [],
+  errors: [],
+  presets: %{},
+  root: %Liquid.Block{
+    blank: false,
+    condition: nil,
+    elselist: [],
+    iterator: [],
+    markup: nil,
+    name: :document,
+    nodelist: [
+      %Liquid.Tag{
+        attributes: %{
+          "my_other_variable" => %Liquid.Variable{
+            filters: [],
+            literal: "oranges",
+            name: "'oranges'",
+            parts: []
+          },
+          "my_variable" => %Liquid.Variable{
+            filters: [],
+            literal: "apples",
+            name: "'apples'",
+            parts: []
+          }
+        },
+        blank: false,
+        markup: "'snippet', my_variable: 'apples', my_other_variable: 'oranges'",
+        name: :include,
+        parts: [
+          name: %Liquid.Variable{
+            filters: [],
+            literal: "snippet",
+            name: "'snippet'",
+            parts: []
+          }
+        ]
+      }
+    ],
+    parts: [],
+    strict: true
+  }
+}
