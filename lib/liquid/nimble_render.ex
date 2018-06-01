@@ -262,11 +262,6 @@ defmodule Liquid.NimbleRender do
   defp process_node({:include, markup}) do
     markup = process_include_markup(markup)
     Liquid.Include.parse(%Tag{markup: markup, name: :include})
-    #    %Liquid.Tag{
-    #      attributes: markup,
-    #      markup: markup,
-    #      name: :include,
-    #      parts: "temp"}
   end
 
   defp process_node({:for, [for_collection: for_collection, for_body: for_body, else: else_body]}) do
