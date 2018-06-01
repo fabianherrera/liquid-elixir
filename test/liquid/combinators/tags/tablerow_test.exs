@@ -142,14 +142,13 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
           tag,
           &Parser.tablerow/1,
           [
-            {:tablerow,
-             [
-               tablerow_conditions: [
-                 variable_name: "i",
-                 value: {:range, [start: 1, end: 10]}
-               ],
-               tablerow_sentences: [{:variable, ["i"]}]
-             ]}
+            tablerow: [
+              tablerow_conditions: [
+                variable_name: "i",
+                value: {:range, [start: 1, end: 10]}
+              ],
+              tablerow_sentences: [liquid_variable: [variable: ["i"]]]
+            ]
           ]
         )
       end
@@ -161,14 +160,13 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
       "{% tablerow i in (my_var..10) %}{{ i }}{% endtablerow %}",
       &Parser.tablerow/1,
       [
-        {:tablerow,
-         [
-           tablerow_conditions: [
-             variable_name: "i",
-             value: {:range, [start: {:variable, ["my_var"]}, end: 10]}
-           ],
-           tablerow_sentences: [{:variable, ["i"]}]
-         ]}
+        tablerow: [
+          tablerow_conditions: [
+            variable_name: "i",
+            value: {:range, [start: {:variable, ["my_var"]}, end: 10]}
+          ],
+          tablerow_sentences: [liquid_variable: [variable: ["i"]]]
+        ]
       ]
     )
   end
@@ -178,16 +176,15 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
       "{% tablerow i in (my_var..10) limit:2 cols:2 %}{{ i }}{% endtablerow %}",
       &Parser.tablerow/1,
       [
-        {:tablerow,
-         [
-           tablerow_conditions: [
-             variable_name: "i",
-             value: {:range, [start: {:variable, ["my_var"]}, end: 10]},
-             limit_param: [2],
-             cols_param: [2]
-           ],
-           tablerow_sentences: [{:variable, ["i"]}]
-         ]}
+        tablerow: [
+          tablerow_conditions: [
+            variable_name: "i",
+            value: {:range, [start: {:variable, ["my_var"]}, end: 10]},
+            limit_param: [2],
+            cols_param: [2]
+          ],
+          tablerow_sentences: [liquid_variable: [variable: ["i"]]]
+        ]
       ]
     )
   end
