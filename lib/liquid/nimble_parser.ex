@@ -49,7 +49,6 @@ defmodule Liquid.NimbleParser do
   defparsec(:string_value, LexicalToken.string_value())
   defparsec(:object_value, LexicalToken.object_value())
   defparsec(:variable_value, LexicalToken.variable_value())
-  defparsec(:range_value, LexicalToken.range_value())
 
   defp clean_empty_strings(_rest, args, context, _line, _offset) do
     result =
@@ -63,7 +62,7 @@ defmodule Liquid.NimbleParser do
     :__parse__,
     General.liquid_literal()
     |> optional(
-      choice([parsec(:liquid_tag), parsec(:forloop_variables), parsec(:liquid_variable)])
+      choice([parsec(:liquid_tag), parsec(:liquid_variable)])
     )
     |> traverse({:clean_empty_strings, []})
   )
@@ -73,11 +72,7 @@ defmodule Liquid.NimbleParser do
   defparsec(:decrement, Decrement.tag())
   defparsec(:increment, Increment.tag())
 
-  defparsecp(:open_tag_comment, Comment.open_tag())
-  defparsecp(:close_tag_comment, Comment.close_tag())
-  defparsecp(:not_close_tag_comment, Comment.not_close_tag_comment())
   defparsecp(:comment_content, Comment.comment_content())
-  defparsecp(:comment_body, Comment.comment_body())
   defparsec(:comment, Comment.tag())
 
   defparsec(:cycle_group, Cycle.cycle_group())
@@ -85,9 +80,13 @@ defmodule Liquid.NimbleParser do
   defparsec(:cycle_values, Cycle.cycle_values())
   defparsec(:cycle, Cycle.tag())
 
+<<<<<<< HEAD
   defparsec(:tag_inside_raw, Raw.tag_inside_raw())
   defparsec(:close_tag_raw, Raw.close_tag())
   defparsec(:raw_body, Raw.body(empty()))
+=======
+  defparsec(:raw_content, Raw.raw_content())
+>>>>>>> upstream/WIP
   defparsec(:raw, Raw.tag())
 
   defparsecp(:var_assignment, Include.var_assignment())
@@ -98,7 +97,6 @@ defmodule Liquid.NimbleParser do
   defparsec(:else_tag, If.else_tag())
   defparsec(:unless, If.unless_tag())
 
-  defparsecp(:forloop_variables, For.forloop_variables())
   defparsecp(:offset_param, For.offset_param())
   defparsecp(:limit_param, For.limit_param())
   defparsec(:break_tag, For.break_tag())
@@ -111,9 +109,6 @@ defmodule Liquid.NimbleParser do
   defparsecp(:tablerow_sentences, Tablerow.tablerow_sentences())
   defparsec(:tablerow, Tablerow.tag())
 
-  defparsec(:open_tag_case, Case.open_tag())
-  defparsec(:close_tag_case, Case.close_tag())
-  defparsec(:when_tag, Case.when_tag())
   defparsec(:case, Case.tag())
 
   defparsec(

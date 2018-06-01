@@ -118,23 +118,21 @@ defmodule Liquid.Combinators.LexicalToken do
     choice([float_value(), integer_value()])
   end
 
-  defp range_part(combinator \\ empty(), tag_name) do
+  defp range_limit(combinator \\ empty(), tag_name) do
     combinator
-    |> choice([integer_value(), parsec(:variable_definition)])
+    |> choice([integer_value(), variable_value()])
     |> unwrap_and_tag(tag_name)
   end
 
   # RangeValue :: (1..10) | (var..10) | (1..var) | (var1..var2) | (1..var.content[0])
-  def range_value do
+  defp range_value do
     string("(")
     |> ignore()
-    |> parsec(:ignore_whitespaces)
-    |> range_part(:start)
+    |> range_limit(:start)
     |> ignore(string(".."))
-    |> concat(range_part(:end))
-    |> parsec(:ignore_whitespaces)
+    |> concat(range_limit(:end))
     |> ignore(string(")"))
-    |> tag(:range_value)
+    |> tag(:range)
   end
 
   # Value[Const] :
@@ -151,6 +149,7 @@ defmodule Liquid.Combinators.LexicalToken do
       boolean_value(),
       null_value(),
       string_value(),
+      range_value(),
       variable_value()
     ])
     |> concat(parsec(:ignore_whitespaces))

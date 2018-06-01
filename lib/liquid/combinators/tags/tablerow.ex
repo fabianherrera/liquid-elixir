@@ -1,50 +1,40 @@
 defmodule Liquid.Combinators.Tags.Tablerow do
   @moduledoc """
-  "for" tag iterates over an array or collection.
+  Iterates over an array or collection splitting it up to a table with pre-set columns number
   Several useful variables are available to you within the loop.
-
-  Basic usage:
+  Generates an HTML table. Must be wrapped in opening <table> and closing </table> HTML tags.
+  Input:
   ```
-    {% for item in collection %}
-      {{ forloop.index }}: {{ item.name }}
-    {% endfor %}
+    <table>
+      {% tablerow product in collection.products %}
+        {{ product.title }}
+      {% endtablerow %}
+    </table>
   ```
-  Advanced usage:
+  Output:
   ```
-    {% for item in collection %}
-      <div {% if forloop.first %}class="first"{% endif %}>
-      Item {{ forloop.index }}: {{ item.name }}
-      </div>
-    {% else %}
-      There is nothing in the collection.
-    {% endfor %}
-  ```
-  You can also define a limit and offset much like SQL.  Remember
-  that offset starts at 0 for the first item.
-  ```
-    {% for item in collection limit:5 offset:10 %}
-      {{ item.name }}
-    {% end %}
-  ```
-  To reverse the for loop simply use {% for item in collection reversed %}
-
-  Available variables:
-  ```
-    forloop.name:: 'item-collection'
-    forloop.length:: Length of the loop
-    forloop.index:: The current item's position in the collection;
-    forloop.index starts at 1.
-    This is helpful for non-programmers who start believe
-    the first item in an array is 1, not 0.
-    forloop.index0:: The current item's position in the collection
-    where the first item is 0
-    forloop.rindex:: Number of items remaining in the loop
-    (length - index) where 1 is the last item.
-    forloop.rindex0:: Number of items remaining in the loop
-    where 0 is the last item.
-    forloop.first:: Returns true if the item is the first item.
-    forloop.last:: Returns true if the item is the last item.
-    forloop.parentloop:: Provides access to the parent loop, if present.
+    <table>
+    <tr class="row1">
+      <td class="col1">
+        Cool Shirt
+      </td>
+      <td class="col2">
+        Alien Poster
+      </td>
+      <td class="col3">
+        Batman Poster
+      </td>
+      <td class="col4">
+        Bullseye Shirt
+      </td>
+      <td class="col5">
+        Another Classic Vinyl
+      </td>
+      <td class="col6">
+        Awesome Jeans
+      </td>
+    </tr>
+    </table>
   ```
   """
   import NimbleParsec
@@ -77,7 +67,7 @@ defmodule Liquid.Combinators.Tags.Tablerow do
     |> parsec(:ignore_whitespaces)
     |> ignore(string("in"))
     |> parsec(:ignore_whitespaces)
-    |> choice([parsec(:range_value), parsec(:value)])
+    |> parsec(:value)
     |> optional(
       times(choice([parsec(:offset_param), parsec(:cols_param), parsec(:limit_param)]), min: 1)
     )

@@ -15,35 +15,45 @@ defmodule Liquid.Combinators.Tags.Comment do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.{Tag, General}
+  alias Liquid.Combinators.General
 
-  @doc "Open comment tag: {% comment %}"
-  def open_tag do
+  def comment_content do
+    empty()
+    |> repeat_until(utf8_char([]), [
+      string(General.codepoints().start_tag)
+    ])
+    |> choice([close_tag(), not_close_tag()])
+    |> reduce({List, :to_string, []})
+    |> tag(:comment_content)
+  end
+
+  def tag do
+    open_tag()
+    |> concat(parsec(:comment_content))
+    |> tag(:comment)
+    |> optional(parsec(:__parse__))
+  end
+
+  defp open_tag do
     empty()
     |> parsec(:start_tag)
     |> ignore(string("comment"))
     |> concat(parsec(:end_tag))
   end
 
-  @doc "Close comment tag: {% endcomment %}"
-  def close_tag do
+  defp close_tag do
     empty()
     |> parsec(:start_tag)
     |> ignore(string("endcomment"))
     |> concat(parsec(:end_tag))
   end
 
-  def not_close_tag_comment do
+  defp not_close_tag do
     empty()
-    |> string(General.codepoints().start_tag)
+    |> ignore(utf8_char([]))
     |> parsec(:comment_content)
   end
-
-  def comment_body do
-    empty()
-    |> parsec(:comment_content)
-    |> tag(:comment_body)
-  end
+<<<<<<< HEAD
 
   def comment_content do
     empty()
@@ -92,4 +102,6 @@ defmodule Liquid.Combinators.Tags.Comment do
   #  empty()
   #  |> utf8_char([])
   #  |> parsec(:comment_content)
+=======
+>>>>>>> upstream/WIP
 end

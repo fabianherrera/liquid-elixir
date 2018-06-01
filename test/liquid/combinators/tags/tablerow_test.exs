@@ -146,7 +146,7 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
              [
                tablerow_conditions: [
                  variable_name: "i",
-                 range_value: [start: 1, end: 10]
+                 value: {:range, [start: 1, end: 10]}
                ],
                tablerow_sentences: [{:variable, ["i"]}]
              ]}
@@ -165,7 +165,7 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
          [
            tablerow_conditions: [
              variable_name: "i",
-             range_value: [start: "my_var", end: 10]
+             value: {:range, [start: {:variable, ["my_var"]}, end: 10]}
            ],
            tablerow_sentences: [{:variable, ["i"]}]
          ]}
@@ -182,7 +182,7 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
          [
            tablerow_conditions: [
              variable_name: "i",
-             range_value: [start: "my_var", end: 10],
+             value: {:range, [start: {:variable, ["my_var"]}, end: 10]},
              limit_param: [2],
              cols_param: [2]
            ],

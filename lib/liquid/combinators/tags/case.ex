@@ -1,52 +1,57 @@
 defmodule Liquid.Combinators.Tags.Case do
+  @moduledoc """
+  Creates a switch statement to compare a variable against different values.
+  `case` initializes the switch statement, and `when` compares its values.
+  Input:
+  ```
+    {% assign handle = 'cake' %}
+    {% case handle %}
+    {% when 'cake' %}
+      This is a cake
+    {% when 'cookie' %}
+      This is a cookie
+    {% else %}
+      This is not a cake nor a cookie
+    {% endcase %}
+  ```
+  Output:
+  ```
+    This is a cake
+  ```
+  """
   import NimbleParsec
+  alias Liquid.Combinators.Tag
 
-  def open_tag do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string("case"))
-    |> concat(parsec(:ignore_whitespaces))
+  def tag, do: Tag.define_closed("case", &head/1, &body/1)
+
+  defp when_tag do
+    Tag.define_open("when", fn combinator ->
+      combinator
+      |> choice([
+        parsec(:value_definition),
+        parsec(:quoted_token),
+        parsec(:variable_definition)
+      ])
+      |> optional(
+        times(choice([parsec(:logical_condition), parsec(:comma_contition_value)]), min: 1)
+      )
+    end)
+  end
+
+  defp head(combinator) do
+    combinator
     |> choice([
       parsec(:value_definition),
       parsec(:quoted_token),
       parsec(:variable_definition)
     ])
     |> optional(times(parsec(:logical_condition), min: 1))
-    |> concat(parsec(:end_tag))
   end
 
-  def when_tag do
-    empty()
-    |> concat(parsec(:start_tag))
-    |> ignore(string("when"))
-    |> concat(parsec(:ignore_whitespaces))
-    |> choice([
-      parsec(:value_definition),
-      parsec(:quoted_token),
-      parsec(:variable_definition)
-    ])
-    |> optional(
-      times(choice([parsec(:logical_condition), parsec(:comma_contition_value)]), min: 1)
-    )
-    |> parsec(:end_tag)
+  defp body(combinator) do
+    combinator
+    |> times(when_tag(), min: 1)
     |> parsec(:ignore_whitespaces)
-    |> optional(parsec(:__parse__))
-    |> tag(:when)
-  end
-
-  def close_tag do
-    parsec(:start_tag)
-    |> ignore(string("endcase"))
-    |> concat(parsec(:end_tag))
-  end
-
-  def tag do
-    parsec(:open_tag_case)
-    |> concat(times(parsec(:when_tag), min: 1))
-    |> concat(parsec(:ignore_whitespaces))
     |> optional(times(parsec(:else_tag), min: 1))
-    |> concat(parsec(:close_tag_case))
-    |> tag(:case)
-    |> optional(parsec(:__parse__))
   end
 end

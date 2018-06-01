@@ -1,6 +1,5 @@
 defmodule Liquid.Combinators.Tags.CycleTest do
   use ExUnit.Case
-
   import Liquid.Helpers
   alias Liquid.NimbleParser, as: Parser
 

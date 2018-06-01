@@ -14,7 +14,6 @@ defmodule Liquid.Combinators.Tags.Raw do
   In Handlebars, {{ this }} will be HTML-escaped, but {{{ that }}} will not.
   ```
   """
-  alias Liquid.Combinators.General
   import NimbleParsec
   alias Liquid.Combinators.Tag
 
@@ -39,7 +38,11 @@ defmodule Liquid.Combinators.Tags.Raw do
     |> parsec(:raw_body)
   end
 
+<<<<<<< HEAD
   def close_tag do
+=======
+  defp close_tag do
+>>>>>>> upstream/WIP
     empty()
     |> parsec(:start_tag)
     |> ignore(string("endraw"))

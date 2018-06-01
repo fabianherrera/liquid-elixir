@@ -4,11 +4,11 @@ defmodule Liquid.Combinators.Tags.If do
   If this condition is false executes `else` block of code
   Input:
   ```
-  {% if product.title == 'Awesome Shoes' %}
-    These shoes are awesome!
-  {% else %}
-    These shoes are ugly!
-  {% endif %}
+    {% if product.title == 'Awesome Shoes' %}
+      These shoes are awesome!
+    {% else %}
+      These shoes are ugly!
+    {% endif %}
   ```
   Output:
   ```
