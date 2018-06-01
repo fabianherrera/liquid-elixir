@@ -24,7 +24,7 @@ defmodule Liquid.Combinators.Tags.Comment do
     ])
     |> choice([close_tag(), not_close_tag()])
     |> reduce({List, :to_string, []})
-    |> tag(:comment_content)
+    |> tag(:comment_body)
   end
 
   def tag do
