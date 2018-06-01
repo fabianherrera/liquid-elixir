@@ -15,7 +15,7 @@ defmodule Liquid.Combinators.Tags.Raw do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.Tag
+  alias Liquid.Combinators.{General, Tag}
 
   def tag, do: Tag.define_closed_no_head("raw", &body/1)
 
@@ -38,11 +38,7 @@ defmodule Liquid.Combinators.Tags.Raw do
     |> parsec(:raw_body)
   end
 
-<<<<<<< HEAD
   def close_tag do
-=======
-  defp close_tag do
->>>>>>> upstream/WIP
     empty()
     |> parsec(:start_tag)
     |> ignore(string("endraw"))

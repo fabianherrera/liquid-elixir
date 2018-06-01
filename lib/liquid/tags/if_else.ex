@@ -25,6 +25,7 @@ defmodule Liquid.IfElse do
   end
 
   def parse(%Block{} = block, %Template{} = t) do
+    IO.inspect(block)
     block = parse_conditions(block)
 
     case Block.split(block, [:else, :elsif]) do
