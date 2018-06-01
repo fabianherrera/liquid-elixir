@@ -15,4 +15,16 @@ defmodule Liquid.Combinators.Tags.CommentTest do
       ]
     )
   end
+
+  test "comment with tags and variables in body" do
+    test_combinator(
+      "{% comment %} {% if true %} {% endcomment %}",
+      &Parser.comment/1,
+      comment: [
+        comment_body: [
+          " {% if true %} "
+        ]
+      ]
+    )
+  end
 end
