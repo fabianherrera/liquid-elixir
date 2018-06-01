@@ -48,7 +48,7 @@ defmodule Liquid.Combinators.Tags.For do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.{General, Tag, Variable}
+  alias Liquid.Combinators.{General, Tag}
 
   def offset_param do
     empty()
@@ -86,24 +86,6 @@ defmodule Liquid.Combinators.Tags.For do
     |> tag(:for_body)
   end
 
-  defp generate_for_variables do
-    [
-      "forloop.first",
-      "forloop.index",
-      "forloop.index0",
-      "forloop.last",
-      "forloop.length",
-      "forloop.rindex",
-      "forloop.rindex0"
-    ]
-    |> Enum.map(&Variable.define/1)
-  end
-
-  def forloop_variables do
-    empty()
-    |> choice(generate_for_variables())
-  end
-
   def continue_tag, do: Tag.define_open("continue")
 
   def break_tag, do: Tag.define_open("break")
@@ -122,7 +104,7 @@ defmodule Liquid.Combinators.Tags.For do
     |> parsec(:ignore_whitespaces)
     |> ignore(string("in"))
     |> parsec(:ignore_whitespaces)
-    |> choice([parsec(:range_value), parsec(:value)])
+    |> parsec(:value)
     |> optional(
       times(
         choice([offset_param(), reversed_param(), limit_param()]),
