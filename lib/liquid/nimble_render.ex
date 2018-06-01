@@ -277,6 +277,8 @@ defmodule Liquid.NimbleRender do
     "#{snippet}, #{variables}"
   end
 
-  defp concat_include_variables_in_markup({:variable, [variable_name: [variable], value: value]}), do: "#{variable} #{value}"
+  defp concat_include_variables_in_markup({:variable, [variable_name: [variable], value: value]}), do: "#{variable} '#{value}'"
+
+  defp concat_include_variables_in_markup({:variable, [variable_name: [variable], value: {:variable, [value]}]}), do: "#{variable} #{value}"
 
 end
