@@ -216,35 +216,6 @@ defmodule Liquid.NimbleRender do
     Liquid.IfElse.parse_conditions(block)
   end
 
-  defp process_node({:condition, markup}) do
-    {left, operator, right} = markup
-
-    if is_tuple(left) do
-      left_value = process_node(left)
-      variable_value = left |> elem(1)
-      variable_list = Enum.filter(variable_value, fn x -> have_filters(x) == false end)
-      variable_in_string_left = variable_to_string(variable_list)
-      name_left = variable_in_string_left
-    else
-      left_value = %Liquid.Variable{name: "'#{left}'", literal: left}
-      name_left = "'#{left}'"
-    end
-
-    if is_tuple(right) do
-      right_value = process_node(right)
-      variable_value = right |> elem(1)
-      variable_list = Enum.filter(variable_value, fn x -> have_filters(x) == false end)
-      variable_in_string_right = variable_to_string(variable_list)
-      name_right = variable_in_string_right
-    else
-      right_value = %Liquid.Variable{name: "'#{right}'", literal: right}
-      name_right = "'#{right}'"
-    end
-
-    {%Liquid.Condition{left: left_value, right: right_value, operator: operator},
-     "#{name_left} #{operator} #{name_right}"}
-  end
-
   defp process_node({:variable, markup}) do
     filters_list = Enum.filter(markup, fn x -> have_filters(x) == true end)
     filters = transform_filters(filters_list)
