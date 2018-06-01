@@ -8,13 +8,8 @@ defmodule Liquid.Combinators.Tags.RawTest do
     test_combinator(
       "{% raw %} Raw temporarily disables tag processing. This is useful for generating content (eg, Mustache, Handlebars )like this {{ product }} which uses conflicting syntax.{% endraw %}",
       &Parser.raw/1,
-      [
-        {:raw,
-         [
-           raw_content: [
-             " Raw temporarily disables tag processing. This is useful for generating content (eg, Mustache, Handlebars )like this {{ product }} which uses conflicting syntax."
-           ]
-         ]}
+      raw: [
+        " Raw temporarily disables tag processing. This is useful for generating content (eg, Mustache, Handlebars )like this {{ product }} which uses conflicting syntax."
       ]
     )
   end

@@ -231,6 +231,7 @@ defmodule Liquid.Combinators.General do
     |> optional(times(utf8_char(allowed_chars_in_variable_definition()), min: 1))
     |> concat(ignore_whitespaces())
     |> reduce({List, :to_string, []})
+    |> optional(parsec(:filter))
   end
 
   @doc """
@@ -244,8 +245,9 @@ defmodule Liquid.Combinators.General do
   def liquid_variable do
     start_variable()
     |> parsec(:value_definition)
-    |> optional(parsec(:filter))
+    |> optional(times(parsec(:filter), min: 1))
     |> concat(end_variable())
+    |> tag(:liquid_variable)
     |> optional(parsec(:__parse__))
   end
 
@@ -284,7 +286,8 @@ defmodule Liquid.Combinators.General do
     |> optional(parsec(:ignore_whitespaces))
     |> optional(parsec(:value))
     |> tag(:filter_param)
-    |> optional(parsec(:filter))
+
+    # |> optional(parsec(:filter))
   end
 
   @doc """
@@ -292,12 +295,20 @@ defmodule Liquid.Combinators.General do
   start char: ':' plus optional: parameters values [value]
   """
   def filter do
-    empty()
+    parsec(:ignore_whitespaces)
     |> ignore(string(@start_filter))
     |> parsec(:ignore_whitespaces)
-    |> parsec(:variable_definition)
+    |> repeat_until(utf8_char([]), [
+      string(@start_filter),
+      string(@end_variable),
+      string(":"),
+      string(" ")
+    ])
+    |> parsec(:ignore_whitespaces)
+    |> reduce({List, :to_string, []})
     |> optional(parsec(:filter_param))
-    |> tag(:filter)
+    |> reduce({List, :to_tuple, []})
+    |> unwrap_and_tag(:filter)
     |> optional(parsec(:filter))
   end
 end

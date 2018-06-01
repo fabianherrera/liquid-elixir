@@ -1,4 +1,4 @@
-defmodule Liquid.NimbleTranslator do
+efmodule Liquid.NimbleTranslator do
   @moduledoc """
   Intermediate Render Liquid module, it serves as render-nimble_parse interface
   """
@@ -148,15 +148,16 @@ defmodule Liquid.NimbleTranslator do
   defp process_node({:include, markup}) do
     markup = process_include_markup(markup)
     Liquid.Include.parse(%Tag{markup: markup, name: :include})
-#    %Liquid.Tag{
-#      attributes: markup,
-#      markup: markup,
-#      name: :include,
-#      parts: "temp"}
+    #    %Liquid.Tag{
+    #      attributes: markup,
+    #      markup: markup,
+    #      name: :include,
+    #      parts: "temp"}
   end
 
   defp process_node({:for, [for_collection: for_collection, for_body: for_body, else: else_body]}) do
     markup = process_for_markup(for_collection)
+
     %Liquid.Block{
       elselist: fixer_for_types_no_list(process_node(else_body)),
       iterator: process_iterator(%Block{markup: markup}),
@@ -168,6 +169,7 @@ defmodule Liquid.NimbleTranslator do
 
   defp process_node({:for, [for_collection: for_collection, for_body: for_body]}) do
     markup = process_for_markup(for_collection)
+
     %Liquid.Block{
       iterator: process_iterator(%Block{markup: markup}),
       markup: markup,
@@ -261,21 +263,27 @@ defmodule Liquid.NimbleTranslator do
     if is_list(element), do: element, else: [element]
   end
 
-  def process_include_markup([snippet: [snippet]]), do: snippet
+  def process_include_markup(snippet: [snippet]), do: snippet
 
-  def process_include_markup([snippet: [snippet], with_param: [variable: [variable]]]), do: "#{snippet} with #{variable}"
+  def process_include_markup(snippet: [snippet], with_param: [variable: [variable]]),
+    do: "#{snippet} with #{variable}"
 
-  def process_include_markup([snippet: [snippet], for_param: [variable: [variable]]]), do: "#{snippet} for #{variable}"
+  def process_include_markup(snippet: [snippet], for_param: [variable: [variable]]),
+    do: "#{snippet} for #{variable}"
 
-  def process_include_markup([snippet: [snippet], variables: variables]) do
+  def process_include_markup(snippet: [snippet], variables: variables) do
     parts = Enum.map(variables, &concat_include_variables_in_markup(&1))
     variables = Enum.join(parts, ", ")
     "#{snippet}, #{variables}"
   end
 
-  defp concat_include_variables_in_markup({:variable, [variable_name: [variable], value: value]}), do: "#{variable} '#{value}'"
+  defp concat_include_variables_in_markup({:variable, [variable_name: [variable], value: value]}),
+    do: "#{variable} '#{value}'"
 
-  defp concat_include_variables_in_markup({:variable, [variable_name: [variable], value: {:variable, [value]}]}), do: "#{variable} #{value}"
+  defp concat_include_variables_in_markup(
+         {:variable, [variable_name: [variable], value: {:variable, [value]}]}
+       ),
+       do: "#{variable} #{value}"
 
   defp process_node({:if, [if_condition: if_condition, body: body]}) do
     nodelist = Enum.filter(body, &not_open_if(&1))
@@ -329,7 +337,7 @@ defmodule Liquid.NimbleTranslator do
 
   defp not_open_if(value) when is_tuple(value) do
     if value |> elem(0) == :if_condition or value |> elem(0) == :else or
-    value |> elem(0) == :elsif do
+         value |> elem(0) == :elsif do
       false
     else
       true

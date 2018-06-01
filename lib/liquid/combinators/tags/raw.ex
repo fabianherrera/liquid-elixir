@@ -15,42 +15,44 @@ defmodule Liquid.Combinators.Tags.Raw do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.General
+  alias Liquid.Combinators.{General, Tag}
 
-  def raw_content do
-    empty()
+  def tag, do: Tag.define_closed_no_head("raw", &body/1)
+
+  def body(combinator) do
+    combinator
     |> repeat_until(utf8_char([]), [
       string(General.codepoints().start_tag)
     ])
-    |> choice([close_tag(), not_close_tag()])
     |> reduce({List, :to_string, []})
-    |> tag(:raw_content)
+    |> choice([parsec(:close_tag_raw), parsec(:tag_inside_raw)])
+    |> reduce({List, :to_string, []})
   end
 
-  def tag do
-    open_tag()
-    |> concat(parsec(:raw_content))
-    |> tag(:raw)
-    |> optional(parsec(:__parse__))
-  end
-
-  defp open_tag do
+  def tag_inside_raw do
     empty()
-    |> parsec(:start_tag)
-    |> ignore(string("raw"))
-    |> concat(parsec(:end_tag))
+    |> concat(not_ingnored_start_tag())
+    |> repeat_until(utf8_char([]), [string(General.codepoints().end_tag), string("endraw")])
+    |> concat(not_ingnored_end_tag())
+    |> reduce({List, :to_string, []})
+    |> parsec(:raw_body)
   end
 
-  defp close_tag do
+  def close_tag do
     empty()
     |> parsec(:start_tag)
     |> ignore(string("endraw"))
-    |> concat(parsec(:end_tag))
+    |> parsec(:end_tag)
   end
 
-  defp not_close_tag do
+  defp not_ingnored_start_tag do
     empty()
-    |> ignore(utf8_char([]))
-    |> parsec(:raw_content)
+    |> string(General.codepoints().start_tag)
+    |> parsec(:ignore_whitespaces)
+  end
+
+  defp not_ingnored_end_tag do
+    parsec(:ignore_whitespaces)
+    |> concat(string(General.codepoints().end_tag))
   end
 end

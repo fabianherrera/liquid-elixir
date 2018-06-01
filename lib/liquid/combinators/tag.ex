@@ -33,7 +33,39 @@ defmodule Liquid.Combinators.Tag do
     |> optional(parsec(:__parse__))
   end
 
+  def define_closed_test(tag_name, combinator_head \\ & &1, combinator_body \\ & &1) do
+    tag_name
+    |> open_definition(combinator_head)
+    |> parsec(:body_if)
+    |> close_tag(tag_name)
+    |> tag(String.to_atom(tag_name))
+    |> optional(parsec(:__parse__))
+  end
+
+  def define_end(tag_name, combinator_head \\ & &1, combinator_body \\ & &1) do
+    tag_name
+    |> open_definition(combinator_head)
+    |> parsec(:body_elsif)
+    |> tag(String.to_atom(tag_name))
+    |> optional(parsec(:__parse__))
+  end
+
+  def define_closed_no_head(tag_name, combinator_body \\ & &1) do
+    tag_name
+    |> open_definition_no_head()
+    |> combinator_body.()
+    |> tag(String.to_atom(tag_name))
+    |> optional(parsec(:__parse__))
+  end
+
   def define_open(tag_name, combinator_head \\ & &1) do
+    tag_name
+    |> open_definition(combinator_head)
+    |> tag(String.to_atom(tag_name))
+    |> optional(parsec(:__parse__))
+  end
+
+  def define_else(tag_name, combinator_head \\ & &1) do
     tag_name
     |> open_definition(combinator_head)
     |> optional(parsec(:__parse__))
@@ -48,7 +80,14 @@ defmodule Liquid.Combinators.Tag do
     |> parsec(:end_tag)
   end
 
-  defp close_tag(combinator, tag_name) do
+  defp open_definition_no_head(tag_name) do
+    empty()
+    |> parsec(:start_tag)
+    |> ignore(string(tag_name))
+    |> parsec(:end_tag)
+  end
+
+  def close_tag(combinator, tag_name) do
     combinator
     |> parsec(:start_tag)
     |> ignore(string("end" <> tag_name))
