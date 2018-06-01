@@ -1,6 +1,39 @@
 defmodule Liquid.Combinators.Tags.Cycle do
+  @moduledoc """
+  Implementation of `cycle` tag. Can be named or anonymous, rotates through pre-set values
+  Cycle is usually used within a loop to alternate between values, like colors or DOM classes.
+  ```
+    {% for item in items %}
+    <div class="{% cycle 'red', 'green', 'blue' %}"> {{ item }} </div>
+    {% end %}
+  ```
+  ```
+    <div class="red"> Item one </div>
+    <div class="green"> Item two </div>
+    <div class="blue"> Item three </div>
+    <div class="red"> Item four </div>
+    <div class="green"> Item five</div>
+  ```
+  Loops through a group of strings and outputs them in the order that they were passed as parameters.
+  Each time cycle is called, the next string that was passed as a parameter is output.
+  cycle must be used within a for loop block.
+  Input:
+  ```
+    {% cycle 'one', 'two', 'three' %}
+    {% cycle 'one', 'two', 'three' %}
+    {% cycle 'one', 'two', 'three' %}
+    {% cycle 'one', 'two', 'three' %}
+  ```
+  Output:
+  ```
+    one
+    two
+    three
+    one
+  ```
+  """
   import NimbleParsec
-  alias Liquid.Combinators.General
+  alias Liquid.Combinators.{General, Tag}
 
   def cycle_group do
     parsec(:ignore_whitespaces)
@@ -25,7 +58,8 @@ defmodule Liquid.Combinators.Tags.Cycle do
   end
 
   def cycle_values do
-    optional(parsec(:ignore_whitespaces))
+    empty()
+    |> optional(parsec(:ignore_whitespaces))
     |> choice([
       parsec(:quoted_token),
       parsec(:number)
@@ -37,11 +71,17 @@ defmodule Liquid.Combinators.Tags.Cycle do
   end
 
   def tag do
+    Tag.define_closed("cycle",
+      fn combinator ->
+        combinator
+        |> optional(parsec(:cycle_group))
+      end
+    )
     empty()
     |> parsec(:start_tag)
-    |> concat(string("cycle") |> ignore())
-    |> concat(optional(parsec(:cycle_group)))
-    |> concat(parsec(:ignore_whitespaces))
+    |> string("cycle") |> ignore()
+    |> optional(parsec(:cycle_group))
+    |> parsec(:ignore_whitespaces)
     |> concat(choice([parsec(:cycle_values), parsec(:last_cycle_value)]))
     |> tag(:cycle)
     |> optional(parsec(:__parse__))
