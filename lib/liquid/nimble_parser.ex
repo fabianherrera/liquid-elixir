@@ -73,11 +73,7 @@ defmodule Liquid.NimbleParser do
   defparsec(:decrement, Decrement.tag())
   defparsec(:increment, Increment.tag())
 
-  defparsecp(:open_tag_comment, Comment.open_tag())
-  defparsecp(:close_tag_comment, Comment.close_tag())
-  defparsecp(:not_close_tag_comment, Comment.not_close_tag_comment())
   defparsecp(:comment_content, Comment.comment_content())
-  defparsecp(:comment_body, Comment.comment_body())
   defparsec(:comment, Comment.tag())
 
   defparsec(:cycle_group, Cycle.cycle_group())
@@ -85,9 +81,6 @@ defmodule Liquid.NimbleParser do
   defparsec(:cycle_values, Cycle.cycle_values())
   defparsec(:cycle, Cycle.tag())
 
-  defparsec(:open_tag_raw, Raw.open_tag())
-  defparsec(:close_tag_raw, Raw.close_tag())
-  defparsecp(:not_close_tag_raw, Raw.not_close_tag_raw())
   defparsec(:raw_content, Raw.raw_content())
   defparsec(:raw, Raw.tag())
 
@@ -112,9 +105,6 @@ defmodule Liquid.NimbleParser do
   defparsecp(:tablerow_sentences, Tablerow.tablerow_sentences())
   defparsec(:tablerow, Tablerow.tag())
 
-  defparsec(:open_tag_case, Case.open_tag())
-  defparsec(:close_tag_case, Case.close_tag())
-  defparsec(:when_tag, Case.when_tag())
   defparsec(:case, Case.tag())
 
   defparsec(
