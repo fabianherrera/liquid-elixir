@@ -295,9 +295,6 @@ defmodule Liquid.Combinators.General do
   start char: ':' plus optional: parameters values [value]
   """
   def filter do
-    # |> tag(:filter)
-    # |> parsec(:variable_definition)
-    # empty()
     parsec(:ignore_whitespaces)
     |> ignore(string(@start_filter))
     |> parsec(:ignore_whitespaces)
