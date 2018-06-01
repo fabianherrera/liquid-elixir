@@ -53,21 +53,21 @@ defmodule Liquid.Combinators.LexicalTokenTest do
   end
 
   test "range values" do
-    test_combinator("(10..1)", &Parser.range_value/1, range_value: [start: 10, end: 1])
-    test_combinator("(-10..1)", &Parser.range_value/1, range_value: [start: -10, end: 1])
-    test_combinator("(1..10)", &Parser.range_value/1, range_value: [start: 1, end: 10])
-    test_combinator("(1..var)", &Parser.range_value/1, range_value: [start: 1, end: "var"])
+    test_combinator("(10..1)", &Parser.value/1, value: {:range, [start: 10, end: 1]})
+    test_combinator("(-10..1)", &Parser.value/1, value: {:range, [start: -10, end: 1]})
+    test_combinator("(1..10)", &Parser.value/1, value: {:range, [start: 1, end: 10]})
+    test_combinator("(1..var)", &Parser.value/1, value: {:range, [start: 1, end: {:variable, ["var"]}]})
 
     test_combinator(
-      "(var..10)",
-      &Parser.range_value/1,
-      range_value: [{:start, "var"}, {:end, 10}]
+      "(var[0]..10)",
+      &Parser.value/1,
+      value: {:range, [start: {:variable, ["var", {:index, 0}]}, end: 10]}
     )
 
     test_combinator(
-      "(var1..var2)",
-      &Parser.range_value/1,
-      range_value: [{:start, "var1"}, {:end, "var2"}]
+      "(var1[0].var2[0]..var3[0])",
+      &Parser.value/1,
+      value: {:range, [start: {:variable, ["var1", {:index, 0}, "var2", {:index, 0}]}, end: {:variable, ["var3", {:index, 0}]}]}
     )
   end
 

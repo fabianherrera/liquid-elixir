@@ -104,7 +104,7 @@ defmodule Liquid.Combinators.Tags.For do
     |> parsec(:ignore_whitespaces)
     |> ignore(string("in"))
     |> parsec(:ignore_whitespaces)
-    |> choice([parsec(:range_value), parsec(:value)])
+    |> parsec(:value)
     |> optional(
       times(
         choice([offset_param(), reversed_param(), limit_param()]),

@@ -67,7 +67,7 @@ defmodule Liquid.Combinators.Tags.Tablerow do
     |> parsec(:ignore_whitespaces)
     |> ignore(string("in"))
     |> parsec(:ignore_whitespaces)
-    |> choice([parsec(:range_value), parsec(:value)])
+    |> parsec(:value)
     |> optional(
       times(choice([parsec(:offset_param), parsec(:cols_param), parsec(:limit_param)]), min: 1)
     )

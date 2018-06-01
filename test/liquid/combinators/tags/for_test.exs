@@ -137,7 +137,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
         for: [
           for_collection: [
             variable_name: "i",
-            range_value: [start: 1, end: 10]
+            value: {:range, [start: 1, end: 10]}
           ],
           for_body: [variable: ["i"]]
         ]
@@ -152,7 +152,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
       for: [
         for_collection: [
           variable_name: "i",
-          range_value: [start: "my_var", end: 10]
+          value: {:range, [start: {:variable, ["my_var"]}, end: 10]}
         ],
         for_body: [variable: ["i"]]
       ]
@@ -166,7 +166,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
       for: [
         for_collection: [
           variable_name: "i",
-          range_value: [start: "my_var", end: 10]
+          value: {:range, [start: {:variable, ["my_var"]}, end: 10]}
         ],
         for_body: [variable: ["i"], break: []]
       ]
@@ -180,7 +180,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
       for: [
         for_collection: [
           variable_name: "i",
-          range_value: [start: 1, end: "my_var"]
+          value: {:range, [start: 1, end: {:variable, ["my_var"]}]}
         ],
         for_body: [variable: ["i"], continue: []]
       ]
@@ -194,7 +194,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
     )
 
     test_combinator_error(
-      "{% for i in (my_var..product.title[2]) %}{{ i }}{% else %}{% endfor %}",
+      "{% for i in (my_var..) %}{{ i }}{% else %}{% endfor %}",
       &Parser.for/1
     )
   end
