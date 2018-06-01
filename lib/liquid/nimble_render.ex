@@ -288,9 +288,18 @@ defmodule Liquid.NimbleRender do
     %Liquid.Block{name: :comment, blank: true, strict: false}
   end
 
-  defp process_node({:for, [for_collection: for_collection, for_body: for_body, else: else_body]}) do
-    markup = process_markup(for_collection)
+  defp process_node({:include, markup}) do
+    markup = process_include_markup(markup)
+    Liquid.Include.parse(%Tag{markup: markup, name: :include})
+#    %Liquid.Tag{
+#      attributes: markup,
+#      markup: markup,
+#      name: :include,
+#      parts: "temp"}
+  end
 
+  defp process_node({:for, [for_collection: for_collection, for_body: for_body, else: else_body]}) do
+    markup = process_for_markup(for_collection)
     %Liquid.Block{
       elselist: fixer_for_types_no_list(process_node(else_body)),
       iterator: process_iterator(%Block{markup: markup}),
@@ -301,8 +310,7 @@ defmodule Liquid.NimbleRender do
   end
 
   defp process_node({:for, [for_collection: for_collection, for_body: for_body]}) do
-    markup = process_markup(for_collection)
-
+    markup = process_for_markup(for_collection)
     %Liquid.Block{
       iterator: process_iterator(%Block{markup: markup}),
       markup: markup,
@@ -392,6 +400,7 @@ defmodule Liquid.NimbleRender do
   end
 
   defp process_markup(for_collection) do
+  defp process_for_markup(for_collection) do
     variable = Keyword.get(for_collection, :variable_name)
     value = concat_for_value_in_markup(Keyword.get(for_collection, :value))
     range_value = concat_for_value_in_markup(Keyword.get(for_collection, :range_value))
@@ -480,4 +489,21 @@ defmodule Liquid.NimbleRender do
   defp fixer_for_types_only_list(element) do
     if is_list(element), do: element, else: [element]
   end
+
+  def process_include_markup([snippet: [snippet]]), do: snippet
+
+  def process_include_markup([snippet: [snippet], with_param: [variable: [variable]]]), do: "#{snippet} with #{variable}"
+
+  def process_include_markup([snippet: [snippet], for_param: [variable: [variable]]]), do: "#{snippet} for #{variable}"
+
+  def process_include_markup([snippet: [snippet], variables: variables]) do
+    parts = Enum.map(variables, &concat_include_variables_in_markup(&1))
+    variables = Enum.join(parts, ", ")
+    "#{snippet}, #{variables}"
+  end
+
+  defp concat_include_variables_in_markup({:variable, [variable_name: [variable], value: value]}), do: "#{variable} '#{value}'"
+
+  defp concat_include_variables_in_markup({:variable, [variable_name: [variable], value: {:variable, [value]}]}), do: "#{variable} #{value}"
+
 end

@@ -8,12 +8,16 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
     test_combinator(
       "{% include 'snippet', my_variable: 'apples', my_other_variable: 'oranges' %}",
       &Parser.include/1,
-      include: [
-        snippet: ["'snippet'"],
-        variables: [variable_name: ["my_variable:"], value: "apples"],
-        variables: [
-          variable_name: ["my_other_variable:"],
-          value: "oranges"
+      [
+        include: [
+          snippet: ["'snippet'"],
+          variables: [
+            variable: [variable_name: ["my_variable:"], value: "apples"],
+            variable: [
+              variable_name: ["my_other_variable:"],
+              value: "oranges"
+            ]
+          ]
         ]
       ]
     )

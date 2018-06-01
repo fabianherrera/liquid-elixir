@@ -15,6 +15,13 @@ defmodule Liquid.Include do
     {%{tag | attributes: attributes}, template}
   end
 
+  def parse(%Tag{markup: markup} = tag) do
+    [parts | _] = syntax() |> Regex.scan(markup)
+    tag = parse_tag(tag, parts)
+    attributes = parse_attributes(markup)
+    %{tag | attributes: attributes}
+  end
+
   defp parse_tag(%Tag{} = tag, parts) do
     case parts do
       [_, name] ->
