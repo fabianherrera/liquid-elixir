@@ -1,4 +1,24 @@
 defmodule Liquid.Combinators.Tags.Case do
+  @moduledoc """
+  Creates a switch statement to compare a variable against different values.
+  `case` initializes the switch statement, and `when` compares its values.
+  Input:
+  ```
+    {% assign handle = 'cake' %}
+    {% case handle %}
+    {% when 'cake' %}
+      This is a cake
+    {% when 'cookie' %}
+      This is a cookie
+    {% else %}
+      This is not a cake nor a cookie
+    {% endcase %}
+  ```
+  Output:
+  ```
+    This is a cake
+  ```
+  """
   import NimbleParsec
   alias Liquid.Combinators.Tag
 
