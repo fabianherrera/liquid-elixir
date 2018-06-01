@@ -19,17 +19,14 @@ defmodule Liquid.Combinators.Tags.Comment do
 
   def comment_content do
     empty()
-    |> repeat_until(utf8_char([]), [
-      string(General.codepoints().start_tag)
-    ])
+    |> repeat_until(utf8_char([]), [string(General.codepoints().start_tag)])
     |> choice([close_tag(), not_close_tag()])
     |> reduce({List, :to_string, []})
-    |> tag(:comment_content)
   end
 
   def tag do
     open_tag()
-    |> concat(parsec(:comment_content))
+    |> comment_body()
     |> tag(:comment)
     |> optional(parsec(:__parse__))
   end
@@ -50,7 +47,13 @@ defmodule Liquid.Combinators.Tags.Comment do
 
   defp not_close_tag do
     empty()
-    |> ignore(utf8_char([]))
+    |> string(General.codepoints().start_tag)
     |> parsec(:comment_content)
+  end
+
+  defp comment_body(combinator) do
+    combinator
+    |> parsec(:comment_content)
+    |> tag(:comment_body)
   end
 end

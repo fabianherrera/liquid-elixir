@@ -1,4 +1,4 @@
-efmodule Liquid.NimbleTranslator do
+defmodule Liquid.NimbleTranslator do
   @moduledoc """
   Intermediate Render Liquid module, it serves as render-nimble_parse interface
   """
