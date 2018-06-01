@@ -15,7 +15,6 @@ defmodule Liquid.NimbleParser do
     Raw,
     Cycle,
     If,
-    Unless,
     For,
     Tablerow,
     Case,
@@ -78,6 +77,7 @@ defmodule Liquid.NimbleParser do
   defparsecp(:close_tag_comment, Comment.close_tag())
   defparsecp(:not_close_tag_comment, Comment.not_close_tag_comment())
   defparsecp(:comment_content, Comment.comment_content())
+  defparsecp(:comment_body, Comment.comment_body())
   defparsec(:comment, Comment.tag())
 
   defparsec(:cycle_group, Cycle.cycle_group())
@@ -98,21 +98,11 @@ defmodule Liquid.NimbleParser do
   defparsec(:else_tag, If.else_tag())
   defparsec(:unless, If.unless_tag())
 
-  defparsecp(:forloop_index0, For.forloop_index0())
-  defparsecp(:forloop_index, For.forloop_index())
-  defparsecp(:forloop_last, For.forloop_last())
-  defparsecp(:forloop_length, For.forloop_length())
-  defparsecp(:forloop_rindex, For.forloop_rindex())
-  defparsecp(:forloop_rindex0, For.forloop_rindex0())
-  defparsecp(:forloop_first, For.forloop_first())
   defparsecp(:forloop_variables, For.forloop_variables())
   defparsecp(:offset_param, For.offset_param())
   defparsecp(:limit_param, For.limit_param())
-  defparsecp(:reversed_param, For.reversed_param())
-  defparsecp(:else_tag_for, For.else_tag())
-  defparsecp(:for_body, For.for_body())
-  defparsec(:break_tag_for, For.break_tag())
-  defparsec(:continue_tag_for, For.continue_tag())
+  defparsec(:break_tag, For.break_tag())
+  defparsec(:continue_tag, For.continue_tag())
   defparsec(:for, For.tag())
 
   defparsecp(:cols_param, Tablerow.cols_param())
@@ -138,8 +128,8 @@ defmodule Liquid.NimbleParser do
       parsec(:raw),
       parsec(:comment),
       parsec(:for),
-      parsec(:break_tag_for),
-      parsec(:continue_tag_for),
+      parsec(:break_tag),
+      parsec(:continue_tag),
       parsec(:if),
       parsec(:unless),
       parsec(:tablerow),
