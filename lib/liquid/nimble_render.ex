@@ -147,11 +147,12 @@ defmodule Liquid.NimbleRender do
 
   defp process_node({:include, markup}) do
     markup = process_include_markup(markup)
-    %Liquid.Tag{
-      attributes: Liquid.Tag.parser(markup),
-      markup: markup,
-      name: :include,
-      parts: "temp"}
+    Liquid.Include.parse(%Tag{markup: markup, name: :include})
+#    %Liquid.Tag{
+#      attributes: markup,
+#      markup: markup,
+#      name: :include,
+#      parts: "temp"}
   end
 
   defp process_node({:for, [for_collection: for_collection, for_body: for_body, else: else_body]}) do
@@ -184,7 +185,7 @@ defmodule Liquid.NimbleRender do
     |> String.replace(".[", "[")
   end
 
-  defp variable_parts(list) do
+  def variable_parts(list) do
     Enum.map(list, &variable_in_parts(&1))
   end
 
@@ -264,58 +265,18 @@ defmodule Liquid.NimbleRender do
     if is_list(element), do: element, else: [element]
   end
 
-  defp process_include_markup(include_markup) do
-    snippet = Keyword.get(include_markup, :snippet)
-    value = concat_for_value_in_markup(Keyword.get(include_markup, :value))
-    range_value = concat_for_value_in_markup(Keyword.get(include_markup, :range_value))
-    for_param = concat_for_params_in_markup(include_markup)
-    "#{snippet} in #{value}#{range_value}" <> for_param
+  def process_include_markup([snippet: [snippet]]), do: snippet
+
+  def process_include_markup([snippet: [snippet], with_param: [variable: [variable]]]), do: "#{snippet} with #{variable}"
+
+  def process_include_markup([snippet: [snippet], for_param: [variable: [variable]]]), do: "#{snippet} for #{variable}"
+
+  def process_include_markup([snippet: [snippet], variables: variables]) do
+    parts = Enum.map(variables, &concat_include_variables_in_markup(&1))
+    variables = Enum.join(parts, ", ")
+    "#{snippet}, #{variables}"
   end
 
+  defp concat_include_variables_in_markup({:variable, [variable_name: [variable], value: value]}), do: "#{variable} #{value}"
 
 end
-
-#%Liquid.Template{
-#  blocks: [],
-#  errors: [],
-#  presets: %{},
-#  root: %Liquid.Block{
-#    blank: false,
-#    condition: nil,
-#    elselist: [],
-#    iterator: [],
-#    markup: nil,
-#    name: :document,
-#    nodelist: [
-#      %Liquid.Tag{
-#        attributes: %{
-#          "my_other_variable" => %Liquid.Variable{
-#            filters: [],
-#            literal: "oranges",
-#            name: "'oranges'",
-#            parts: []
-#          },
-#          "my_variable" => %Liquid.Variable{
-#            filters: [],
-#            literal: "apples",
-#            name: "'apples'",
-#            parts: []
-#          }
-#        },
-#        blank: false,
-#        markup: "'snippet', my_variable: 'apples', my_other_variable: 'oranges'",
-#        name: :include,
-#        parts: [
-#          name: %Liquid.Variable{
-#            filters: [],
-#            literal: "snippet",
-#            name: "'snippet'",
-#            parts: []
-#          }
-#        ]
-#      }
-#    ],
-#    parts: [],
-#    strict: true
-#  }
-#}
