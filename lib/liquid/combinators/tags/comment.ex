@@ -26,7 +26,7 @@ defmodule Liquid.Combinators.Tags.Comment do
 
   def tag do
     open_tag()
-    |> comment_body()
+    |> concat(comment_content())
     |> tag(:comment)
     |> optional(parsec(:__parse__))
   end
@@ -49,11 +49,5 @@ defmodule Liquid.Combinators.Tags.Comment do
     empty()
     |> string(General.codepoints().start_tag)
     |> parsec(:comment_content)
-  end
-
-  defp comment_body(combinator) do
-    combinator
-    |> parsec(:comment_content)
-    |> tag(:comment_body)
   end
 end
