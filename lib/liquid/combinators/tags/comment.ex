@@ -1,4 +1,4 @@
-ddefmodule Liquid.Combinators.Tags.Comment do
+defmodule Liquid.Combinators.Tags.Comment do
   @moduledoc """
   Allows you to leave un-rendered code inside a Liquid template.
   Any text within the opening and closing comment blocks will not be output,
@@ -43,11 +43,13 @@ ddefmodule Liquid.Combinators.Tags.Comment do
     empty()
     |> parsec(:comment_content)
     |> tag(:comment_body)
+  end
 
   def comment_content do
     empty()
     |> repeat_until(utf8_char([]), [string(General.codepoints().start_tag)])
     |> choice([parsec(:close_tag_comment), parsec(:not_close_tag_comment)])
+    |> reduce({List, :to_string, []})
   end
 
   def tag do

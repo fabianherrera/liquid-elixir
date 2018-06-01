@@ -64,10 +64,6 @@ defmodule Liquid.NimbleRender do
   defp process_node(nodelist) when is_list(nodelist) do
     me = self()
 
-<<<<<<< HEAD
-    # |> remove_empty_items()
-=======
->>>>>>> upstream/WIP
     nodelist
     |> Enum.map(fn elem ->
       spawn_link(fn -> send(me, {self(), process_node(elem)}) end)
@@ -190,7 +186,6 @@ defmodule Liquid.NimbleRender do
     end
   end
 
-<<<<<<< HEAD
   defp process_node({:raw, markup}) do
     value = markup |> hd
     %Liquid.Block{name: :raw, nodelist: value, strict: false}
@@ -201,35 +196,33 @@ defmodule Liquid.NimbleRender do
   end
 
   defp process_node({:if, markup}) do
-    if_list = Enum.filter(markup, fn x -> is_tuple(x) end)
-    variable_list = Keyword.get_values(if_list, :variable)
-    parts = Enum.map(variable_list, &variable_in_parts(&1))
-    variable_name = variable_to_string(parts)
+    nodelist = Enum.filter(markup, &not_open_if(&1))
+
+    if_list =
+      Enum.filter(markup, fn x -> is_tuple(x) and x |> elem(0) == :open_if end)
+      |> Keyword.get(:open_if)
+
+    markup_list = if_markup_to_string(if_list)
+
+    markup_string = List.to_string(markup_list)
+
+    block = %Liquid.Block{
+      name: :if,
+      markup: markup_string,
+      nodelist: process_node(nodelist)
+    }
+
+    Liquid.IfElse.parse_conditions(block)
+
+    # variable_list = Keyword.get_values(if_list, :variable) |> List.flatten()
+    # logical_list = Keyword.take(if_list, [:logical])
+    # logical_strings = process_node(logical_list)
+
+    # markup_string = List.to_string([variable_name, logical_strings])
 
     # list = process_node(markup)
 
     # if_list =
-    #   Enum.map(list, fn x ->
-    #     case x do
-    #       %Liquid.Variable{} ->
-    #         condition_markup = Map.get(x, :name)
-    #         condition_struct = %Liquid.Condition{left: x}
-    #         condition_markup
-
-    #       {key, values} ->
-    #         if is_tuple(key) do
-    #           {condition_struct, condition_markup} = key
-    #           "#{condition_markup} #{values}"
-    #         else
-    #           condition_struct = key
-    #           condition_markup = values
-    #           "#{condition_markup} #{condition_struct}"
-    #         end
-
-    #       values ->
-    #         values
-    #     end
-    #   end)
 
     #   case list do
     #     [condition, nodelist] ->
@@ -318,7 +311,7 @@ defmodule Liquid.NimbleRender do
     variable_list = content |> elem(1)
     parts = Enum.map(variable_list, &variable_in_parts(&1))
     name = variable_to_string(parts)
-    "#{key} #{name}"
+    " #{key} #{name}"
     # condition = process_node(content)
 
     # cond do
@@ -343,6 +336,8 @@ defmodule Liquid.NimbleRender do
 
   defp process_node(:else, markup) do
     markup
+  end
+
   defp process_node({:include, markup}) do
     variable_name = Keyword.get(markup, :variable_name)
     %Liquid.Tag{name: :decrement, markup: "#{variable_name}"}
@@ -354,6 +349,7 @@ defmodule Liquid.NimbleRender do
 
   defp process_node({:for, [for_collection: for_collection, for_body: for_body, else: else_body]}) do
     markup = process_markup(for_collection)
+
     %Liquid.Block{
       elselist: fixer_for_types_no_list(process_node(else_body)),
       iterator: process_iterator(%Block{markup: markup}),
@@ -365,6 +361,7 @@ defmodule Liquid.NimbleRender do
 
   defp process_node({:for, [for_collection: for_collection, for_body: for_body]}) do
     markup = process_markup(for_collection)
+
     %Liquid.Block{
       iterator: process_iterator(%Block{markup: markup}),
       markup: markup,
@@ -377,12 +374,12 @@ defmodule Liquid.NimbleRender do
     any
   end
 
-  defp variable_to_string(variable_in_parts) do
+  def variable_to_string(variable_in_parts) do
     Enum.join(variable_in_parts, ".")
     |> String.replace(".[", "[")
   end
 
-  defp variable_in_parts(value) do
+  def variable_in_parts(value) do
     cond do
       is_binary(value) == true ->
         "#{value}"
@@ -436,6 +433,18 @@ defmodule Liquid.NimbleRender do
     end
   end
 
+  defp not_open_if(value) when is_binary(value) or is_number(value) or is_boolean(value) do
+    true
+  end
+
+  defp not_open_if(value) when is_tuple(value) do
+    if value |> elem(0) == :open_if do
+      false
+    else
+      true
+    end
+  end
+
   defp process_iterator(%Block{markup: markup}) do
     Liquid.ForElse.parse_iterator(%Block{markup: markup})
   end
@@ -473,6 +482,51 @@ defmodule Liquid.NimbleRender do
 
     reversed_string = if is_nil(reversed_param), do: "", else: " reversed"
     "#{reversed_string}#{offset_string}#{limit_string}"
+  end
+
+  defp if_markup_to_string(if_list) do
+    Enum.map(if_list, fn x ->
+      case x do
+        {:variable, value} ->
+          parts = Enum.map(value, &variable_in_parts(&1))
+          variable_name = variable_to_string(parts)
+          variable_name
+
+        {:logical, values} ->
+          [logical_op, content] = values
+
+          if is_tuple(content) do
+            variable_name = content |> elem(1)
+            variable_name
+          else
+            variable_name = "#{content}"
+          end
+
+          " #{logical_op} #{variable_name}"
+
+        {:condition, {left, operator, right}} ->
+          if is_tuple(left) do
+            variable_list_left = left |> elem(1)
+            parts_left = Enum.map(variable_list_left, &variable_in_parts(&1))
+            variable_name_left = variable_to_string(parts_left)
+          else
+            variable_name_left = "#{left}"
+          end
+
+          if is_tuple(right) do
+            variable_list_right = right |> elem(1)
+            parts_right = Enum.map(variable_list_right, &variable_in_parts(&1))
+            variable_name_right = variable_to_string(parts_right)
+          else
+            variable_name_right = "#{right}"
+          end
+
+          "#{variable_name_left} #{operator} #{variable_name_right}"
+
+        value ->
+          " #{value}"
+      end
+    end)
   end
 
   # fix current parser for tag bug and compatibility

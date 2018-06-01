@@ -171,7 +171,7 @@ defmodule Liquid.Combinators.LexicalToken do
 
   def object_value do
     parsec(:variable_definition)
-    |> optional(choice([times(list_index(), min: 1), parsec(:object_property), parsec(:filter)]))
+    |> optional(choice([times(list_index(), min: 1), parsec(:object_property)]))
   end
 
   defp list_definition do
@@ -189,6 +189,36 @@ defmodule Liquid.Combinators.LexicalToken do
     |> parsec(:ignore_whitespaces)
     |> ignore(string("]"))
     |> unwrap_and_tag(:index)
-    |> optional(choice([parsec(:object_property), parsec(:filter)]))
+    |> optional(parsec(:object_property))
   end
 end
+
+#   def object_property do
+#     string(".")
+#     |> ignore()
+#     |> parsec(:object_value)
+#   end
+
+#   def object_value do
+#     parsec(:variable_definition)
+#     |> optional(choice([times(list_index(), min: 1), parsec(:object_property), parsec(:filter)]))
+#   end
+
+#   defp list_definition do
+#     choice([
+#       integer_value(),
+#       parsec(:variable_value)
+#     ])
+#   end
+
+#   defp list_index do
+#     string("[")
+#     |> ignore()
+#     |> parsec(:ignore_whitespaces)
+#     |> concat(optional(list_definition()))
+#     |> parsec(:ignore_whitespaces)
+#     |> ignore(string("]"))
+#     |> unwrap_and_tag(:index)
+#     |> optional(choice([parsec(:object_property), parsec(:filter)]))
+#   end
+# end
