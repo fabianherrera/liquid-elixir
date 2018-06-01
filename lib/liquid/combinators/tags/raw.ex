@@ -14,26 +14,18 @@ defmodule Liquid.Combinators.Tags.Raw do
   In Handlebars, {{ this }} will be HTML-escaped, but {{{ that }}} will not.
   ```
   """
-  alias Liquid.Combinators.General
   import NimbleParsec
+  alias Liquid.Combinators.General
+  alias Liquid.Combinators.Tag
 
-  @doc "Open raw tag: {% raw %}"
-  def open_tag do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string("raw"))
-    |> concat(parsec(:end_tag))
-  end
-
-  @doc "Close raw tag: {% endraw %}"
-  def close_tag do
+  defp close_tag do
     empty()
     |> parsec(:start_tag)
     |> ignore(string("endraw"))
     |> concat(parsec(:end_tag))
   end
 
-  def not_close_tag_raw do
+  defp not_close_tag do
     empty()
     |> ignore(utf8_char([]))
     |> parsec(:raw_content)
@@ -44,16 +36,12 @@ defmodule Liquid.Combinators.Tags.Raw do
     |> repeat_until(utf8_char([]), [
       string(General.codepoints().start_tag)
     ])
-    |> choice([parsec(:close_tag_raw), parsec(:not_close_tag_raw)])
+    |> choice([close_tag(), not_close_tag()])
     |> reduce({List, :to_string, []})
     |> tag(:raw_content)
   end
 
   def tag do
-    empty()
-    |> parsec(:open_tag_raw)
-    |> concat(parsec(:raw_content))
-    |> tag(:raw)
-    |> optional(parsec(:__parse__))
+    Tag.define_closed("raw", & &1, fn combinator -> parsec(combinator, :raw_content) end)
   end
 end
