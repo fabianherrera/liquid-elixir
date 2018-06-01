@@ -78,9 +78,7 @@ defmodule Liquid.NimbleParser do
   defparsec(:cycle_values, Cycle.cycle_values())
   defparsec(:cycle, Cycle.tag())
 
-  defparsec(:tag_inside_raw, Raw.tag_inside_raw())
-  defparsec(:close_tag_raw, Raw.close_tag())
-  defparsec(:raw_body, Raw.body(empty()))
+  defparsecp(:raw_content, Raw.raw_content())
   defparsec(:raw, Raw.tag())
 
   defparsecp(:var_assignment, Include.var_assignment())
