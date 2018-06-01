@@ -9,7 +9,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       "{% case condition %}{% when 1 %} its 1 {% when 2 %} its 2 {% endcase %}",
       &Parser.case/1,
       [
-        {:case, [{:variable, ["condition"]}, {:when, [1, "its 1 "]}, {:when, [2, "its 2 "]}]}
+        {:case, [{:variable, ["condition"]}, {:when, [1, " its 1 "]}, {:when, [2, " its 2 "]}]}
       ]
     )
   end
@@ -18,7 +18,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
     test_combinator(
       "{% case condition %}{% when \"string here\" %} hit {% endcase %}",
       &Parser.case/1,
-      [{:case, [{:variable, ["condition"]}, {:when, ["string here", "hit "]}]}]
+      [{:case, [{:variable, ["condition"]}, {:when, ["string here", " hit "]}]}]
     )
   end
 
@@ -33,7 +33,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       "{% case condition %}{% when 5 %} hit {% else %} else {% endcase %}",
       &Parser.case/1,
       [
-        {:case, [{:variable, ["condition"]}, {:when, [5, "hit "]}, {:else, [" else "]}]}
+        {:case, [{:variable, ["condition"]}, {:when, [5, " hit "]}, {:else, [" else "]}]}
       ]
     )
   end
@@ -46,8 +46,8 @@ defmodule Liquid.Combinators.Tags.CaseTest do
         {:case,
          [
            {:variable, ["condition"]},
-           {:when, [1, {:logical, [:or, 2]}, {:logical, [:or, 3]}, "its 1 or 2 or 3 "]},
-           {:when, [4, "its 4 "]}
+           {:when, [1, {:logical, [:or, 2]}, {:logical, [:or, 3]}, " its 1 or 2 or 3 "]},
+           {:when, [4, " its 4 "]}
          ]}
       ]
     )
@@ -59,8 +59,8 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       &Parser.case/1,
       case: [
         variable: ["condition"],
-        when: [1, 44, 2, 44, 3, "its 1 or 2 or 3 "],
-        when: [4, "its 4 "]
+        when: [1, 44, 2, 44, 3, " its 1 or 2 or 3 "],
+        when: [4, " its 4 "]
       ]
     )
   end
@@ -71,8 +71,8 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       &Parser.case/1,
       case: [
         variable: ["condition"],
-        when: [1, 44, "string", 44, nil, "its 1 or 2 or 3 "],
-        when: [4, "its 4 "]
+        when: [1, 44, "string", 44, nil, " its 1 or 2 or 3 "],
+        when: [4, " its 4 "]
       ]
     )
   end

@@ -112,9 +112,6 @@ defmodule Liquid.NimbleParser do
   defparsecp(:tablerow_sentences, Tablerow.tablerow_sentences())
   defparsec(:tablerow, Tablerow.tag())
 
-  defparsec(:open_tag_case, Case.open_tag())
-  defparsec(:close_tag_case, Case.close_tag())
-  defparsec(:when_tag, Case.when_tag())
   defparsec(:case, Case.tag())
 
   defparsec(
