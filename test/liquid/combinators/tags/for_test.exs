@@ -134,12 +134,14 @@ defmodule Liquid.Combinators.Tags.ForTest do
       test_combinator(
         tag,
         &Parser.for/1,
-        for: [
-          for_collection: [
-            variable_name: "i",
-            value: {:range, [start: 1, end: 10]}
-          ],
-          for_body: [variable: ["i"]]
+        [
+          for: [
+            for_collection: [
+              variable_name: "i",
+              value: {:range, [start: 1, end: 10]}
+            ],
+            for_body: [liquid_variable: [variable: ["i"]]]
+          ]
         ]
       )
     end)
@@ -149,12 +151,14 @@ defmodule Liquid.Combinators.Tags.ForTest do
     test_combinator(
       "{% for i in (my_var..10) %}{{ i }}{% endfor %}",
       &Parser.for/1,
-      for: [
-        for_collection: [
-          variable_name: "i",
-          value: {:range, [start: {:variable, ["my_var"]}, end: 10]}
-        ],
-        for_body: [variable: ["i"]]
+      [
+        for: [
+          for_collection: [
+            variable_name: "i",
+            value: {:range, [start: {:variable, ["my_var"]}, end: 10]}
+          ],
+          for_body: [liquid_variable: [variable: ["i"]]]
+        ]
       ]
     )
   end
@@ -163,12 +167,14 @@ defmodule Liquid.Combinators.Tags.ForTest do
     test_combinator(
       "{% for i in (my_var..10) %}{{ i }}{% break %}{% endfor %}",
       &Parser.for/1,
-      for: [
-        for_collection: [
-          variable_name: "i",
-          value: {:range, [start: {:variable, ["my_var"]}, end: 10]}
-        ],
-        for_body: [variable: ["i"], break: []]
+      [
+        for: [
+          for_collection: [
+            variable_name: "i",
+            value: {:range, [start: {:variable, ["my_var"]}, end: 10]}
+          ],
+          for_body: [liquid_variable: [variable: ["i"]], break: []]
+        ]
       ]
     )
   end
@@ -177,12 +183,14 @@ defmodule Liquid.Combinators.Tags.ForTest do
     test_combinator(
       "{% for i in (1..my_var) %}{{ i }}{% continue %}{% endfor %}",
       &Parser.for/1,
-      for: [
-        for_collection: [
-          variable_name: "i",
-          value: {:range, [start: 1, end: {:variable, ["my_var"]}]}
-        ],
-        for_body: [variable: ["i"], continue: []]
+      [
+        for: [
+          for_collection: [
+            variable_name: "i",
+            value: {:range, [start: 1, end: {:variable, ["my_var"]}]}
+          ],
+          for_body: [liquid_variable: [variable: ["i"]], continue: []]
+        ]
       ]
     )
   end

@@ -13,4 +13,12 @@ defmodule Liquid.Combinators.Tags.RawTest do
       ]
     )
   end
+
+  test "raw with tags and variables in body" do
+    test_combinator(
+      "{% raw %} {% if true %} {% endraw %}",
+      &Parser.raw/1,
+      raw: [" {% if true %} "]
+    )
+  end
 end
