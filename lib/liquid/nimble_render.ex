@@ -152,6 +152,7 @@ defmodule Liquid.NimbleRender do
 
   defp process_node({:for, [for_collection: for_collection, for_body: for_body, else: else_body]}) do
     markup = process_markup(for_collection)
+
     %Liquid.Block{
       elselist: fixer_for_types_no_list(process_node(else_body)),
       iterator: process_iterator(%Block{markup: markup}),
@@ -163,6 +164,7 @@ defmodule Liquid.NimbleRender do
 
   defp process_node({:for, [for_collection: for_collection, for_body: for_body]}) do
     markup = process_markup(for_collection)
+
     %Liquid.Block{
       iterator: process_iterator(%Block{markup: markup}),
       markup: markup,

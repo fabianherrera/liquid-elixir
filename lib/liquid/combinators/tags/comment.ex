@@ -20,11 +20,11 @@ defmodule Liquid.Combinators.Tags.Comment do
   def comment_content do
     empty()
     |> repeat_until(utf8_char([]), [
-          string(General.codepoints().start_tag)
-        ])
-        |> choice([close_tag(), not_close_tag()])
-        |> reduce({List, :to_string, []})
-        |> tag(:comment_content)
+      string(General.codepoints().start_tag)
+    ])
+    |> choice([close_tag(), not_close_tag()])
+    |> reduce({List, :to_string, []})
+    |> tag(:comment_content)
   end
 
   def tag do

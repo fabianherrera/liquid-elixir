@@ -10,7 +10,6 @@ defmodule Liquid.Combinators.Tags.Capture do
   ```
   Capture is useful for saving content for use later in your template, such as in a sidebar or footer.
   """
-
   import NimbleParsec
   alias Liquid.Combinators.Tag
 

@@ -6,6 +6,18 @@ defmodule Liquid.Combinators.Tags.Include do
   alias Liquid.Combinators.General
   alias Liquid.Combinators.Tag
 
+  def tag do
+    Tag.define_open("include", &head/1)
+  end
+
+  def var_assignment do
+    General.cleaned_comma()
+    |> concat(variable_atom())
+    |> parsec(:value)
+    |> tag(:variables)
+    |> optional(parsec(:var_assignment))
+  end
+
   defp snippet do
     parsec(:ignore_whitespaces)
     |> concat(utf8_char([General.codepoints().single_quote]))
@@ -26,14 +38,6 @@ defmodule Liquid.Combinators.Tags.Include do
     |> tag(:variable_name)
   end
 
-  def var_assignment do
-    General.cleaned_comma()
-    |> concat(variable_atom())
-    |> parsec(:value)
-    |> tag(:variables)
-    |> optional(parsec(:var_assignment))
-  end
-
   defp with_param do
     empty()
     |> ignore(string("with"))
@@ -52,9 +56,5 @@ defmodule Liquid.Combinators.Tags.Include do
     combinator
     |> concat(snippet())
     |> optional(choice([with_param(), for_param(), var_assignment()]))
-  end
-
-  def tag do
-    Tag.define_open("include", &head/1)
   end
 end

@@ -20,11 +20,11 @@ defmodule Liquid.Combinators.Tags.Raw do
   def raw_content do
     empty()
     |> repeat_until(utf8_char([]), [
-          string(General.codepoints().start_tag)
-        ])
-        |> choice([close_tag(), not_close_tag()])
-        |> reduce({List, :to_string, []})
-        |> tag(:raw_content)
+      string(General.codepoints().start_tag)
+    ])
+    |> choice([close_tag(), not_close_tag()])
+    |> reduce({List, :to_string, []})
+    |> tag(:raw_content)
   end
 
   def tag do
