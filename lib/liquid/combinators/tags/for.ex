@@ -48,7 +48,7 @@ defmodule Liquid.Combinators.Tags.For do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.{General, Tag, Variable}
+  alias Liquid.Combinators.{General, Tag}
 
   def offset_param do
     empty()
