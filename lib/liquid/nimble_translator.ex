@@ -1,4 +1,4 @@
-defmodule Liquid.NimbleTranslator do
+efmodule Liquid.NimbleTranslator do
   @moduledoc """
   Intermediate Render Liquid module, it serves as render-nimble_parse interface
   """
@@ -30,7 +30,6 @@ defmodule Liquid.NimbleTranslator do
   def render({:ok, nodelist}) when is_list(nodelist) do
     me = self()
 
-    # |> remove_empty_items()
     list =
       nodelist
       |> Enum.map(fn elem ->
@@ -75,37 +74,10 @@ defmodule Liquid.NimbleTranslator do
     end)
   end
 
-  defp process_node({:liquid_variable, markup}) do
-    literal = markup |> hd
-
-    if is_tuple(literal) do
-      {key, value} = literal
-      literal_have_filters = Enum.any?(value, fn x -> have_filters(x) end)
-
-      if literal_have_filters == true do
-        variable_list = literal |> elem(1)
-        variable_name = variable_list |> hd
-        filters_list = Enum.filter(variable_list, fn x -> is_tuple(x) == true end)
-        filters = transform_filters(filters_list)
-        %Liquid.Variable{name: variable_name, parts: [variable_name], filters: filters}
-      else
-        variable_list = literal |> elem(1)
-        filters = transform_filters(markup)
-        parts = Enum.map(variable_list, &variable_in_parts(&1))
-        name = variable_to_string(parts)
-        %Liquid.Variable{name: name, parts: parts, filters: filters}
-      end
-    else
-      if is_number(literal) or is_boolean(literal) do
-        variable_name = "#{literal}"
-      else
-        variable_name = "'#{literal}'"
-      end
-
-      filters_list = Enum.filter(markup, fn x -> is_tuple(x) == true end)
-      filters = transform_filters(filters_list)
-      %Liquid.Variable{name: variable_name, literal: literal, filters: filters}
-    end
+  defp process_node({:variable, markup}) do
+    parts = variable_parts(markup)
+    name = variable_to_string(parts)
+    %Liquid.Variable{name: name, parts: parts}
   end
 
   defp process_node({:increment, markup}) do
@@ -134,44 +106,27 @@ defmodule Liquid.NimbleTranslator do
   defp process_node({:assign, markup}) do
     cond do
       length(markup) == 2 ->
-        [variable, value] = markup
-        variable_name = variable |> elem(1)
-        variable_tuple = value |> elem(1)
+        value = Keyword.get(markup, :value)
+        variable_name = Keyword.get(markup, :variable_name)
 
-        if is_tuple(variable_tuple) do
-          variable_value = variable_tuple |> elem(1)
-          string_variable = variable_value |> hd
-          filters_list = Enum.filter(variable_value, fn x -> is_tuple(x) == true end)
-
-          filters =
-            Keyword.get_values(filters_list, :filter)
-            |> Enum.map(&filters_to_string(&1))
-            |> List.to_string()
+        if is_tuple(value) do
+          variable = value |> elem(1)
+          string_variable = variable_parts(variable) |> variable_to_string()
 
           %Liquid.Tag{
             name: :assign,
-            markup: "#{variable_name} = #{string_variable} #{filters}",
+            markup: "#{variable_name} = #{string_variable}",
             blank: true
           }
         else
-          if is_number(variable_tuple) or is_boolean(variable_tuple) do
-            %Liquid.Tag{
-              name: :assign,
-              markup: "#{variable_name} = #{variable_tuple}",
-              blank: true
-            }
-          else
-            %Liquid.Tag{
-              name: :assign,
-              markup: "#{variable_name} = '#{variable_tuple}'",
-              blank: true
-            }
-          end
+          %Liquid.Tag{name: :assign, markup: "#{variable_name} = #{value}", blank: true}
         end
 
       length(markup) > 2 ->
-        variable_name = Keyword.get(markup, :variable_name)
         value = Keyword.get(markup, :value)
+        variable_name = Keyword.get(markup, :variable_name)
+        variable = value |> elem(1)
+        string_variable = variable_parts(variable) |> variable_to_string()
 
         filters =
           Keyword.get_values(markup, :filter)
@@ -180,79 +135,10 @@ defmodule Liquid.NimbleTranslator do
 
         %Liquid.Tag{
           name: :assign,
-          markup: "#{variable_name} = #{value} #{filters}",
+          markup: "#{variable_name} = #{string_variable} #{filters}",
           blank: true
         }
     end
-  end
-
-  defp process_node({:raw, markup}) do
-    value = markup |> hd
-    %Liquid.Block{name: :raw, nodelist: value, strict: false}
-  end
-
-  defp process_node({:comment, markup}) do
-    ""
-  end
-
-  defp process_node({:if, [if_condition: if_condition, body: body]}) do
-    nodelist = Enum.filter(body, &not_open_if(&1))
-
-    else_list =
-      Enum.filter(body, fn x ->
-        (is_tuple(x) and x |> elem(0) == :elsif) or (is_tuple(x) and x |> elem(0) == :else)
-      end)
-
-    markup_list = if_markup_to_string(if_condition)
-    markup_string = List.to_string(markup_list)
-
-    block = %Liquid.Block{
-      name: :if,
-      markup: markup_string,
-      nodelist: process_node(nodelist),
-      elselist: process_node(else_list)
-    }
-
-    Liquid.IfElse.parse_conditions(block)
-  end
-
-  defp process_node({:variable, markup}) do
-    filters_list = Enum.filter(markup, fn x -> have_filters(x) == true end)
-    filters = transform_filters(filters_list)
-    variable_list = Enum.filter(markup, fn x -> have_filters(x) == false end)
-    parts = Enum.map(variable_list, &variable_in_parts(&1))
-    name = variable_to_string(parts)
-    %Liquid.Variable{name: name, parts: parts, filters: filters}
-  end
-
-  defp process_node({:elsif, [if_condition: if_condition, body: body]}) do
-    nodelist = Enum.filter(body, &not_open_if(&1))
-
-    else_list =
-      Enum.filter(body, fn x ->
-        (is_tuple(x) and x |> elem(0) == :elsif) or (is_tuple(x) and x |> elem(0) == :else)
-      end)
-
-    markup_list = if_markup_to_string(if_condition)
-    markup_string = List.to_string(markup_list)
-
-    block = %Liquid.Block{
-      name: :if,
-      markup: markup_string,
-      nodelist: process_node(nodelist),
-      elselist: process_node(else_list)
-    }
-
-    Liquid.IfElse.parse_conditions(block)
-  end
-
-  defp process_node({:else, markup}) do
-    process_node(markup)
-  end
-
-  defp process_node({:include, markup}) do
-    variable_name = Keyword.get(markup, :variable_name)
-    %Liquid.Tag{name: :decrement, markup: "#{variable_name}"}
   end
 
   defp process_node({:comment, _markup}) do
@@ -262,6 +148,11 @@ defmodule Liquid.NimbleTranslator do
   defp process_node({:include, markup}) do
     markup = process_include_markup(markup)
     Liquid.Include.parse(%Tag{markup: markup, name: :include})
+    #    %Liquid.Tag{
+    #      attributes: markup,
+    #      markup: markup,
+    #      name: :include,
+    #      parts: "temp"}
   end
 
   defp process_node({:for, [for_collection: for_collection, for_body: for_body, else: else_body]}) do
@@ -292,6 +183,10 @@ defmodule Liquid.NimbleTranslator do
     |> String.replace(".[", "[")
   end
 
+  def variable_parts(list) do
+    Enum.map(list, &variable_in_parts(&1))
+  end
+
   def variable_in_parts(value) do
     cond do
       is_binary(value) == true ->
@@ -309,54 +204,14 @@ defmodule Liquid.NimbleTranslator do
     end
   end
 
-  defp filters_to_string({filter_name}) do
+  defp filters_to_string([filter_name]) do
     "| #{filter_name} "
   end
 
-  defp filters_to_string({filter_name, filter_param}) do
-    filter_param_value = filter_param |> elem(1)
-    value = Keyword.get(filter_param_value, :value)
-    "| #{filter_name}: '#{value}'"
-  end
-
-  defp transform_filters(filters_list) do
-    Keyword.get_values(filters_list, :filter)
-    |> Enum.map(&filters_to_list(&1))
-  end
-
-  defp filters_to_list({filter_name}) do
-    [String.to_atom(filter_name), []]
-  end
-
-  defp filters_to_list({filter_name, filter_param}) do
-    filter_param_value = filter_param |> elem(1)
-    value = Keyword.get(filter_param_value, :value)
-    [String.to_atom(filter_name), ["#{value}"]]
-  end
-
-  defp have_filters(value) when is_binary(value) or is_number(value) or is_boolean(value) do
-    false
-  end
-
-  defp have_filters(value) when is_tuple(value) do
-    if value |> elem(0) == :filter do
-      true
-    else
-      false
-    end
-  end
-
-  defp not_open_if(value) when is_binary(value) or is_number(value) or is_boolean(value) do
-    true
-  end
-
-  defp not_open_if(value) when is_tuple(value) do
-    if value |> elem(0) == :if_condition or value |> elem(0) == :else or
-         value |> elem(0) == :elsif do
-      false
-    else
-      true
-    end
+  defp filters_to_string([filter_name, filter_atom]) do
+    filter_param_value = filter_atom |> elem(1)
+    value = Keyword.get(filter_param_value, :value) |> variable_parts() |> variable_to_string()
+    "| #{filter_name}: #{value}"
   end
 
   defp process_iterator(%Block{markup: markup}) do
@@ -398,51 +253,6 @@ defmodule Liquid.NimbleTranslator do
     "#{reversed_string}#{offset_string}#{limit_string}"
   end
 
-  defp if_markup_to_string(if_list) do
-    Enum.map(if_list, fn x ->
-      case x do
-        {:variable, value} ->
-          parts = Enum.map(value, &variable_in_parts(&1))
-          variable_name = variable_to_string(parts)
-          variable_name
-
-        {:logical, values} ->
-          [logical_op, content] = values
-
-          if is_tuple(content) do
-            variable_name = content |> elem(1)
-            variable_name
-          else
-            variable_name = "#{content}"
-          end
-
-          " #{logical_op} #{variable_name}"
-
-        {:condition, {left, operator, right}} ->
-          if is_tuple(left) do
-            variable_list_left = left |> elem(1)
-            parts_left = Enum.map(variable_list_left, &variable_in_parts(&1))
-            variable_name_left = variable_to_string(parts_left)
-          else
-            variable_name_left = "#{left}"
-          end
-
-          if is_tuple(right) do
-            variable_list_right = right |> elem(1)
-            parts_right = Enum.map(variable_list_right, &variable_in_parts(&1))
-            variable_name_right = variable_to_string(parts_right)
-          else
-            variable_name_right = "#{right}"
-          end
-
-          "#{variable_name_left} #{operator} #{variable_name_right}"
-
-        value ->
-          " #{value}"
-      end
-    end)
-  end
-
   # fix current parser for tag bug and compatibility
   defp fixer_for_types_no_list(element) do
     if is_list(element), do: List.first(element), else: element
@@ -470,12 +280,11 @@ defmodule Liquid.NimbleTranslator do
   defp concat_include_variables_in_markup({:variable, [variable_name: [variable], value: value]}),
     do: "#{variable} '#{value}'"
 
-<<<<<<< HEAD:lib/liquid/nimble_render.ex
   defp concat_include_variables_in_markup(
          {:variable, [variable_name: [variable], value: {:variable, [value]}]}
        ),
        do: "#{variable} #{value}"
-=======
+
   defp process_node({:if, [if_condition: if_condition, body: body]}) do
     nodelist = Enum.filter(body, &not_open_if(&1))
 
@@ -528,7 +337,7 @@ defmodule Liquid.NimbleTranslator do
 
   defp not_open_if(value) when is_tuple(value) do
     if value |> elem(0) == :if_condition or value |> elem(0) == :else or
-    value |> elem(0) == :elsif do
+         value |> elem(0) == :elsif do
       false
     else
       true
@@ -643,5 +452,4 @@ defmodule Liquid.NimbleTranslator do
   defp process_node(any) do
     any
   end
->>>>>>> upstream/WIP:lib/liquid/nimble_translator.ex
 end
