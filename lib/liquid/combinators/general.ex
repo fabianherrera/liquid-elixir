@@ -244,7 +244,7 @@ defmodule Liquid.Combinators.General do
   def liquid_variable do
     start_variable()
     |> parsec(:value_definition)
-    |> optional(times(parsec(:filter), min: 1))
+    |> optional(times(parsec(:filters), min: 1))
     |> concat(end_variable())
     |> tag(:liquid_variable)
     |> optional(parsec(:__parse__))
