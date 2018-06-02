@@ -68,7 +68,10 @@ defmodule Liquid.NimbleTranslator do
       :comment -> Comment.translate(markup)
       :include -> Include.tranlate(markup)
       :for -> For.translate(markup)
+      :tablerow -> Tablerow.translate(markup)
 
+
+      # {:increment, markup} = elem -> Increment.translate(markup)
       # {:increment, markup} = elem -> Increment.translate(markup)
       # {:decrement, markup} = elem -> Decrement.translate(markup)
       # {:capture, markup} = elem -> Capture.translate(markup)
