@@ -22,6 +22,7 @@ defmodule Liquid.Combinators.GeneralTest do
     defparsec(:object_property, LexicalToken.object_property())
     defparsec(:variable_value, LexicalToken.variable_value())
     defparsec(:object_value, LexicalToken.object_value())
+    defparsec(:variable_part, LexicalToken.variable_part())
   end
 
   test "whitespace must parse 0x0020 and 0x0009" do

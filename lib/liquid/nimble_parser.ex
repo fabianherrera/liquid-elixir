@@ -50,6 +50,7 @@ defmodule Liquid.NimbleParser do
   defparsec(:string_value, LexicalToken.string_value())
   defparsec(:object_value, LexicalToken.object_value())
   defparsec(:variable_value, LexicalToken.variable_value())
+  defparsec(:variable_part, LexicalToken.variable_part())
 
   defp clean_empty_strings(_rest, args, context, _line, _offset) do
     result =
