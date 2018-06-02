@@ -14,25 +14,28 @@ defmodule Liquid.Combinators.Tags.AssignTest do
     ]
 
     Enum.each(tags, fn tag ->
-      test_combinator(tag, &Parser.assign/1, assign: [variable_name: "cart", value: 5])
+      test_combinator(tag, &Parser.assign/1, assign: [variable_name: ["cart"], value: 5])
     end)
 
     test_combinator(
       "{% assign cart = old_var %}",
       &Parser.assign/1,
-      assign: [variable_name: "cart", value: {:variable, ["old_var"]}]
+      assign: [
+        variable_name: ["cart"],
+        value: {:variable, [variable_parts: ["old_var"]]}
+      ]
     )
 
     test_combinator(
       "{% assign cart = 'empty cart' %}",
       &Parser.assign/1,
-      assign: [variable_name: "cart", value: "empty cart"]
+      assign: [variable_name: ["cart"], value: "empty cart"]
     )
 
     test_combinator(
       ~s({% assign cart = "empty cart" %}),
       &Parser.assign/1,
-      assign: [variable_name: "cart", value: "empty cart"]
+      assign: [variable_name: ["cart"], value: "empty cart"]
     )
   end
 
@@ -40,7 +43,8 @@ defmodule Liquid.Combinators.Tags.AssignTest do
     test_combinator(
       "{% assign cart = 5 %}{{ cart }}",
       &Parser.assign/1,
-      [assign: [variable_name: "cart", value: 5], liquid_variable: [variable: ["cart"]]]
+      assign: [variable_name: ["cart"], value: 5],
+      liquid_variable: [variable: [variable_parts: ["cart"]]]
     )
   end
 
@@ -49,8 +53,8 @@ defmodule Liquid.Combinators.Tags.AssignTest do
       "{% assign cart = product[0] %}",
       &Parser.assign/1,
       assign: [
-        variable_name: "cart",
-        value: {:variable, ["product", {:index, 0}]}
+        variable_name: ["cart"],
+        value: {:variable, [variable_parts: ["product", {:index, 0}]]}
       ]
     )
 
@@ -78,8 +82,8 @@ defmodule Liquid.Combinators.Tags.AssignTest do
       "{% assign cart = company.employees.first.name %}",
       &Parser.assign/1,
       assign: [
-        variable_name: "cart",
-        value: {:variable, ["company", "employees", "first", "name"]}
+        variable_name: ["cart"],
+        value: {:variable, [variable_parts: ["company", "employees", "first", "name"]]}
       ]
     )
 
@@ -87,8 +91,8 @@ defmodule Liquid.Combinators.Tags.AssignTest do
       "{% assign cart = company.managers[1].name %}",
       &Parser.assign/1,
       assign: [
-        variable_name: "cart",
-        value: {:variable, ["company", "managers", {:index, 1}, "name"]}
+        variable_name: ["cart"],
+        value: {:variable, [variable_parts: ["company", "managers", {:index, 1}, "name"]]}
       ]
     )
 
