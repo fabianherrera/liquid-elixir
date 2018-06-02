@@ -7,7 +7,12 @@ defmodule Liquid.NimbleTranslator do
   alias Liquid.Combinators.Translators.{
     Assign,
     LiquidVariable,
-    Cycle
+    Cycle,
+    Increment,
+    Decrement,
+    Capture,
+    Comment,
+    Include
   }
 
   @doc """
@@ -54,16 +59,16 @@ defmodule Liquid.NimbleTranslator do
     IO.inspect(markup)
 
     case tag do
-      :assign ->
-        Assign.translate(markup)
+      :assign -> Assign.translate(markup)
+      :liquid_variable -> LiquidVariable.translate(markup)
+      :cycle -> Cycle.translate(markup)
+      :increment -> Increment.translate(markup)
+      :decrement -> Decrement.translate(markup)
+      :capture -> Capture.translate(markup)
+      :comment -> Comment.translate(markup)
+      :include -> Include.tranlate(markup)
+      :for -> For.translate(markup)
 
-      :liquid_variable ->
-        LiquidVariable.translate(markup)
-
-      :cycle ->
-        Cycle.translate(markup)
-
-      # {:increment, markup} = elem -> Increment.translate(markup)
       # {:increment, markup} = elem -> Increment.translate(markup)
       # {:decrement, markup} = elem -> Decrement.translate(markup)
       # {:capture, markup} = elem -> Capture.translate(markup)
