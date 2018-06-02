@@ -18,6 +18,7 @@ defmodule Liquid.Combinators.Tags.Assign do
       |> parsec(:variable_name)
       |> ignore(string("="))
       |> parsec(:value)
+      |> optional(parsec(:filters))
     end)
   end
 end
