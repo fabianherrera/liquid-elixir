@@ -96,4 +96,31 @@ defmodule Liquid.Combinators.LexicalTokenTest do
          ["products", {:index, {:variable, ["parts", {:index, 0}, "providers", {:index, 0}]}}]}
     )
   end
+
+  test "variable with filters and params" do
+    test_combinator(
+      "{{ var.var1[0][0].var2[3] | filter1 | f2: 1 | f3: 2 | f4: 2, 3 }}",
+      &Parser.liquid_variable/1,
+      [
+        liquid_variable: [
+          variable: [
+            parts: [
+              part: "var",
+              part: "var1",
+              index: 0,
+              index: 0,
+              part: "var2",
+              index: 3
+            ],
+            filters: [
+              filter: "filter1",
+              filter: "f2", params: [value: 2, value: 3],
+              filter: "f3", params: [value: 2, value: 3],
+              filter: "f4", params: [value: 2, value: 3]
+            ]
+          ]
+        ]
+      ]
+    )
+  end
 end
