@@ -176,11 +176,6 @@ defmodule Liquid.Combinators.LexicalToken do
     |> optional(parsec(:filters))
   end
 
-  def filters do
-    times(parsec(:filter), min: 1)
-    |> tag(:filters)
-  end
-
   defp list_definition do
     choice([
       integer_value(),
