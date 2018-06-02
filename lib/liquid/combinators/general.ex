@@ -231,7 +231,6 @@ defmodule Liquid.Combinators.General do
     |> optional(times(utf8_char(allowed_chars_in_variable_definition()), min: 1))
     |> concat(ignore_whitespaces())
     |> reduce({List, :to_string, []})
-    |> optional(parsec(:filter))
   end
 
   @doc """
@@ -239,7 +238,7 @@ defmodule Liquid.Combinators.General do
   """
   def variable_name do
     parsec(:variable_definition)
-    |> unwrap_and_tag(:variable_name)
+    |> tag(:variable_name)
   end
 
   def liquid_variable do

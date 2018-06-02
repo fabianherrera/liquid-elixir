@@ -165,12 +165,20 @@ defmodule Liquid.Combinators.LexicalToken do
   def object_property do
     string(".")
     |> ignore()
-    |> parsec(:object_value)
+    |> parsec(:variable_definition)
+    |> optional(times(list_index(), min: 1))
   end
 
   def object_value do
     parsec(:variable_definition)
-    |> optional(choice([times(list_index(), min: 1), parsec(:object_property)]))
+    |> optional(choice([times(list_index(), min: 1), times(object_property(), min: 1)]))
+    |> tag(:variable_parts)
+    |> optional(parsec(:filters))
+  end
+
+  def filters do
+    times(parsec(:filter), min: 1)
+    |> tag(:filters)
   end
 
   defp list_definition do
