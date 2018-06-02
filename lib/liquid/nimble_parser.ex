@@ -66,6 +66,8 @@ defmodule Liquid.NimbleParser do
     |> traverse({:clean_empty_strings, []})
   )
 
+  # hola
+
   defparsec(:assign, Assign.tag())
   defparsec(:capture, Capture.tag())
   defparsec(:decrement, Decrement.tag())
