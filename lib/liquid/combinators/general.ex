@@ -289,6 +289,11 @@ defmodule Liquid.Combinators.General do
     # |> optional(parsec(:filter))
   end
 
+  def filters do
+    times(parsec(:filter), min: 1)
+    |> tag(:filters)
+  end
+
   @doc """
   Filter parameters structure:  it acepts any kind of parameters with the following structure:
   start char: ':' plus optional: parameters values [value]

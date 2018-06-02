@@ -16,6 +16,7 @@ defmodule Liquid.Combinators.GeneralTest do
     defparsec(:variable_name, General.variable_name())
     defparsec(:filter, General.filter())
     defparsec(:filter_param, General.filter_param())
+    defparsec(:filters, General.filters())
     defparsec(:value, LexicalToken.value())
     defparsec(:value_definition, LexicalToken.value_definition())
     defparsec(:object_property, LexicalToken.object_property())
