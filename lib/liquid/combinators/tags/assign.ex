@@ -15,10 +15,9 @@ defmodule Liquid.Combinators.Tags.Assign do
   def tag do
     Tag.define_open("assign", fn combinator ->
       combinator
-      |> concat(parsec(:variable_name))
-      |> concat(ignore(string("=")))
-      |> concat(parsec(:value))
-      |> optional(parsec(:filter))
+      |> parsec(:variable_name)
+      |> ignore(string("="))
+      |> parsec(:value)
     end)
   end
 end

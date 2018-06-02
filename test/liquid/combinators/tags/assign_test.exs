@@ -36,6 +36,14 @@ defmodule Liquid.Combinators.Tags.AssignTest do
     )
   end
 
+  test "assign with variable" do
+    test_combinator(
+      "{% assign cart = 5 %}{{ cart }}",
+      &Parser.assign/1,
+      [assign: [variable_name: "cart", value: 5], liquid_variable: [variable: ["cart"]]]
+    )
+  end
+
   test "assign a list" do
     test_combinator(
       "{% assign cart = product[0] %}",
