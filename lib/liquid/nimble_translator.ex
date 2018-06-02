@@ -3,10 +3,13 @@ defmodule Liquid.NimbleTranslator do
   Translate NimbleParser's AST to old AST
   """
   alias Liquid.Template
+
   alias Liquid.Combinators.Translators.{
     Assign,
-    LiquidVariable
+    LiquidVariable,
+    Cycle
   }
+
   @doc """
   Converts passed Nimble AST into old AST to use old render
   """
@@ -26,10 +29,9 @@ defmodule Liquid.NimbleTranslator do
   defp multiprocess_node(nodelist, external_process) do
     nodelist
     |> Enum.map(fn elem ->
-          spawn_link(fn -> send(external_process, {self(), process_node(elem)})
-          end)
-        end)
-        |> Enum.map(fn pid ->
+      spawn_link(fn -> send(external_process, {self(), process_node(elem)}) end)
+    end)
+    |> Enum.map(fn pid ->
       receive do
         {^pid, result} -> result
       end
@@ -50,14 +52,23 @@ defmodule Liquid.NimbleTranslator do
   # When the element its a tuple
   defp process_node({tag, markup}) do
     IO.inspect(markup)
+
     case tag do
-      :assign -> Assign.translate(markup)
-      :liquid_variable -> LiquidVariable.translate(markup)
+      :assign ->
+        Assign.translate(markup)
+
+      :liquid_variable ->
+        LiquidVariable.translate(markup)
+
+      :cycle ->
+        Cycle.translate(markup)
+
       # {:increment, markup} = elem -> Increment.translate(markup)
       # {:increment, markup} = elem -> Increment.translate(markup)
       # {:decrement, markup} = elem -> Decrement.translate(markup)
       # {:capture, markup} = elem -> Capture.translate(markup)
-      _ -> markup
+      _ ->
+        markup
     end
   end
 end
