@@ -1,17 +1,17 @@
 defmodule Liquid.Combinators.Translators.LiquidVariable do
   alias Liquid.Combinators.Translators.General
 
-  def translate(variable: [variable_parts: variable_list]) do
-    variable_parts = General.variable_in_parts(variable_list)
-    variable_name = General.variable_to_string(variable_parts)
-    %Liquid.Variable{name: variable_name, parts: variable_parts}
+  def translate(variable: [parts: variable_list]) do
+    parts = General.variable_in_parts(variable_list)
+    variable_name = General.variable_to_string(parts)
+    %Liquid.Variable{name: variable_name, parts: parts}
   end
 
-  def translate(variable: [variable_parts: variable_list, filters: filters]) do
-    variable_parts = General.variable_in_parts(variable_list)
-    variable_name = General.variable_to_string(variable_parts)
+  def translate(variable: [parts: variable_list, filters: filters]) do
+    parts = General.variable_in_parts(variable_list)
+    variable_name = General.variable_to_string(parts)
     filters_markup = transform_filters(filters)
-    %Liquid.Variable{name: variable_name, parts: variable_parts, filters: filters_markup}
+    %Liquid.Variable{name: variable_name, parts: parts, filters: filters_markup}
   end
 
   def translate([value, filters: filters]) do

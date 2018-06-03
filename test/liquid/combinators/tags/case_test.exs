@@ -9,7 +9,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       "{% case condition %}{% when 1 %} its 1 {% when 2 %} its 2 {% endcase %}",
       &Parser.case/1,
       case: [
-        variable: [variable_parts: [part: "condition"]],
+        variable: [parts: [part: "condition"]],
         when: [1, " its 1 "],
         when: [2, " its 2 "]
       ]
@@ -21,7 +21,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       "{% case condition %}{% when \"string here\" %} hit {% endcase %}",
       &Parser.case/1,
       case: [
-        variable: [variable_parts: [part: "condition"]],
+        variable: [parts: [part: "condition"]],
         when: ["string here", " hit "]
       ]
     )
@@ -32,7 +32,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       "{% case a.size %}{% when 1 %}1{% when 2 %}2{% endcase %}",
       &Parser.case/1,
       case: [
-        variable: [variable_parts: [part: "a", part: "size"]],
+        variable: [parts: [part: "a", part: "size"]],
         when: [1, "1"],
         when: [2, "2"]
       ]
@@ -44,7 +44,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       "{% case condition %}{% when 5 %} hit {% else %} else {% endcase %}",
       &Parser.case/1,
       case: [
-        variable: [variable_parts: [part: "condition"]],
+        variable: [parts: [part: "condition"]],
         when: [5, " hit "],
         else: [" else "]
       ]
@@ -56,7 +56,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       "{% case condition %}{% when 1 or 2 or 3 %} its 1 or 2 or 3 {% when 4 %} its 4 {% endcase %}",
       &Parser.case/1,
       case: [
-        variable: [variable_parts: [part: "condition"]],
+        variable: [parts: [part: "condition"]],
         when: [
           1,
           {:logical, [:or, 2]},
@@ -73,7 +73,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       "{% case condition %}{% when 1, 2, 3 %} its 1 or 2 or 3 {% when 4 %} its 4 {% endcase %}",
       &Parser.case/1,
       case: [
-        variable: [variable_parts: [part: "condition"]],
+        variable: [parts: [part: "condition"]],
         when: [1, 44, 2, 44, 3, " its 1 or 2 or 3 "],
         when: [4, " its 4 "]
       ]
@@ -85,7 +85,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       "{% case condition %}{% when 1, \"string\", null %} its 1 or 2 or 3 {% when 4 %} its 4 {% endcase %}",
       &Parser.case/1,
       case: [
-        variable: [variable_parts: [part: "condition"]],
+        variable: [parts: [part: "condition"]],
         when: [1, 44, "string", 44, nil, " its 1 or 2 or 3 "],
         when: [4, " its 4 "]
       ]
@@ -97,7 +97,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       "{% case collection.handle %}{% when 'menswear-jackets' %}{% assign ptitle = 'menswear' %}{% when 'menswear-t-shirts' %}{% assign ptitle = 'menswear' %}{% else %}{% assign ptitle = 'womenswear' %}{% endcase %}",
       &Parser.case/1,
       case: [
-        variable: [variable_parts: [part: "collection", part: "handle"]],
+        variable: [parts: [part: "collection", part: "handle"]],
         when: [
           "menswear-jackets",
           {:assign, [variable_name: ["ptitle"], value: "menswear"]}

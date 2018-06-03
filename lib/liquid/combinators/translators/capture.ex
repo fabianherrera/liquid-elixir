@@ -1,9 +1,9 @@
 defmodule Liquid.Combinators.Translators.Capture do
   alias Liquid.Combinators.Translators.General
 
-  def translate(variable: [variable_parts: variable_parts], capture_sentences: capture_sentences) do
+  def translate(variable: [parts: parts], capture_sentences: capture_sentences) do
     variable_in_string =
-      General.variable_in_parts(variable_parts)
+      General.variable_in_parts(parts)
       |> General.variable_to_string()
 
     nodelist = Liquid.NimbleTranslator.process_node(capture_sentences)

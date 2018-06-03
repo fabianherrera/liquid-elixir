@@ -22,7 +22,7 @@ defmodule Liquid.Combinators.Tags.AssignTest do
       &Parser.assign/1,
       assign: [
         variable_name: ["cart"],
-        value: {:variable, [variable_parts: [part: "old_var"]]}
+        value: {:variable, [parts: [part: "old_var"]]}
       ]
     )
 
@@ -44,7 +44,7 @@ defmodule Liquid.Combinators.Tags.AssignTest do
       "{% assign cart = 5 %}{{ cart }}",
       &Parser.assign/1,
       assign: [variable_name: ["cart"], value: 5],
-      liquid_variable: [variable: [variable_parts: [part: "cart"]]]
+      liquid_variable: [variable: [parts: [part: "cart"]]]
     )
   end
 
@@ -54,7 +54,7 @@ defmodule Liquid.Combinators.Tags.AssignTest do
       &Parser.assign/1,
       assign: [
         variable_name: ["cart"],
-        value: {:variable, [variable_parts: [part: "product", index: 0]]}
+        value: {:variable, [parts: [part: "product", index: 0]]}
       ]
     )
 
@@ -63,7 +63,7 @@ defmodule Liquid.Combinators.Tags.AssignTest do
       &Parser.assign/1,
       assign: [
         variable_name: ["cart"],
-        value: {:variable, [variable_parts: [part: "products", index: 0, index: 0]]}
+        value: {:variable, [parts: [part: "products", index: 0, index: 0]]}
       ]
     )
 
@@ -72,7 +72,7 @@ defmodule Liquid.Combinators.Tags.AssignTest do
       &Parser.assign/1,
       assign: [
         variable_name: ["cart"],
-        value: {:variable, [variable_parts: [part: "products", index: 0, index: 0]]}
+        value: {:variable, [parts: [part: "products", index: 0, index: 0]]}
       ]
     )
   end
@@ -86,7 +86,7 @@ defmodule Liquid.Combinators.Tags.AssignTest do
         value:
           {:variable,
            [
-             variable_parts: [
+             parts: [
                part: "company",
                part: "employees",
                part: "first",
@@ -104,7 +104,7 @@ defmodule Liquid.Combinators.Tags.AssignTest do
         value:
           {:variable,
            [
-             variable_parts: [
+             parts: [
                part: "company",
                part: "managers",
                index: 1,
@@ -122,7 +122,7 @@ defmodule Liquid.Combinators.Tags.AssignTest do
         value:
           {:variable,
            [
-             variable_parts: [
+             parts: [
                part: "company",
                part: "managers",
                index: 1,

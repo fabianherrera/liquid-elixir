@@ -65,7 +65,7 @@ defmodule Liquid.Combinators.LexicalTokenTest do
     test_combinator(
       "(1..var)",
       &Parser.value/1,
-      value: {:range, [start: 1, end: {:variable, [variable_parts: [part: "var"]]}]}
+      value: {:range, [start: 1, end: {:variable, [parts: [part: "var"]]}]}
     )
 
     test_combinator(
@@ -74,7 +74,7 @@ defmodule Liquid.Combinators.LexicalTokenTest do
       value:
         {:range,
          [
-           start: {:variable, [variable_parts: [part: "var", index: 0]]},
+           start: {:variable, [parts: [part: "var", index: 0]]},
            end: 10
          ]}
     )
@@ -88,14 +88,14 @@ defmodule Liquid.Combinators.LexicalTokenTest do
            start:
              {:variable,
               [
-                variable_parts: [
+                parts: [
                   part: "var1",
                   index: 0,
                   part: "var2",
                   index: 0
                 ]
               ]},
-           end: {:variable, [variable_parts: [part: "var3", index: 0]]}
+           end: {:variable, [parts: [part: "var3", index: 0]]}
          ]}
     )
   end
@@ -104,13 +104,13 @@ defmodule Liquid.Combinators.LexicalTokenTest do
     test_combinator(
       "variable",
       &Parser.value/1,
-      value: {:variable, [variable_parts: [part: "variable"]]}
+      value: {:variable, [parts: [part: "variable"]]}
     )
 
     test_combinator(
       "variable.value",
       &Parser.value/1,
-      value: {:variable, [variable_parts: [part: "variable", part: "value"]]}
+      value: {:variable, [parts: [part: "variable", part: "value"]]}
     )
   end
 
@@ -118,7 +118,7 @@ defmodule Liquid.Combinators.LexicalTokenTest do
     test_combinator(
       "product[0]",
       &Parser.value/1,
-      value: {:variable, [variable_parts: [part: "product", index: 0]]}
+      value: {:variable, [parts: [part: "product", index: 0]]}
     )
   end
 
@@ -129,7 +129,7 @@ defmodule Liquid.Combinators.LexicalTokenTest do
       value:
         {:variable,
          [
-           variable_parts: [
+           parts: [
              part: "products",
              index: 0,
              part: "parts",
@@ -146,12 +146,12 @@ defmodule Liquid.Combinators.LexicalTokenTest do
       value:
         {:variable,
          [
-           variable_parts: [
+           parts: [
              part: "products",
              index:
                {:variable,
                 [
-                  variable_parts: [
+                  parts: [
                     part: "parts",
                     index: 0,
                     part: "providers",
@@ -169,7 +169,7 @@ defmodule Liquid.Combinators.LexicalTokenTest do
       &Parser.liquid_variable/1,
       liquid_variable: [
         variable: [
-          variable_parts: [
+          parts: [
             part: "var",
             part: "var1",
             index: 0,

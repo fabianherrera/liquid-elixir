@@ -177,7 +177,7 @@ defmodule Liquid.Combinators.LexicalToken do
   def object_value do
     parsec(:variable_part)
     |> optional(choice([times(list_index(), min: 1), times(object_property(), min: 1)]))
-    |> tag(:variable_parts)
+    |> tag(:parts)
     |> optional(parsec(:filters))
   end
 
