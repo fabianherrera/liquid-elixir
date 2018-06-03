@@ -2,9 +2,10 @@ ExUnit.start(exclude: [:skip])
 
 defmodule Liquid.Helpers do
   use ExUnit.Case
+  alias Liquid.{Template, NimbleParser}
 
   def render(text, data \\ %{}) do
-    text |> Liquid.Template.parse() |> Liquid.Template.render(data) |> elem(1)
+    text |> Template.parse() |> Template.render(data) |> elem(1)
   end
 
   def test_combinator(markup, combiner, expected) do
@@ -15,5 +16,11 @@ defmodule Liquid.Helpers do
   def test_combinator_error(markup, combiner) do
     {:error, _, _, _, _, _} = combiner.(markup)
     assert true
+  end
+
+  def test_ast_translation(markup, params \\ %{}) do
+    old = markup |> Template.parse() |> Template.render(params)
+    new = markup |> NimbleParser.parse() |> Template.render(params)
+    assert old == new
   end
 end
