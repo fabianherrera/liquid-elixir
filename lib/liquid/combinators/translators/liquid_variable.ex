@@ -15,32 +15,22 @@ defmodule Liquid.Combinators.Translators.LiquidVariable do
   end
 
   def translate([value, filters: filters]) do
+    filters_markup = transform_filters(filters)
     case is_bitstring(value) do
       true ->
-        name = "'#{value}'"
-        literal = "#{value}"
-
+        %Liquid.Variable{name: "'#{value}'", filters: filters_markup, literal: "#{value}"}
       false ->
-        name = "#{value}"
-        literal = value
+        %Liquid.Variable{name: "#{value}", filters: filters_markup, literal: value}
     end
-
-    filters_markup = transform_filters(filters)
-    %Liquid.Variable{name: name, filters: filters_markup, literal: literal}
   end
 
   def translate([value]) do
     case is_bitstring(value) do
       true ->
-        name = "'#{value}'"
-        literal = "#{value}"
-
+        %Liquid.Variable{name: "#{value}", literal: "#{value}"}
       false ->
-        name = "#{value}"
-        literal = value
+        %Liquid.Variable{name: "#{value}", literal: value}
     end
-
-    %Liquid.Variable{name: name, literal: literal}
   end
 
   defp transform_filters(filters_list) do
@@ -64,13 +54,10 @@ defmodule Liquid.Combinators.Translators.LiquidVariable do
 
       case is_bitstring(filter_param_value) do
         true ->
-          param = "'#{filter_param_value}'"
-
+          [String.to_atom(filter_name), ["'#{filter_param_value}'"]]
         false ->
-          param = "#{filter_param_value}"
+          [String.to_atom(filter_name), ["#{filter_param_value}"]]
       end
-
-      [String.to_atom(filter_name), [param]]
     end
   end
 end
