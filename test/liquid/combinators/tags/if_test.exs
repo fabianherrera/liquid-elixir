@@ -38,16 +38,29 @@ defmodule Liquid.Combinators.Tags.IfTest do
       &Parser.if/1,
       if: [
         if_condition: [
-          condition: {{:variable, [variable_parts: ["line_item", "grams"]]}, :>, 20000},
+          condition:
+            {{:variable, [variable_parts: [part: "line_item", part: "grams"]]}, :>, 20000},
           logical: [
             :and,
             {:condition,
-             {{:variable, [variable_parts: ["customer_address", "city"]]}, :==, "Ottawa"}}
+             {{:variable,
+               [
+                 variable_parts: [
+                   part: "customer_address",
+                   part: "city"
+                 ]
+               ]}, :==, "Ottawa"}}
           ],
           logical: [
             :or,
             {:condition,
-             {{:variable, [variable_parts: ["customer_address", "city"]]}, :==, "Seatle"}}
+             {{:variable,
+               [
+                 variable_parts: [
+                   part: "customer_address",
+                   part: "city"
+                 ]
+               ]}, :==, "Seatle"}}
           ]
         ],
         body: ["hello test"]
@@ -61,10 +74,10 @@ defmodule Liquid.Combinators.Tags.IfTest do
       &Parser.if/1,
       if: [
         if_condition: [
-          condition: {{:variable, [variable_parts: ["a"]]}, :==, true},
+          condition: {{:variable, [variable_parts: [part: "a"]]}, :==, true},
           logical: [
             :or,
-            {:condition, {{:variable, [variable_parts: ["b"]]}, :==, 4}}
+            {:condition, {{:variable, [variable_parts: [part: "b"]]}, :==, 4}}
           ]
         ],
         body: [" YES "]
@@ -81,25 +94,25 @@ defmodule Liquid.Combinators.Tags.IfTest do
       &Parser.if/1,
       if: [
         if_condition: [
-          condition: {{:variable, [variable_parts: ["a"]]}, :==, "and"},
+          condition: {{:variable, [variable_parts: [part: "a"]]}, :==, "and"},
           logical: [
             :and,
-            {:condition, {{:variable, [variable_parts: ["b"]]}, :==, "or"}}
+            {:condition, {{:variable, [variable_parts: [part: "b"]]}, :==, "or"}}
           ],
           logical: [
             :and,
-            {:condition, {{:variable, [variable_parts: ["c"]]}, :==, "foo and bar"}}
+            {:condition, {{:variable, [variable_parts: [part: "c"]]}, :==, "foo and bar"}}
           ],
           logical: [
             :and,
-            {:condition, {{:variable, [variable_parts: ["d"]]}, :==, "bar or baz"}}
+            {:condition, {{:variable, [variable_parts: [part: "d"]]}, :==, "bar or baz"}}
           ],
           logical: [
             :and,
-            {:condition, {{:variable, [variable_parts: ["e"]]}, :==, "foo"}}
+            {:condition, {{:variable, [variable_parts: [part: "e"]]}, :==, "foo"}}
           ],
-          logical: [:and, {:variable, [variable_parts: ["foo"]]}],
-          logical: [:and, {:variable, [variable_parts: ["bar"]]}]
+          logical: [:and, {:variable, [variable_parts: [part: "foo"]]}],
+          logical: [:and, {:variable, [variable_parts: [part: "bar"]]}]
         ],
         body: [" YES "]
       ]
@@ -125,8 +138,13 @@ defmodule Liquid.Combinators.Tags.IfTest do
           if: [
             if_condition: [
               condition:
-                {{:variable, [variable_parts: ["shipping_method", "title"]]}, :==,
-                 "International Shipping"}
+                {{:variable,
+                  [
+                    variable_parts: [
+                      part: "shipping_method",
+                      part: "title"
+                    ]
+                  ]}, :==, "International Shipping"}
             ],
             body: [
               "You're shipping internationally. Your order should arrive in 2–3 weeks.",
@@ -134,8 +152,13 @@ defmodule Liquid.Combinators.Tags.IfTest do
                [
                  if_condition: [
                    condition:
-                     {{:variable, [variable_parts: ["shipping_method", "title"]]}, :==,
-                      "Domestic Shipping"}
+                     {{:variable,
+                       [
+                         variable_parts: [
+                           part: "shipping_method",
+                           part: "title"
+                         ]
+                       ]}, :==, "Domestic Shipping"}
                  ],
                  body: [
                    "Your order should arrive in 3–4 days.",
@@ -181,7 +204,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
       if: [
         if_condition: [
           condition:
-            {{:variable, [variable_parts: ["shipping_method", "title"]]}, :==,
+            {{:variable, [variable_parts: [part: "shipping_method", part: "title"]]}, :==,
              "International Shipping"}
         ],
         body: [
@@ -190,8 +213,13 @@ defmodule Liquid.Combinators.Tags.IfTest do
            [
              if_condition: [
                condition:
-                 {{:variable, [variable_parts: ["shipping_method", "title"]]}, :==,
-                  "Domestic Shipping"}
+                 {{:variable,
+                   [
+                     variable_parts: [
+                       part: "shipping_method",
+                       part: "title"
+                     ]
+                   ]}, :==, "Domestic Shipping"}
              ],
              body: [
                "Your order should arrive in 3–4 days.",

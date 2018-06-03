@@ -35,7 +35,7 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
       include: [
         snippet: ["'product'"],
         with_param: [
-          variable: [variable_parts: ["products", {:index, 0}]]
+          variable: [variable_parts: [part: "products", index: 0]]
         ]
       ]
     )

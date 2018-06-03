@@ -11,27 +11,19 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
       "{%     tablerow     item    in     array    %}{%    endtablerow    %}"
     ]
 
-    Enum.each(
-      tags,
-      fn tag ->
-        test_combinator(
-          tag,
-          &Parser.tablerow/1,
-          [
-            {
-              :tablerow,
-              [
-                tablerow_conditions: [
-                  variable_name: "item",
-                  value: {:variable, ["array"]}
-                ],
-                tablerow_sentences: []
-              ]
-            }
-          ]
-        )
-      end
-    )
+    Enum.each(tags, fn tag ->
+      test_combinator(
+        tag,
+        &Parser.tablerow/1,
+        tablerow: [
+          tablerow_collection: [
+            variable_name: ["item"],
+            value: {:variable, [variable_parts: [part: "array"]]}
+          ],
+          tablerow_body: []
+        ]
+      )
+    end)
   end
 
   test "tablerow tag: limit parameter" do
@@ -42,28 +34,20 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
       "{%     tablerow    item    in     array  limit: 2  %}{%    endtablerow    %}"
     ]
 
-    Enum.each(
-      tags,
-      fn tag ->
-        test_combinator(
-          tag,
-          &Parser.tablerow/1,
-          [
-            {
-              :tablerow,
-              [
-                tablerow_conditions: [
-                  variable_name: "item",
-                  value: {:variable, ["array"]},
-                  limit_param: [2]
-                ],
-                tablerow_sentences: []
-              ]
-            }
-          ]
-        )
-      end
-    )
+    Enum.each(tags, fn tag ->
+      test_combinator(
+        tag,
+        &Parser.tablerow/1,
+        tablerow: [
+          tablerow_collection: [
+            variable_name: ["item"],
+            value: {:variable, [variable_parts: [part: "array"]]},
+            limit_param: [2]
+          ],
+          tablerow_body: []
+        ]
+      )
+    end)
   end
 
   test "tablerow tag: offset parameter" do
@@ -73,28 +57,20 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
       "{%     tablerow     item    in     array  offset:2  %}{%    endtablerow    %}"
     ]
 
-    Enum.each(
-      tags,
-      fn tag ->
-        test_combinator(
-          tag,
-          &Parser.tablerow/1,
-          [
-            {
-              :tablerow,
-              [
-                tablerow_conditions: [
-                  variable_name: "item",
-                  value: {:variable, ["array"]},
-                  offset_param: [2]
-                ],
-                tablerow_sentences: []
-              ]
-            }
-          ]
-        )
-      end
-    )
+    Enum.each(tags, fn tag ->
+      test_combinator(
+        tag,
+        &Parser.tablerow/1,
+        tablerow: [
+          tablerow_collection: [
+            variable_name: ["item"],
+            value: {:variable, [variable_parts: [part: "array"]]},
+            offset_param: [2]
+          ],
+          tablerow_body: []
+        ]
+      )
+    end)
   end
 
   test "tablerow tag: cols parameter" do
@@ -104,28 +80,20 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
       "{%     tablerow     item    in     array  cols:2  %}{%    endtablerow    %}"
     ]
 
-    Enum.each(
-      tags,
-      fn tag ->
-        test_combinator(
-          tag,
-          &Parser.tablerow/1,
-          [
-            {
-              :tablerow,
-              [
-                tablerow_conditions: [
-                  variable_name: "item",
-                  value: {:variable, ["array"]},
-                  cols_param: [2]
-                ],
-                tablerow_sentences: []
-              ]
-            }
-          ]
-        )
-      end
-    )
+    Enum.each(tags, fn tag ->
+      test_combinator(
+        tag,
+        &Parser.tablerow/1,
+        tablerow: [
+          tablerow_collection: [
+            variable_name: ["item"],
+            value: {:variable, [variable_parts: [part: "array"]]},
+            cols_param: [2]
+          ],
+          tablerow_body: []
+        ]
+      )
+    end)
   end
 
   test "tablerow tag: range parameter" do
@@ -135,37 +103,39 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
       "{%     tablerow     i     in     (1..10)      %}{{ i }}{%     endtablerow     %}"
     ]
 
-    Enum.each(
-      tags,
-      fn tag ->
-        test_combinator(
-          tag,
-          &Parser.tablerow/1,
-          [
-            tablerow: [
-              tablerow_conditions: [
-                variable_name: "i",
-                value: {:range, [start: 1, end: 10]}
-              ],
-              tablerow_sentences: [liquid_variable: [variable: ["i"]]]
-            ]
+    Enum.each(tags, fn tag ->
+      test_combinator(
+        tag,
+        &Parser.tablerow/1,
+        tablerow: [
+          tablerow_collection: [
+            variable_name: ["i"],
+            value: {:range, [start: 1, end: 10]}
+          ],
+          tablerow_body: [
+            liquid_variable: [variable: [variable_parts: [part: "i"]]]
           ]
-        )
-      end
-    )
+        ]
+      )
+    end)
   end
 
   test "tablerow tag: range with variables" do
     test_combinator(
       "{% tablerow i in (my_var..10) %}{{ i }}{% endtablerow %}",
       &Parser.tablerow/1,
-      [
-        tablerow: [
-          tablerow_conditions: [
-            variable_name: "i",
-            value: {:range, [start: {:variable, ["my_var"]}, end: 10]}
-          ],
-          tablerow_sentences: [liquid_variable: [variable: ["i"]]]
+      tablerow: [
+        tablerow_collection: [
+          variable_name: ["i"],
+          value:
+            {:range,
+             [
+               start: {:variable, [variable_parts: [part: "my_var"]]},
+               end: 10
+             ]}
+        ],
+        tablerow_body: [
+          liquid_variable: [variable: [variable_parts: [part: "i"]]]
         ]
       ]
     )
@@ -175,15 +145,20 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
     test_combinator(
       "{% tablerow i in (my_var..10) limit:2 cols:2 %}{{ i }}{% endtablerow %}",
       &Parser.tablerow/1,
-      [
-        tablerow: [
-          tablerow_conditions: [
-            variable_name: "i",
-            value: {:range, [start: {:variable, ["my_var"]}, end: 10]},
-            limit_param: [2],
-            cols_param: [2]
-          ],
-          tablerow_sentences: [liquid_variable: [variable: ["i"]]]
+      tablerow: [
+        tablerow_collection: [
+          variable_name: ["i"],
+          value:
+            {:range,
+             [
+               start: {:variable, [variable_parts: [part: "my_var"]]},
+               end: 10
+             ]},
+          limit_param: [2],
+          cols_param: [2]
+        ],
+        tablerow_body: [
+          liquid_variable: [variable: [variable_parts: [part: "i"]]]
         ]
       ]
     )
