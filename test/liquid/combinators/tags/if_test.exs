@@ -8,20 +8,28 @@ defmodule Liquid.Combinators.Tags.IfTest do
     test_combinator(
       "{% if false %} this text should not go into the output {% endif %}",
       &Parser.if/1,
-      [{:if, [false, " this text should not go into the output "]}]
+      if: [
+        if_condition: [false],
+        body: [" this text should not go into the output "]
+      ]
     )
 
     test_combinator(
       "{% if true %} this text should go into the output {% endif %}",
       &Parser.if/1,
-      [{:if, [true, " this text should go into the output "]}]
+      if: [
+        if_condition: [true],
+        body: [" this text should go into the output "]
+      ]
     )
   end
 
   test "if else " do
-    test_combinator("{% if \"foo\" %} YES {% else %} NO {% endif %}", &Parser.if/1, [
-      {:if, ["foo", " YES ", {:else, [" NO "]}]}
-    ])
+    test_combinator(
+      "{% if \"foo\" %} YES {% else %} NO {% endif %}",
+      &Parser.if/1,
+      if: [if_condition: ["foo"], body: [" YES ", {:else, [" NO "]}]]
+    )
   end
 
   test "opening if tag with multiple conditions " do
@@ -29,25 +37,39 @@ defmodule Liquid.Combinators.Tags.IfTest do
       "{% if line_item.grams > 20000 and customer_address.city == 'Ottawa' or customer_address.city == 'Seatle' %}hello test{% endif %}",
       &Parser.if/1,
       if: [
-        {:condition, {{:variable, ["line_item", "grams"]}, :>, 20_000}},
-        {:logical,
-         [:and, {:condition, {{:variable, ["customer_address", "city"]}, :==, "Ottawa"}}]},
-        {:logical,
-         [:or, {:condition, {{:variable, ["customer_address", "city"]}, :==, "Seatle"}}]},
-        "hello test"
+        if_condition: [
+          condition: {{:variable, [variable_parts: ["line_item", "grams"]]}, :>, 20000},
+          logical: [
+            :and,
+            {:condition,
+             {{:variable, [variable_parts: ["customer_address", "city"]]}, :==, "Ottawa"}}
+          ],
+          logical: [
+            :or,
+            {:condition,
+             {{:variable, [variable_parts: ["customer_address", "city"]]}, :==, "Seatle"}}
+          ]
+        ],
+        body: ["hello test"]
       ]
     )
   end
 
   test "using values" do
-    test_combinator("{% if a == true or b == 4 %} YES {% endif %}", &Parser.if/1, [
-      {:if,
-       [
-         {:condition, {{:variable, ["a"]}, :==, true}},
-         {:logical, [:or, {:condition, {{:variable, ["b"]}, :==, 4}}]},
-         " YES "
-       ]}
-    ])
+    test_combinator(
+      "{% if a == true or b == 4 %} YES {% endif %}",
+      &Parser.if/1,
+      if: [
+        if_condition: [
+          condition: {{:variable, [variable_parts: ["a"]]}, :==, true},
+          logical: [
+            :or,
+            {:condition, {{:variable, [variable_parts: ["b"]]}, :==, 4}}
+          ]
+        ],
+        body: [" YES "]
+      ]
+    )
   end
 
   test "parsing an awful markup" do
@@ -58,52 +80,87 @@ defmodule Liquid.Combinators.Tags.IfTest do
       "{% if #{awful_markup} %} YES {% endif %}",
       &Parser.if/1,
       if: [
-        {:condition, {{:variable, ["a"]}, :==, "and"}},
-        {:logical, [:and, {:condition, {{:variable, ["b"]}, :==, "or"}}]},
-        {:logical, [:and, {:condition, {{:variable, ["c"]}, :==, "foo and bar"}}]},
-        {:logical, [:and, {:condition, {{:variable, ["d"]}, :==, "bar or baz"}}]},
-        {:logical, [:and, {:condition, {{:variable, ["e"]}, :==, "foo"}}]},
-        {:logical, [:and, {:variable, ["foo"]}]},
-        {:logical, [:and, {:variable, ["bar"]}]},
-        " YES "
+        if_condition: [
+          condition: {{:variable, [variable_parts: ["a"]]}, :==, "and"},
+          logical: [
+            :and,
+            {:condition, {{:variable, [variable_parts: ["b"]]}, :==, "or"}}
+          ],
+          logical: [
+            :and,
+            {:condition, {{:variable, [variable_parts: ["c"]]}, :==, "foo and bar"}}
+          ],
+          logical: [
+            :and,
+            {:condition, {{:variable, [variable_parts: ["d"]]}, :==, "bar or baz"}}
+          ],
+          logical: [
+            :and,
+            {:condition, {{:variable, [variable_parts: ["e"]]}, :==, "foo"}}
+          ],
+          logical: [:and, {:variable, [variable_parts: ["foo"]]}],
+          logical: [:and, {:variable, [variable_parts: ["bar"]]}]
+        ],
+        body: [" YES "]
       ]
     )
   end
 
   test "nested if" do
-    test_combinator("{% if false %}{% if false %} NO {% endif %}{% endif %}", &Parser.if/1, [
-      {:if, [false, {:if, [false, " NO "]}]}
-    ])
+    test_combinator(
+      "{% if false %}{% if false %} NO {% endif %}{% endif %}",
+      &Parser.if/1,
+      if: [
+        if_condition: [false],
+        body: [if: [if_condition: [false], body: [" NO "]]]
+      ]
+    )
 
     test_combinator(
       "{% if false %}{% if shipping_method.title == 'International Shipping' %}You're shipping internationally. Your order should arrive in 2–3 weeks.{% elsif shipping_method.title == 'Domestic Shipping' %}Your order should arrive in 3–4 days.{% else %} Thank you for your order!{% endif %}{% endif %}",
       &Parser.if/1,
       if: [
-        false,
-        {:if,
-         [
-           {:condition,
-            {{:variable, ["shipping_method", "title"]}, :==, "International Shipping"}},
-           "You're shipping internationally. Your order should arrive in 2–3 weeks.",
-           {:elsif,
-            [
-              {:condition, {{:variable, ["shipping_method", "title"]}, :==, "Domestic Shipping"}},
-              "Your order should arrive in 3–4 days."
-            ]},
-           {:else, [" Thank you for your order!"]}
-         ]}
+        if_condition: [false],
+        body: [
+          if: [
+            if_condition: [
+              condition:
+                {{:variable, [variable_parts: ["shipping_method", "title"]]}, :==,
+                 "International Shipping"}
+            ],
+            body: [
+              "You're shipping internationally. Your order should arrive in 2–3 weeks.",
+              {:elsif,
+               [
+                 if_condition: [
+                   condition:
+                     {{:variable, [variable_parts: ["shipping_method", "title"]]}, :==,
+                      "Domestic Shipping"}
+                 ],
+                 body: [
+                   "Your order should arrive in 3–4 days.",
+                   {:else, [" Thank you for your order!"]}
+                 ]
+               ]}
+            ]
+          ]
+        ]
       ]
     )
   end
 
   test "comparing values" do
-    test_combinator("{% if null < 10 %} NO {% endif %}", &Parser.if/1, [
-      {:if, [{:condition, {nil, :<, 10}}, " NO "]}
-    ])
+    test_combinator(
+      "{% if null < 10 %} NO {% endif %}",
+      &Parser.if/1,
+      if: [if_condition: [condition: {nil, :<, 10}], body: [" NO "]]
+    )
 
-    test_combinator("{% if 10 < null %} NO {% endif %}", &Parser.if/1, [
-      {:if, [{:condition, {10, :<, nil}}, " NO "]}
-    ])
+    test_combinator(
+      "{% if 10 < null %} NO {% endif %}",
+      &Parser.if/1,
+      if: [if_condition: [condition: {10, :<, nil}], body: [" NO "]]
+    )
   end
 
   test "usisng contains" do
@@ -111,9 +168,8 @@ defmodule Liquid.Combinators.Tags.IfTest do
       "{% if    'bob'     contains     'f'     %}yes{% else %}no{% endif %}",
       &Parser.if/1,
       if: [
-        {:condition, {"bob", :contains, "f"}},
-        "yes",
-        {:else, ["no"]}
+        if_condition: [condition: {"bob", :contains, "f"}],
+        body: ["yes", {:else, ["no"]}]
       ]
     )
   end
@@ -123,22 +179,39 @@ defmodule Liquid.Combinators.Tags.IfTest do
       "{% if shipping_method.title == 'International Shipping' %}You're shipping internationally. Your order should arrive in 2–3 weeks.{% elsif shipping_method.title == 'Domestic Shipping' %}Your order should arrive in 3–4 days.{% else %} Thank you for your order!{% endif %}",
       &Parser.if/1,
       if: [
-        {:condition, {{:variable, ["shipping_method", "title"]}, :==, "International Shipping"}},
-        "You're shipping internationally. Your order should arrive in 2–3 weeks.",
-        {:elsif,
-         [
-           {:condition, {{:variable, ["shipping_method", "title"]}, :==, "Domestic Shipping"}},
-           "Your order should arrive in 3–4 days."
-         ]},
-        {:else, [" Thank you for your order!"]}
+        if_condition: [
+          condition:
+            {{:variable, [variable_parts: ["shipping_method", "title"]]}, :==,
+             "International Shipping"}
+        ],
+        body: [
+          "You're shipping internationally. Your order should arrive in 2–3 weeks.",
+          {:elsif,
+           [
+             if_condition: [
+               condition:
+                 {{:variable, [variable_parts: ["shipping_method", "title"]]}, :==,
+                  "Domestic Shipping"}
+             ],
+             body: [
+               "Your order should arrive in 3–4 days.",
+               {:else, [" Thank you for your order!"]}
+             ]
+           ]}
+        ]
       ]
     )
   end
 
   test "2 else conditions in one if" do
-    test_combinator("{% if true %}test{% else %} a {% else %} b {% endif %}", &Parser.if/1, [
-      {:if, [true, "test", {:else, [" a "]}, {:else, [" b "]}]}
-    ])
+    test_combinator(
+      "{% if true %}test{% else %} a {% else %} b {% endif %}",
+      &Parser.if/1,
+      if: [
+        if_condition: [true],
+        body: ["test", {:else, [" a "]}, {:else, [" b "]}]
+      ]
+    )
   end
 
   test "missing a opening tag and a closing tag" do

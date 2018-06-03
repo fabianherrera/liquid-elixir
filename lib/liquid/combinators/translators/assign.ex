@@ -18,12 +18,19 @@ defmodule Liquid.Combinators.Translators.Assign do
     }
   end
 
-  def translate(variable_name: variable_name, value: value) do
-    markup_string =
-      case is_bitstring(value) do
-        true -> "#{variable_name} = '#{value}'"
-        false -> "#{variable_name} = #{value}"
-      end
+  def translate(
+        variable_name: variable_name,
+        value: {:variable, [variable_parts: variable_parts, filters: filters]}
+      ) do
+    variable_right =
+      Enum.map(variable_parts, &General.variable_in_parts/1)
+      |> General.variable_to_string()
+
+    filters =
+      Enum.map(filters, fn x -> General.filters_to_string(x) end)
+      |> List.to_string()
+
+    markup_string = "#{variable_name} = #{variable_right} #{filters}"
 
     %Liquid.Tag{
       name: :assign,
@@ -54,19 +61,12 @@ defmodule Liquid.Combinators.Translators.Assign do
     }
   end
 
-  def translate(
-        variable_name: variable_name,
-        value: {:variable, [variable_parts: variable_parts, filters: filters]}
-      ) do
-    variable_right =
-      Enum.map(variable_parts, &General.variable_in_parts/1)
-      |> General.variable_to_string()
-
-    filters =
-      Enum.map(filters, fn x -> General.filters_to_string(x) end)
-      |> List.to_string()
-
-    markup_string = "#{variable_name} = #{variable_right} #{filters}"
+  def translate(variable_name: variable_name, value: value) do
+    markup_string =
+      case is_bitstring(value) do
+        true -> "#{variable_name} = '#{value}'"
+        false -> "#{variable_name} = #{value}"
+      end
 
     %Liquid.Tag{
       name: :assign,

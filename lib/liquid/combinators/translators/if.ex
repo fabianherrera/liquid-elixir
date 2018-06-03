@@ -1,11 +1,13 @@
 defmodule Liquid.Combinators.Translators.If do
   alias Liquid.Combinators.General
 
-  def translate([if_condition: if_condition, body: body]) do
+  def translate(if_condition: if_condition, body: body) do
     nodelist = Enum.filter(body, &not_open_if(&1))
 
     else_list =
-      Enum.filter(body, fn {tag, _} -> tag == :elsif or tag == :else end)
+      Enum.filter(body, fn x ->
+        (is_tuple(x) and elem(x, 0) == :elsif) or (is_tuple(x) and elem(x, 0) == :else)
+      end)
 
     markup_list = if_markup_to_string(if_condition)
     markup_string = List.to_string(markup_list)
@@ -13,9 +15,10 @@ defmodule Liquid.Combinators.Translators.If do
     block = %Liquid.Block{
       name: :if,
       markup: markup_string,
-      nodelist: Liquid.NimbleTranslator.translate({:ok, nodelist}),
-      elselist: Liquid.NimbleTranslator.translate({:ok, else_list})
+      nodelist: Liquid.NimbleTranslator.process_node(nodelist),
+      elselist: Liquid.NimbleTranslator.process_node(else_list)
     }
+
     Liquid.IfElse.parse_conditions(block)
   end
 

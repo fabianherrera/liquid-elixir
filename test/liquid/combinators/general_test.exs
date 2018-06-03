@@ -22,6 +22,7 @@ defmodule Liquid.Combinators.GeneralTest do
     defparsec(:object_property, LexicalToken.object_property())
     defparsec(:variable_value, LexicalToken.variable_value())
     defparsec(:object_value, LexicalToken.object_value())
+    defparsec(:variable_part, LexicalToken.variable_part())
   end
 
   test "whitespace must parse 0x0020 and 0x0009" do
@@ -72,7 +73,7 @@ defmodule Liquid.Combinators.GeneralTest do
     valid_names = ~w(v v1 _v1 _1 v-1 v- v_ a)
 
     Enum.each(valid_names, fn n ->
-      test_combinator(n, &Parser.variable_name/1, variable_name: n)
+      test_combinator(n, &Parser.variable_name/1, variable_name: [n])
     end)
   end
 

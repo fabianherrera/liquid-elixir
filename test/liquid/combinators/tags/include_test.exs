@@ -8,15 +8,13 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
     test_combinator(
       "{% include 'snippet', my_variable: 'apples', my_other_variable: 'oranges' %}",
       &Parser.include/1,
-      [
-        include: [
-          snippet: ["'snippet'"],
-          variables: [
-            variable: [variable_name: ["my_variable:"], value: "apples"],
-            variable: [
-              variable_name: ["my_other_variable:"],
-              value: "oranges"
-            ]
+      include: [
+        snippet: ["'snippet'"],
+        variables: [
+          variable: [variable_name: ["my_variable:"], value: "apples"],
+          variable: [
+            variable_name: ["my_other_variable:"],
+            value: "oranges"
           ]
         ]
       ]
@@ -31,9 +29,16 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
       {:include, [snippet: ["'pick_a_source'"]]}
     ])
 
-    test_combinator("{% include 'product' with products[0] %}", &Parser.include/1, [
-      {:include, [snippet: ["'product'"], with_param: [{:variable, ["products", {:index, 0}]}]]}
-    ])
+    test_combinator(
+      "{% include 'product' with products[0] %}",
+      &Parser.include/1,
+      include: [
+        snippet: ["'product'"],
+        with_param: [
+          variable: [variable_parts: ["products", {:index, 0}]]
+        ]
+      ]
+    )
 
     test_combinator(
       "{% include 'product' with 'products' %}",
