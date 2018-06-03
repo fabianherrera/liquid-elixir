@@ -14,7 +14,7 @@ defmodule Liquid.NimbleTranslator do
     For,
     If,
     Include,
-    Increment,
+    Increment
   }
 
   @doc """
@@ -45,15 +45,15 @@ defmodule Liquid.NimbleTranslator do
     end)
   end
 
-  defp process_node(elem) when is_bitstring(elem), do: elem
+  def process_node(elem) when is_bitstring(elem), do: elem
 
-  defp process_node([elem]) when is_bitstring(elem), do: elem
+  def process_node([elem]) when is_bitstring(elem), do: elem
 
-  defp process_node(nodelist) when is_list(nodelist) do
+  def process_node(nodelist) when is_list(nodelist) do
     multiprocess_node(nodelist, self())
   end
 
-  defp process_node({tag, markup}) do
+  def process_node({tag, markup}) do
     case tag do
       :liquid_variable -> LiquidVariable.translate(markup)
       :assign -> Assign.translate(markup)

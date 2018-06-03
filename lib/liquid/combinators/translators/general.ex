@@ -7,20 +7,15 @@ defmodule Liquid.Combinators.Translators.General do
     %Liquid.Variable{name: name, parts: parts}
   end
 
-  def variable_in_parts(value) do
+  def variable_in_parts(tuple) do
+    {key, value} = tuple
+
     cond do
-      is_binary(value) == true ->
+      key == :part ->
         "#{value}"
 
-      is_tuple(value) == true ->
-        position = value |> elem(1)
-        "[#{position}]"
-
-      is_float(value) == true ->
-        "#{value}"
-
-      is_integer(value) == true ->
-        "#{value}"
+      key == :index ->
+        "[#{value}]"
     end
   end
 
@@ -29,11 +24,11 @@ defmodule Liquid.Combinators.Translators.General do
     |> String.replace(".[", "[")
   end
 
-  def filters_to_string({:filter, {name}}) when is_binary(name) do
+  def filters_to_string({:filter, [name]}) when is_binary(name) do
     "| " <> name <> " "
   end
 
-  def filters_to_string({:filter, {name, {:filter_param, values}}}) do
+  def filters_to_string({:filter, [name, {:params, values}]}) do
     if length(values) > 1 do
       value_list = Enum.map(values, &filter_param_values_to_string(&1))
       value = Enum.join(value_list, ", ")

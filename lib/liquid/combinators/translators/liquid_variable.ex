@@ -48,13 +48,13 @@ defmodule Liquid.Combinators.Translators.LiquidVariable do
     |> Enum.map(&filters_to_list/1)
   end
 
-  defp filters_to_list({filter_name}) do
+  defp filters_to_list([filter_name]) do
     [String.to_atom(filter_name), []]
   end
 
-  defp filters_to_list({filter_name, filter_param}) do
-    filter_param_value = filter_param |> elem(1)
-    value = Keyword.get_values(filter_param_value, :value)
+  defp filters_to_list([filter_name, filter_param]) do
+    {_, param_value} = filter_param
+    value = Keyword.get_values(param_value, :value)
 
     if length(value) > 1 do
       filter_param_value = Enum.map(value, fn x -> to_string(x) end)
