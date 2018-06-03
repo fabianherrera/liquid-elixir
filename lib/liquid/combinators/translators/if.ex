@@ -1,5 +1,5 @@
 defmodule Liquid.Combinators.Translators.If do
-  alias Liquid.Combinators.General
+  alias Liquid.Combinators.Translators.General
 
   def translate(if_condition: if_condition, body: body) do
     nodelist = Enum.filter(body, &not_open_if(&1))
@@ -31,7 +31,7 @@ defmodule Liquid.Combinators.Translators.If do
     Enum.map(if_list, fn x ->
       case x do
         {:variable, value} ->
-          parts = Enum.map(value, &General.variable_in_parts(&1))
+          parts = Enum.map(value, &General.variable_in_parts/1)
           variable_name = General.variable_to_string(parts)
           variable_name
 
@@ -50,7 +50,7 @@ defmodule Liquid.Combinators.Translators.If do
         {:condition, {left, operator, right}} ->
           if is_tuple(left) do
             variable_list_left = left |> elem(1)
-            parts_left = Enum.map(variable_list_left, &General.variable_in_parts(&1))
+            parts_left = Enum.map(variable_list_left, &General.variable_in_parts/1)
             variable_name_left = General.variable_to_string(parts_left)
           else
             variable_name_left = "#{left}"
@@ -58,7 +58,7 @@ defmodule Liquid.Combinators.Translators.If do
 
           if is_tuple(right) do
             variable_list_right = right |> elem(1)
-            parts_right = Enum.map(variable_list_right, &General.variable_in_parts(&1))
+            parts_right = Enum.map(variable_list_right, &General.variable_in_parts/1)
             variable_name_right = General.variable_to_string(parts_right)
           else
             variable_name_right = "#{right}"

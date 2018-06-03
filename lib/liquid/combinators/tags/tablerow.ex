@@ -38,10 +38,31 @@ defmodule Liquid.Combinators.Tags.Tablerow do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.General
+  alias Liquid.Combinators.{General, Tag}
 
-  @doc "Tablerow offset param: {% tablerow products in products cols:2 %}"
-  def cols_param do
+  defp offset_param do
+    empty()
+    |> parsec(:ignore_whitespaces)
+    |> ignore(string("offset"))
+    |> ignore(ascii_char([General.codepoints().colon]))
+    |> parsec(:ignore_whitespaces)
+    |> concat(choice([parsec(:number), parsec(:variable_definition)]))
+    |> parsec(:ignore_whitespaces)
+    |> tag(:offset_param)
+  end
+
+  defp limit_param do
+    empty()
+    |> parsec(:ignore_whitespaces)
+    |> ignore(string("limit"))
+    |> ignore(ascii_char([General.codepoints().colon]))
+    |> parsec(:ignore_whitespaces)
+    |> concat(choice([parsec(:number), parsec(:variable_definition)]))
+    |> parsec(:ignore_whitespaces)
+    |> tag(:limit_param)
+  end
+
+  defp cols_param do
     empty()
     |> parsec(:ignore_whitespaces)
     |> ignore(string("cols"))
@@ -52,44 +73,34 @@ defmodule Liquid.Combinators.Tags.Tablerow do
     |> tag(:cols_param)
   end
 
-  def tablerow_sentences do
+  defp tablerow_body do
     empty()
     |> optional(parsec(:__parse__))
-    |> tag(:tablerow_sentences)
+    |> tag(:tablerow_body)
   end
 
-  @doc "Open Tablerow tag: {% tablerow products in products %}"
-  def open_tag do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string("tablerow"))
+  def tag, do: Tag.define_closed("tablerow", &tablerow_collection/1, &body/1)
+
+  defp body(combinator) do
+    combinator
+    |> concat(tablerow_body())
+  end
+
+  defp tablerow_collection(combinator) do
+    combinator
     |> parsec(:variable_name)
     |> parsec(:ignore_whitespaces)
     |> ignore(string("in"))
     |> parsec(:ignore_whitespaces)
     |> parsec(:value)
     |> optional(
-      times(choice([parsec(:offset_param), parsec(:cols_param), parsec(:limit_param)]), min: 1)
-    )
+         times(
+           choice([offset_param(), cols_param(), limit_param()]),
+           min: 1
+         )
+       )
     |> parsec(:ignore_whitespaces)
-    |> concat(parsec(:end_tag))
-    |> tag(:tablerow_conditions)
-    |> parsec(:tablerow_sentences)
+    |> tag(:tablerow_collection)
   end
 
-  @doc "Close Tablerow tag: {% endtablerow %}"
-  def close_tag do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string("endtablerow"))
-    |> concat(parsec(:end_tag))
-  end
-
-  def tag do
-    empty()
-    |> parsec(:open_tag_tablerow)
-    |> parsec(:close_tag_tablerow)
-    |> tag(:tablerow)
-    |> optional(parsec(:__parse__))
-  end
 end
