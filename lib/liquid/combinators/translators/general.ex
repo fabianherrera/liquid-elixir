@@ -1,5 +1,42 @@
 defmodule Liquid.Combinators.Translators.General do
   @moduledoc false
+
+  @doc """
+  Returns a corresponding type value:
+
+  Simple Value Type:
+  {variable: [variable_parts: [part: "i"]]} -> "i"
+  {variable: [variable_parts: [part: "products", part: "tittle"]]} -> "product.tittle"
+  {variable: [variable_parts: [part: "product", part: "tittle", index: 0]]} -> "product.tittle[0]"
+   "string_value" -> "'string_value'"
+    2 -> "2"
+
+  Complex Value Type:
+  {:range, [start: "any_simple_type", end: "any_simple_type"]} -> "(any_simple_type..any_simple_type)"
+
+  """
+  #@spec values_to_string(value :: binary() | list() | string() | integer()) :: string.t()
+  def values_to_string(value) when is_bitstring(value) do
+    "'#{value}'"
+  end
+
+  def values_to_string({:range, [start: start_range, end: end_range]}) do
+    start_range_string = values_to_string(start_range)
+    end_range_string = values_to_string(end_range)
+    "(#{to_string(start_range_string)}..#{to_string(end_range_string)})"
+  end
+
+  def values_to_string({:variable, [variable_parts: parts]}) do
+    value_parts = variable_in_parts(parts)
+    IO.inspect value_parts
+    value_string =  variable_to_string(value_parts)
+    value_string
+  end
+
+  def values_to_string(value) do
+    to_string(value)
+  end
+
   def variable_in_parts(variable) do
     Enum.map(variable, fn {key, value} ->
       if key == :part, do: "#{value}", else: "[#{value}]"
@@ -32,4 +69,5 @@ defmodule Liquid.Combinators.Translators.General do
   defp filter_param_values_to_string({_key, value}) do
     to_string(value)
   end
+
 end
