@@ -9,6 +9,8 @@ defmodule Liquid.Combinators.General do
   @space 0x0020
   @colon 0x003A
   @point 0x002E
+  @newline 0x000A
+  @carriage_return 0x000D
   @comma 0x002C
   @single_quote 0x0027
   @double_quote 0x0022
@@ -36,6 +38,8 @@ defmodule Liquid.Combinators.General do
       space: @space,
       colon: @colon,
       point: @point,
+      carriage_return: @carriage_return,
+      newline: @newline,
       comma: @comma,
       quote: @double_quote,
       single_quote: @single_quote,
@@ -53,11 +57,16 @@ defmodule Liquid.Combinators.General do
   end
 
   @doc """
-  Horizontal Tab (U+0009) + Space (U+0020)
+  Horizontal Tab (U+0009) +
+  Space (U+0020) +
+  Carriage Return (U+000D)
+  New Line (U+000A)
   """
   def whitespace do
     ascii_char([
       @horizontal_tab,
+      @carriage_return,
+      @newline,
       @space
     ])
   end
