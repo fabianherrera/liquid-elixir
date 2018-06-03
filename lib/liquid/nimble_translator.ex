@@ -5,14 +5,16 @@ defmodule Liquid.NimbleTranslator do
   alias Liquid.Template
 
   alias Liquid.Combinators.Translators.{
-    Assign,
     LiquidVariable,
-    Cycle,
-    Increment,
-    Decrement,
+    Assign,
     Capture,
     Comment,
-    Include
+    Cycle,
+    Decrement,
+    For,
+    If,
+    Include,
+    Increment,
   }
 
   @doc """
@@ -43,37 +45,29 @@ defmodule Liquid.NimbleTranslator do
     end)
   end
 
-  # When the element its a string literal text
   defp process_node(elem) when is_bitstring(elem), do: elem
 
-  # When the element its one string literal text inside a list
   defp process_node([elem]) when is_bitstring(elem), do: elem
 
-  # When the element its a list
   defp process_node(nodelist) when is_list(nodelist) do
     multiprocess_node(nodelist, self())
   end
 
-  # When the element its a tuple
   defp process_node({tag, markup}) do
-    IO.inspect(markup)
-
     case tag do
-      :assign -> Assign.translate(markup)
       :liquid_variable -> LiquidVariable.translate(markup)
-      :cycle -> Cycle.translate(markup)
-      :increment -> Increment.translate(markup)
-      :decrement -> Decrement.translate(markup)
+      :assign -> Assign.translate(markup)
       :capture -> Capture.translate(markup)
       :comment -> Comment.translate(markup)
-      :include -> Include.tranlate(markup)
+      :cycle -> Cycle.translate(markup)
+      :decrement -> Decrement.translate(markup)
       :for -> For.translate(markup)
-
-      # {:increment, markup} = elem -> Increment.translate(markup)
-      # {:decrement, markup} = elem -> Decrement.translate(markup)
-      # {:capture, markup} = elem -> Capture.translate(markup)
-      _ ->
-        markup
+      :if -> If.translate(markup)
+      :elsif -> If.translate(markup)
+      :else -> translate({:ok, markup})
+      :include -> Include.tranlate(markup)
+      :increment -> Increment.translate(markup)
+      _ -> markup
     end
   end
 end
