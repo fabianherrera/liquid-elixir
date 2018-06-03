@@ -18,7 +18,8 @@ defmodule Liquid.NimbleParser do
     For,
     Tablerow,
     Case,
-    Capture
+    Capture,
+    Ifchanged
   }
 
   defparsec(:liquid_variable, General.liquid_variable())
@@ -85,6 +86,8 @@ defmodule Liquid.NimbleParser do
   defparsecp(:raw_content, Raw.raw_content())
   defparsec(:raw, Raw.tag())
 
+  defparsec(:ifchanged, Ifchanged.tag())
+
   defparsecp(:var_assignment, Include.var_assignment())
   defparsec(:include, Include.tag())
 
@@ -96,8 +99,6 @@ defmodule Liquid.NimbleParser do
   defparsec(:else_tag, If.else_tag())
   defparsec(:unless, If.unless_tag())
 
-#  defparsecp(:offset_param, For.offset_param())
-#  defparsecp(:limit_param, For.limit_param())
   defparsec(:break_tag, For.break_tag())
   defparsec(:continue_tag, For.continue_tag())
   defparsec(:for, For.tag())
@@ -123,7 +124,8 @@ defmodule Liquid.NimbleParser do
       parsec(:if),
       parsec(:unless),
       parsec(:tablerow),
-      parsec(:case)
+      parsec(:case),
+      parsec(:ifchanged)
     ])
   )
 
