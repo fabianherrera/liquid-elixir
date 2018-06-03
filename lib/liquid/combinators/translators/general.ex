@@ -2,26 +2,19 @@ defmodule Liquid.Combinators.Translators.General do
   @moduledoc false
 
   def variable(markup) do
-    parts = Enum.map(markup, &variable_in_parts/1)
+    parts = General.variable_in_parts(markup)
     name = variable_to_string(parts)
     %Liquid.Variable{name: name, parts: parts}
   end
 
-  def variable_in_parts(tuple) do
-    {key, value} = tuple
-
-    cond do
-      key == :part ->
-        "#{value}"
-
-      key == :index ->
-        "[#{value}]"
-    end
+  def variable_in_parts(variable) do
+    Enum.map(variable, fn {key, value} ->
+      if key == :part, do: "#{value}", else: "[#{value}]"
+    end)
   end
 
-  def variable_to_string(variable_in_parts) do
-    Enum.join(variable_in_parts, ".")
-    |> String.replace(".[", "[")
+  def variable_to_string(parts) do
+    parts |> Enum.join() |> String.replace(".[", "[")
   end
 
   def filters_to_string({:filter, [name]}) when is_binary(name) do

@@ -6,7 +6,7 @@ defmodule Liquid.Combinators.Translators.Assign do
         value: {:variable, [variable_parts: variable_parts]}
       ) do
     variable_right =
-      Enum.map(variable_parts, &General.variable_in_parts/1)
+      General.variable_in_parts(variable_parts)
       |> General.variable_to_string()
 
     markup_string = "#{variable_name} = #{variable_right}"
@@ -23,7 +23,7 @@ defmodule Liquid.Combinators.Translators.Assign do
         value: {:variable, [variable_parts: variable_parts, filters: filters]}
       ) do
     variable_right =
-      Enum.map(variable_parts, &General.variable_in_parts/1)
+      General.variable_in_parts(variable_parts)
       |> General.variable_to_string()
 
     filters =

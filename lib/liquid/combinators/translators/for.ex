@@ -51,7 +51,7 @@ defmodule Liquid.Combinators.Translators.For do
   defp concat_for_value_in_markup(value) when is_nil(value), do: ""
 
   defp concat_for_value_in_markup({:variable, values}) do
-    parts = Enum.map(values, &General.variable_in_parts/1)
+    parts = General.variable_in_parts(values)
     value_string = General.variable_to_string(parts)
     value_string
   end
