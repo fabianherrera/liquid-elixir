@@ -2,7 +2,7 @@ ExUnit.start(exclude: [:skip])
 
 defmodule Liquid.Helpers do
   use ExUnit.Case
-  alias Liquid.{Template, NimbleParser}
+  alias Liquid.{Template, NimbleParser, NimbleTranslator}
 
   def render(text, data \\ %{}) do
     text |> Template.parse() |> Template.render(data) |> elem(1)
@@ -20,7 +20,7 @@ defmodule Liquid.Helpers do
 
   def test_ast_translation(markup, params \\ %{}) do
     old = markup |> Template.parse() |> Template.render(params)
-    new = markup |> NimbleParser.parse() |> Template.render(params)
+    new = markup |> NimbleParser.parse() |> NimbleTranslator.translate() |> Template.render(params)
     assert old == new
   end
 end
