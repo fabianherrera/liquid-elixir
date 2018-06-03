@@ -28,3 +28,4 @@ defmodule Liquid.Combinators.Translators.Include do
     do: "#{variable} #{value}"
 
 end
+# General.values_to_string(value)
