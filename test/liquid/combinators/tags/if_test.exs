@@ -39,13 +39,13 @@ defmodule Liquid.Combinators.Tags.IfTest do
       if: [
         if_condition: [
           condition:
-            {{:variable, [variable_parts: [part: "line_item", part: "grams"]]}, :>, 20000},
+            {{:variable, [parts: [part: "line_item", part: "grams"]]}, :>, 20000},
           logical: [
             :and,
             {:condition,
              {{:variable,
                [
-                 variable_parts: [
+                 parts: [
                    part: "customer_address",
                    part: "city"
                  ]
@@ -56,7 +56,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
             {:condition,
              {{:variable,
                [
-                 variable_parts: [
+                 parts: [
                    part: "customer_address",
                    part: "city"
                  ]
@@ -74,10 +74,10 @@ defmodule Liquid.Combinators.Tags.IfTest do
       &Parser.if/1,
       if: [
         if_condition: [
-          condition: {{:variable, [variable_parts: [part: "a"]]}, :==, true},
+          condition: {{:variable, [parts: [part: "a"]]}, :==, true},
           logical: [
             :or,
-            {:condition, {{:variable, [variable_parts: [part: "b"]]}, :==, 4}}
+            {:condition, {{:variable, [parts: [part: "b"]]}, :==, 4}}
           ]
         ],
         body: [" YES "]
@@ -94,25 +94,25 @@ defmodule Liquid.Combinators.Tags.IfTest do
       &Parser.if/1,
       if: [
         if_condition: [
-          condition: {{:variable, [variable_parts: [part: "a"]]}, :==, "and"},
+          condition: {{:variable, [parts: [part: "a"]]}, :==, "and"},
           logical: [
             :and,
-            {:condition, {{:variable, [variable_parts: [part: "b"]]}, :==, "or"}}
+            {:condition, {{:variable, [parts: [part: "b"]]}, :==, "or"}}
           ],
           logical: [
             :and,
-            {:condition, {{:variable, [variable_parts: [part: "c"]]}, :==, "foo and bar"}}
+            {:condition, {{:variable, [parts: [part: "c"]]}, :==, "foo and bar"}}
           ],
           logical: [
             :and,
-            {:condition, {{:variable, [variable_parts: [part: "d"]]}, :==, "bar or baz"}}
+            {:condition, {{:variable, [parts: [part: "d"]]}, :==, "bar or baz"}}
           ],
           logical: [
             :and,
-            {:condition, {{:variable, [variable_parts: [part: "e"]]}, :==, "foo"}}
+            {:condition, {{:variable, [parts: [part: "e"]]}, :==, "foo"}}
           ],
-          logical: [:and, {:variable, [variable_parts: [part: "foo"]]}],
-          logical: [:and, {:variable, [variable_parts: [part: "bar"]]}]
+          logical: [:and, {:variable, [parts: [part: "foo"]]}],
+          logical: [:and, {:variable, [parts: [part: "bar"]]}]
         ],
         body: [" YES "]
       ]
@@ -140,7 +140,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
               condition:
                 {{:variable,
                   [
-                    variable_parts: [
+                    parts: [
                       part: "shipping_method",
                       part: "title"
                     ]
@@ -154,7 +154,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
                    condition:
                      {{:variable,
                        [
-                         variable_parts: [
+                         parts: [
                            part: "shipping_method",
                            part: "title"
                          ]
@@ -204,7 +204,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
       if: [
         if_condition: [
           condition:
-            {{:variable, [variable_parts: [part: "shipping_method", part: "title"]]}, :==,
+            {{:variable, [parts: [part: "shipping_method", part: "title"]]}, :==,
              "International Shipping"}
         ],
         body: [
@@ -215,7 +215,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
                condition:
                  {{:variable,
                    [
-                     variable_parts: [
+                     parts: [
                        part: "shipping_method",
                        part: "title"
                      ]

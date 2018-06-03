@@ -18,7 +18,7 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
         tablerow: [
           tablerow_collection: [
             variable_name: ["item"],
-            value: {:variable, [variable_parts: [part: "array"]]}
+            value: {:variable, [parts: [part: "array"]]}
           ],
           tablerow_body: []
         ]
@@ -41,7 +41,7 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
         tablerow: [
           tablerow_collection: [
             variable_name: ["item"],
-            value: {:variable, [variable_parts: [part: "array"]]},
+            value: {:variable, [parts: [part: "array"]]},
             limit_param: [2]
           ],
           tablerow_body: []
@@ -64,7 +64,7 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
         tablerow: [
           tablerow_collection: [
             variable_name: ["item"],
-            value: {:variable, [variable_parts: [part: "array"]]},
+            value: {:variable, [parts: [part: "array"]]},
             offset_param: [2]
           ],
           tablerow_body: []
@@ -87,7 +87,7 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
         tablerow: [
           tablerow_collection: [
             variable_name: ["item"],
-            value: {:variable, [variable_parts: [part: "array"]]},
+            value: {:variable, [parts: [part: "array"]]},
             cols_param: [2]
           ],
           tablerow_body: []
@@ -113,7 +113,7 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
             value: {:range, [start: 1, end: 10]}
           ],
           tablerow_body: [
-            liquid_variable: [variable: [variable_parts: [part: "i"]]]
+            liquid_variable: [variable: [parts: [part: "i"]]]
           ]
         ]
       )
@@ -130,12 +130,12 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
           value:
             {:range,
              [
-               start: {:variable, [variable_parts: [part: "my_var"]]},
+               start: {:variable, [parts: [part: "my_var"]]},
                end: 10
              ]}
         ],
         tablerow_body: [
-          liquid_variable: [variable: [variable_parts: [part: "i"]]]
+          liquid_variable: [variable: [parts: [part: "i"]]]
         ]
       ]
     )
@@ -151,14 +151,14 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
           value:
             {:range,
              [
-               start: {:variable, [variable_parts: [part: "my_var"]]},
+               start: {:variable, [parts: [part: "my_var"]]},
                end: 10
              ]},
           limit_param: [2],
           cols_param: [2]
         ],
         tablerow_body: [
-          liquid_variable: [variable: [variable_parts: [part: "i"]]]
+          liquid_variable: [variable: [parts: [part: "i"]]]
         ]
       ]
     )

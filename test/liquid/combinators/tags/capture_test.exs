@@ -9,12 +9,12 @@ defmodule Liquid.Combinators.Tags.CaptureTest do
       "{% capture about_me %} I am {{ age }} and my favorite food is {{ favorite_food }}{% endcapture %}",
       &Parser.capture/1,
       capture: [
-        variable: [variable_parts: [part: "about_me"]],
+        variable: [parts: [part: "about_me"]],
         capture_sentences: [
           " I am ",
-          {:liquid_variable, [variable: [variable_parts: [part: "age"]]]},
+          {:liquid_variable, [variable: [parts: [part: "age"]]]},
           " and my favorite food is ",
-          {:liquid_variable, [variable: [variable_parts: [part: "favorite_food"]]]}
+          {:liquid_variable, [variable: [parts: [part: "favorite_food"]]]}
         ]
       ]
     )

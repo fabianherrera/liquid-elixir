@@ -21,7 +21,7 @@ defmodule Liquid.Combinators.Tags.IfchangedTest do
             {:liquid_variable,
               [
                 variable: [
-                  variable_parts: [part: "product", part: "created_at"],
+                  parts: [part: "product", part: "created_at"],
                   filters: [filter: ["date", {:params, [value: "%w"]}]]
                 ]
               ]},

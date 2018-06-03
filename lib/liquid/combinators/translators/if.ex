@@ -30,8 +30,8 @@ defmodule Liquid.Combinators.Translators.If do
   defp if_markup_to_string(if_list) do
     Enum.map(if_list, fn x ->
       case x do
-        {:variable, [variable_parts: variable_parts]} ->
-          parts = General.variable_in_parts(variable_parts)
+        {:variable, [parts: parts]} ->
+          parts = General.variable_in_parts(parts)
           variable_name = General.variable_to_string(parts)
           variable_name
 
@@ -56,7 +56,7 @@ defmodule Liquid.Combinators.Translators.If do
   defp logical_to_string([logical_op, logical_statement]) do
     logical_string =
       case logical_statement do
-        {:variable, variable_parts: parts} = variable ->
+        {:variable, parts: parts} = variable ->
           values_to_string(variable)
 
         {:condition, value} ->
@@ -69,7 +69,7 @@ defmodule Liquid.Combinators.Translators.If do
     " #{logical_op} #{logical_string}"
   end
 
-  defp values_to_string({:variable, variable_parts: parts}) do
+  defp values_to_string({:variable, parts: parts}) do
     variable = General.variable_in_parts(parts)
     variable_name = General.variable_to_string(variable)
   end

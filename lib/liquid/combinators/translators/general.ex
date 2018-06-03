@@ -5,9 +5,9 @@ defmodule Liquid.Combinators.Translators.General do
   Returns a corresponding type value:
 
   Simple Value Type:
-  {variable: [variable_parts: [part: "i"]]} -> "i"
-  {variable: [variable_parts: [part: "products", part: "tittle"]]} -> "product.tittle"
-  {variable: [variable_parts: [part: "product", part: "tittle", index: 0]]} -> "product.tittle[0]"
+  {variable: [parts: [part: "i"]]} -> "i"
+  {variable: [parts: [part: "products", part: "tittle"]]} -> "product.tittle"
+  {variable: [parts: [part: "product", part: "tittle", index: 0]]} -> "product.tittle[0]"
    "string_value" -> "'string_value'"
     2 -> "2"
 
@@ -26,7 +26,7 @@ defmodule Liquid.Combinators.Translators.General do
     "(#{to_string(start_range_string)}..#{to_string(end_range_string)})"
   end
 
-  def values_to_string({:variable, [variable_parts: parts]}) do
+  def values_to_string({:variable, [parts: parts]}) do
     value_parts = variable_in_parts(parts)
     value_string =  variable_to_string(value_parts)
     value_string

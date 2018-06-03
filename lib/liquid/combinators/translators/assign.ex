@@ -3,10 +3,10 @@ defmodule Liquid.Combinators.Translators.Assign do
 
   def translate(
         variable_name: variable_name,
-        value: {:variable, [variable_parts: variable_parts]}
+        value: {:variable, [parts: parts]}
       ) do
     variable_right =
-      General.variable_in_parts(variable_parts)
+      General.variable_in_parts(parts)
       |> General.variable_to_string()
 
     markup_string = "#{variable_name} = #{variable_right}"
@@ -20,10 +20,10 @@ defmodule Liquid.Combinators.Translators.Assign do
 
   def translate(
         variable_name: variable_name,
-        value: {:variable, [variable_parts: variable_parts, filters: filters]}
+        value: {:variable, [parts: parts, filters: filters]}
       ) do
     variable_right =
-      General.variable_in_parts(variable_parts)
+      General.variable_in_parts(parts)
       |> General.variable_to_string()
 
     filters =
