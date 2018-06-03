@@ -42,14 +42,14 @@ defmodule Liquid.Combinators.Translators.If do
           condition_to_string(value)
 
         value ->
-          values_to_string(value)
+          General.values_to_string(value)
       end
     end)
   end
 
   defp condition_to_string({left, operator, right}) do
-    left_var = values_to_string(left)
-    right_var = values_to_string(right)
+    left_var = General.values_to_string(left)
+    right_var = General.values_to_string(right)
     left_var <> " #{operator} " <> right_var
   end
 
@@ -57,32 +57,32 @@ defmodule Liquid.Combinators.Translators.If do
     logical_string =
       case logical_statement do
         {:variable, variable_parts: parts} = variable ->
-          values_to_string(variable)
+          General.values_to_string(variable)
 
         {:condition, value} ->
           condition_to_string(value)
 
         any ->
-          values_to_string(any)
+          General.values_to_string(any)
       end
 
     " #{logical_op} #{logical_string}"
   end
 
-  defp values_to_string({:variable, variable_parts: parts}) do
-    variable = General.variable_in_parts(parts)
-    variable_name = General.variable_to_string(variable)
-  end
+  # defp values_to_string({:variable, variable_parts: parts}) do
+  #   variable = General.variable_in_parts(parts)
+  #   variable_name = General.variable_to_string(variable)
+  # end
 
-  defp values_to_string(value) when is_bitstring(value) do
-    "'#{value}'"
-  end
+  # defp values_to_string(value) when is_bitstring(value) do
+  #   "'#{value}'"
+  # end
 
-  defp values_to_string(value) do
-    if value == nil do
-      "null"
-    else
-      "#{value}"
-    end
-  end
+  # # defp values_to_string(value) do
+  # #   if value == nil do
+  # #     "null"
+  # #   else
+  # #     "#{value}"
+  # #   end
+  # end
 end

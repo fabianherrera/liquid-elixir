@@ -15,7 +15,7 @@ defmodule Liquid.Combinators.Translators.General do
   {:range, [start: "any_simple_type", end: "any_simple_type"]} -> "(any_simple_type..any_simple_type)"
 
   """
-  #@spec values_to_string(value :: binary() | list() | string() | integer()) :: string.t()
+  # @spec values_to_string(value :: binary() | list() | string() | integer()) :: string.t()
   def values_to_string(value) when is_bitstring(value) do
     "'#{value}'"
   end
@@ -28,12 +28,16 @@ defmodule Liquid.Combinators.Translators.General do
 
   def values_to_string({:variable, [variable_parts: parts]}) do
     value_parts = variable_in_parts(parts)
-    value_string =  variable_to_string(value_parts)
+    value_string = variable_to_string(value_parts)
     value_string
   end
 
   def values_to_string(value) do
-    to_string(value)
+    if value == nil do
+      "null"
+    else
+      "#{value}"
+    end
   end
 
   def variable_in_parts(variable) do
@@ -68,5 +72,4 @@ defmodule Liquid.Combinators.Translators.General do
   defp filter_param_values_to_string({_key, value}) do
     to_string(value)
   end
-
 end
