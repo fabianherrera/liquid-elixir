@@ -28,7 +28,6 @@ defmodule Liquid.Combinators.Translators.General do
 
   def values_to_string({:variable, [variable_parts: parts]}) do
     value_parts = variable_in_parts(parts)
-    IO.inspect value_parts
     value_string =  variable_to_string(value_parts)
     value_string
   end
