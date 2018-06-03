@@ -1,12 +1,5 @@
 defmodule Liquid.Combinators.Translators.General do
   @moduledoc false
-
-  def variable(markup) do
-    parts = General.variable_in_parts(markup)
-    name = variable_to_string(parts)
-    %Liquid.Variable{name: name, parts: parts}
-  end
-
   def variable_in_parts(variable) do
     Enum.map(variable, fn {key, value} ->
       if key == :part, do: "#{value}", else: "[#{value}]"
