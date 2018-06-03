@@ -11,7 +11,6 @@ defmodule Liquid.Combinators.Translators.If do
 
     markup_list = if_markup_to_string(if_condition)
     markup_string = List.to_string(markup_list)
-    markup_string
 
     block = %Liquid.Block{
       name: :if,
