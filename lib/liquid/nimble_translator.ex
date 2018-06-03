@@ -15,7 +15,7 @@ defmodule Liquid.NimbleTranslator do
     If,
     Include,
     Increment,
-    Tablerow,
+    Tablerow
   }
 
   @doc """
@@ -65,7 +65,7 @@ defmodule Liquid.NimbleTranslator do
       :for -> For.translate(markup)
       :if -> If.translate(markup)
       :elsif -> If.translate(markup)
-      :else -> translate({:ok, markup})
+      :else -> process_node(markup)
       :include -> Include.translate(markup)
       :increment -> Increment.translate(markup)
       :tablerow -> Tablerow.translate(markup)
