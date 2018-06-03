@@ -25,7 +25,7 @@ defmodule Liquid.Combinators.Tags.Case do
   def tag, do: Tag.define_closed("case", &head/1, &body/1)
 
   defp when_tag do
-    Tag.define_open("when", fn combinator ->
+    Tag.define_else("when", fn combinator ->
       combinator
       |> choice([
         parsec(:value_definition),
