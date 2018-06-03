@@ -7,7 +7,7 @@ defmodule Liquid.Combinators.Translators.General do
   end
 
   def variable_to_string(parts) do
-    parts |> Enum.join() |> String.replace(".[", "[")
+    parts |> Enum.join(".") |> String.replace(".[", "[")
   end
 
   def filters_to_string({:filter, [name]}) when is_binary(name) do
