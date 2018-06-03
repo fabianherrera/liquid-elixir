@@ -12,7 +12,9 @@ defmodule Liquid.NimbleTranslator do
     Decrement,
     Capture,
     Comment,
-    Include
+    Include,
+    For,
+    Tablerow
   }
 
   @doc """
@@ -66,7 +68,7 @@ defmodule Liquid.NimbleTranslator do
       :decrement -> Decrement.translate(markup)
       :capture -> Capture.translate(markup)
       :comment -> Comment.translate(markup)
-      :include -> Include.tranlate(markup)
+      :include -> Include.translate(markup)
       :for -> For.translate(markup)
       :tablerow -> Tablerow.translate(markup)
 

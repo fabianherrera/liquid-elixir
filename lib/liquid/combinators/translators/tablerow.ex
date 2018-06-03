@@ -1,77 +1,67 @@
 defmodule Liquid.Combinators.Translators.Tablerow do
+  alias Liquid.Block
   alias Liquid.Combinators.Translators.General
+  alias Liquid.NimbleTranslator
 
-  def translate(
-        variable_name: variable_name,
-        value: {:variable, [variable_parts: variable_parts]}
-      ) do
-    variable_right =
-      Enum.map(variable_parts, &General.variable_in_parts/1)
-      |> General.variable_to_string()
+   def translate([tablerow_collection: tablerow_collection, tablerow_body: tablerow_body]) do
+    markup = process_tablerow_markup(tablerow_collection)
 
-    markup_string = "#{variable_name} = #{variable_right}"
-
-    %Liquid.Tag{
-      name: :assign,
-      markup: markup_string,
-      blank: true
+    %Liquid.Block{
+      iterator: process_iterator(%Block{markup: markup}),
+      markup: markup,
+      name: :tablerow,
+      nodelist: fixer_tablerow_types_only_list(NimbleTranslator.translate(tablerow_body))
     }
   end
 
-  def translate(variable_name: variable_name, value: value) do
-    markup_string =
-      case is_bitstring(value) do
-        true -> "#{variable_name} = '#{value}'"
-        false -> "#{variable_name} = #{value}"
-      end
-
-    %Liquid.Tag{
-      name: :assign,
-      markup: markup_string,
-      blank: true
-    }
+  # fix current parser tablerow tag bug and compatibility
+  defp fixer_tablerow_types_no_list(element) do
+    if is_list(element), do: List.first(element), else: element
   end
 
-  def translate(
-        variable_name: variable_name,
-        value: value,
-        filters: filters
-      ) do
-    filters =
-      Enum.map(filters, fn x -> General.filters_to_string(x) end)
-      |> List.to_string()
-
-    markup_string =
-      case is_bitstring(value) do
-        true -> "#{variable_name} = '#{value}' #{filters}"
-        false -> "#{variable_name} = #{value} #{filters}"
-      end
-
-    %Liquid.Tag{
-      name: :assign,
-      markup: markup_string,
-      blank: true
-    }
+  # fix current parser tablerow tag bug and compatibility
+  defp fixer_tablerow_types_only_list(element) do
+    if is_list(element), do: element, else: [element]
   end
 
-  def translate(
-        variable_name: variable_name,
-        value: {:variable, [variable_parts: variable_parts, filters: filters]}
-      ) do
-    variable_right =
-      Enum.map(variable_parts, &General.variable_in_parts/1)
-      |> General.variable_to_string()
-
-    filters =
-      Enum.map(filters, fn x -> General.filters_to_string(x) end)
-      |> List.to_string()
-
-    markup_string = "#{variable_name} = #{variable_right} #{filters}"
-
-    %Liquid.Tag{
-      name: :assign,
-      markup: markup_string,
-      blank: true
-    }
+  defp process_iterator(%Block{markup: markup}) do
+    Liquid.ForElse.parse_iterator(%Block{markup: markup})
   end
+
+  defp process_tablerow_markup(tablerow_collection) do
+    variable = Keyword.get(tablerow_collection, :variable_name)
+    value = concat_tablerow_value_in_markup(Keyword.get(tablerow_collection, :value))
+    range_value = concat_tablerow_value_in_markup(Keyword.get(tablerow_collection, :range_value))
+    tablerow_param = concat_tablerow_params_in_markup(tablerow_collection)
+    "#{variable} in #{value}#{range_value}" <> tablerow_param
+  end
+
+  defp concat_tablerow_value_in_markup(value) when is_nil(value), do: ""
+
+  defp concat_tablerow_value_in_markup({:variable, values}) do
+    parts = Enum.map(values, &General.variable_in_parts/1)
+    value_string = General.variable_to_string(parts)
+    value_string
+  end
+
+  defp concat_tablerow_value_in_markup(start: start_range, end: end_range) do
+    "(#{to_string(start_range)}..#{to_string(end_range)})"
+  end
+
+  defp concat_tablerow_params_in_markup(tablerow_collection) do
+    offset_param = Keyword.get(tablerow_collection, :offset_param)
+    limit_param = Keyword.get(tablerow_collection, :limit_param)
+    cols_param = Keyword.get(tablerow_collection, :cols_param)
+
+    offset_string =
+      if is_nil(offset_param), do: "", else: " offset:#{to_string(List.first(offset_param))}"
+
+    limit_string =
+      if is_nil(limit_param), do: "", else: " limit:#{to_string(List.first(limit_param))}"
+
+    cols_string =
+      if is_nil(cols_param), do: "", else: " limit:#{to_string(List.first(cols_param))}"
+    "#{cols_string}#{offset_string}#{limit_string}"
+  end
+
 end
