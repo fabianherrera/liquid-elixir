@@ -30,45 +30,59 @@ defmodule Liquid.Combinators.Translators.If do
   defp if_markup_to_string(if_list) do
     Enum.map(if_list, fn x ->
       case x do
-        {:variable, value} ->
-          parts = General.variable_in_parts(value)
+        {:variable, [variable_parts: variable_parts]} ->
+          parts = General.variable_in_parts(variable_parts)
           variable_name = General.variable_to_string(parts)
           variable_name
 
         {:logical, values} ->
-          [logical_op, content] = values
+          logical_to_string(values)
 
-          if is_tuple(content) do
-            variable_name = content |> elem(1)
-            variable_name
-          else
-            variable_name = "#{content}"
-          end
-
-          " #{logical_op} #{variable_name}"
-
-        {:condition, {left, operator, right}} ->
-          if is_tuple(left) do
-            variable_list_left = left |> elem(1)
-            parts_left = General.variable_in_parts(variable_list_left)
-            variable_name_left = General.variable_to_string(parts_left)
-          else
-            variable_name_left = "#{left}"
-          end
-
-          if is_tuple(right) do
-            variable_list_right = right |> elem(1)
-            parts_right = General.variable_in_parts(variable_list_right)
-            variable_name_right = General.variable_to_string(parts_right)
-          else
-            variable_name_right = "#{right}"
-          end
-
-          "#{variable_name_left} #{operator} #{variable_name_right}"
+        {:condition, value} ->
+          condition_to_string(value)
 
         value ->
-          " #{value}"
+          values_to_string(value)
       end
     end)
+  end
+
+  defp condition_to_string({left, operator, right}) do
+    left_var = values_to_string(left)
+    right_var = values_to_string(right)
+    left_var <> " #{operator} " <> right_var
+  end
+
+  defp logical_to_string([logical_op, logical_statement]) do
+    logical_string =
+      case logical_statement do
+        {:variable, variable_parts: parts} = variable ->
+          values_to_string(variable)
+
+        {:condition, value} ->
+          condition_to_string(value)
+
+        any ->
+          values_to_string(any)
+      end
+
+    " #{logical_op} #{logical_string}"
+  end
+
+  defp values_to_string({:variable, variable_parts: parts}) do
+    variable = General.variable_in_parts(parts)
+    variable_name = General.variable_to_string(variable)
+  end
+
+  defp values_to_string(value) when is_bitstring(value) do
+    "'#{value}'"
+  end
+
+  defp values_to_string(value) do
+    if value == nil do
+      "null"
+    else
+      "#{value}"
+    end
   end
 end

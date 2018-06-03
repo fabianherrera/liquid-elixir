@@ -1,8 +1,23 @@
 defmodule Liquid.Combinators.Translators.Capture do
-  def translate(markup) do
-    variable_name = Keyword.get(markup, :variable_name)
-    capture_sentences = Keyword.get(markup, :capture_sentences)
-    nodelist = Liquid.NimbleTranslator.translate(capture_sentences)
-    %Liquid.Block{name: :capture, markup: variable_name, blank: true, nodelist: nodelist}
+  alias Liquid.Combinators.Translators.General
+
+  def translate(variable: [variable_parts: variable_parts], capture_sentences: capture_sentences) do
+    variable_in_string =
+      General.variable_in_parts(variable_parts)
+      |> General.variable_to_string()
+
+    nodelist = Liquid.NimbleTranslator.process_node(capture_sentences)
+    %Liquid.Block{name: :capture, markup: variable_in_string, blank: true, nodelist: nodelist}
+  end
+
+  def translate([capture_value, capture_sentences: capture_sentences]) do
+    if is_bitstring(capture_value) do
+      markup = "'#{capture_value}'"
+    else
+      markup = "#{capture_value}"
+    end
+
+    nodelist = Liquid.NimbleTranslator.process_node(capture_sentences)
+    %Liquid.Block{name: :capture, markup: markup, blank: true, nodelist: nodelist}
   end
 end
