@@ -7,11 +7,11 @@ defmodule Liquid.Combinators.Translators.For do
     markup = process_for_markup(for_collection)
 
     %Liquid.Block{
-      elselist: fixer_for_types_no_list(NimbleTranslator.translate(else_body)),
+      elselist: fixer_for_types_no_list(NimbleTranslator.process_node(else_body)),
       iterator: process_iterator(%Block{markup: markup}),
       markup: markup,
       name: :for,
-      nodelist: fixer_for_types_only_list(NimbleTranslator.translate(for_body))
+      nodelist: fixer_for_types_only_list(NimbleTranslator.process_node(for_body))
     }
   end
 
@@ -22,7 +22,7 @@ defmodule Liquid.Combinators.Translators.For do
       iterator: process_iterator(%Block{markup: markup}),
       markup: markup,
       name: :for,
-      nodelist: fixer_for_types_only_list(NimbleTranslator.translate(for_body))
+      nodelist: fixer_for_types_only_list(NimbleTranslator.process_node(for_body))
     }
   end
 

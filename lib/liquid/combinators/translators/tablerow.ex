@@ -10,13 +10,8 @@ defmodule Liquid.Combinators.Translators.Tablerow do
       iterator: process_iterator(%Block{markup: markup}),
       markup: markup,
       name: :tablerow,
-      nodelist: fixer_tablerow_types_only_list(NimbleTranslator.translate(tablerow_body))
+      nodelist: fixer_tablerow_types_only_list(NimbleTranslator.process_node(tablerow_body))
     }
-  end
-
-  # fix current parser tablerow tag bug and compatibility
-  defp fixer_tablerow_types_no_list(element) do
-    if is_list(element), do: List.first(element), else: element
   end
 
   # fix current parser tablerow tag bug and compatibility
@@ -25,7 +20,7 @@ defmodule Liquid.Combinators.Translators.Tablerow do
   end
 
   defp process_iterator(%Block{markup: markup}) do
-    Liquid.ForElse.parse_iterator(%Block{markup: markup})
+    Liquid.TableRow.parse_iterator(%Block{markup: markup})
   end
 
   defp process_tablerow_markup(tablerow_collection) do
@@ -38,7 +33,7 @@ defmodule Liquid.Combinators.Translators.Tablerow do
 
   defp concat_tablerow_value_in_markup(value) when is_nil(value), do: ""
 
-  defp concat_tablerow_value_in_markup({:variable, values}) do
+  defp concat_tablerow_value_in_markup({:variable, [variable_parts: values]}) do
     parts = Enum.map(values, &General.variable_in_parts/1)
     value_string = General.variable_to_string(parts)
     value_string
@@ -65,3 +60,20 @@ defmodule Liquid.Combinators.Translators.Tablerow do
   end
 
 end
+
+[
+  "a",
+  {:tablerow,
+    [
+      tablerow_collection: [
+        variable_name: ["n"],
+        value: {:variable, [variable_parts: ["numbers"]]},
+        cols_param: [3]
+      ],
+      tablerow_body: [
+        " ",
+        {:liquid_variable, [variable: [variable_parts: ["n"]]]},
+        " "
+      ]
+    ]}
+]
