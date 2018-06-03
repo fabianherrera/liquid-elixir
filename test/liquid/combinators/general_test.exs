@@ -28,6 +28,8 @@ defmodule Liquid.Combinators.GeneralTest do
   test "whitespace must parse 0x0020 and 0x0009" do
     test_combinator(" ", &Parser.whitespace/1, ' ')
     test_combinator("\t", &Parser.whitespace/1, '\t')
+    test_combinator("\n", &Parser.whitespace/1, '\n')
+    test_combinator("\r", &Parser.whitespace/1, '\r')
   end
 
   test "literal: every utf8 valid character until open/close tag/variable" do
