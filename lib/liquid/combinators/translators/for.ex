@@ -34,27 +34,27 @@ defmodule Liquid.Combinators.Translators.For do
     variable = Keyword.get(for_collection, :variable_name)
     value = concat_for_value_in_markup(Keyword.get(for_collection, :value))
     range_value = concat_for_value_in_markup(Keyword.get(for_collection, :range_value))
-    for_param = concat_for_params_in_markup(for_collection)
-    "#{variable} in #{value}#{range_value}" <> for_param
+    for_params = concat_for_params_in_markup(Keyword.get(for_collection, :for_params))
+    "#{variable} in #{value}#{range_value}" <> for_params
   end
 
   defp concat_for_value_in_markup(value) do
     if is_nil(value), do: "", else: General.values_to_string(value)
   end
 
-  defp concat_for_params_in_markup(for_collection) do
-    offset_param = Keyword.get(for_collection, :offset_param)
-    limit_param = Keyword.get(for_collection, :limit_param)
-    reversed_param = Keyword.get(for_collection, :reversed_param)
+  defp concat_for_params_in_markup([]), do: ""
 
-    offset_string =
-      if is_nil(offset_param), do: "", else: " offset:#{General.values_to_string(offset_param)}"
-
-    limit_string =
-      if is_nil(limit_param), do: "", else: " limit:#{General.values_to_string(limit_param)}"
-
-    reversed_string = if is_nil(reversed_param), do: "", else: " reversed"
-    "#{reversed_string}#{offset_string}#{limit_string}"
+  defp concat_for_params_in_markup(for_params) do
+    for_params
+    |>  Enum.map(fn  param ->
+          case param do
+           {:reversed_param, _value} -> " reversed"
+           {:offset_param, value} -> " offset:#{General.values_to_string(value)}"
+           {:limit_param, value} -> " limit:#{General.values_to_string(value)}"
+            _ -> ""
+          end
+       end)
+    |> List.to_string()
   end
 
 end

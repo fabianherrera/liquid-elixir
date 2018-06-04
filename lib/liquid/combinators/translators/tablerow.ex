@@ -27,28 +27,27 @@ defmodule Liquid.Combinators.Translators.Tablerow do
     variable = Keyword.get(tablerow_collection, :variable_name)
     value = concat_tablerow_value_in_markup(Keyword.get(tablerow_collection, :value))
     range_value = concat_tablerow_value_in_markup(Keyword.get(tablerow_collection, :range_value))
-    tablerow_param = concat_tablerow_params_in_markup(tablerow_collection)
-    "#{variable} in #{value}#{range_value}" <> tablerow_param
+    tablerow_params = concat_tablerow_params_in_markup(Keyword.get(tablerow_collection, :tablerow_params))
+    "#{variable} in #{value}#{range_value}" <> tablerow_params
   end
 
   defp concat_tablerow_value_in_markup(value) do
     if is_nil(value), do: "", else: General.values_to_string(value)
   end
 
-  defp concat_tablerow_params_in_markup(tablerow_collection) do
-    offset_param = Keyword.get(tablerow_collection, :offset_param)
-    limit_param = Keyword.get(tablerow_collection, :limit_param)
-    cols_param = Keyword.get(tablerow_collection, :cols_param)
+  defp concat_tablerow_params_in_markup([]), do: ""
 
-    offset_string =
-      if is_nil(offset_param), do: "", else: " offset:#{General.values_to_string(offset_param)}"
-
-    limit_string =
-      if is_nil(limit_param), do: "", else: " limit:#{General.values_to_string(limit_param)}"
-
-    cols_string =
-      if is_nil(cols_param), do: "", else: " limit:#{General.values_to_string(cols_param)}"
-    "#{cols_string}#{offset_string}#{limit_string}"
+  defp concat_tablerow_params_in_markup(tablerow_params) do
+    tablerow_params
+    |>  Enum.map(fn  param ->
+      case param do
+        {:cols_param, value} -> " cols:#{General.values_to_string(value)}"
+        {:offset_param, value} -> " offset:#{General.values_to_string(value)}"
+        {:limit_param, value} -> " limit:#{General.values_to_string(value)}"
+        _ -> ""
+      end
+    end)
+    |> List.to_string()
   end
 
 end

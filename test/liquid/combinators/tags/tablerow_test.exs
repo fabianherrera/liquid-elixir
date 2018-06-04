@@ -15,12 +15,15 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
       test_combinator(
         tag,
         &Parser.tablerow/1,
-        tablerow: [
-          tablerow_collection: [
-            variable_name: ["item"],
-            value: {:variable, [parts: [part: "array"]]}
-          ],
-          tablerow_body: []
+        [
+          tablerow: [
+            tablerow_collection: [
+              variable_name: ["item"],
+              value: {:variable, [parts: [part: "array"]]},
+              tablerow_params: []
+            ],
+            tablerow_body: []
+          ]
         ]
       )
     end)
@@ -38,13 +41,15 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
       test_combinator(
         tag,
         &Parser.tablerow/1,
-        tablerow: [
-          tablerow_collection: [
-            variable_name: ["item"],
-            value: {:variable, [parts: [part: "array"]]},
-            limit_param: [2]
-          ],
-          tablerow_body: []
+        [
+          tablerow: [
+            tablerow_collection: [
+              variable_name: ["item"],
+              value: {:variable, [parts: [part: "array"]]},
+              tablerow_params: [limit_param: [2]]
+            ],
+            tablerow_body: []
+          ]
         ]
       )
     end)
@@ -61,13 +66,15 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
       test_combinator(
         tag,
         &Parser.tablerow/1,
-        tablerow: [
-          tablerow_collection: [
-            variable_name: ["item"],
-            value: {:variable, [parts: [part: "array"]]},
-            offset_param: [2]
-          ],
-          tablerow_body: []
+        [
+          tablerow: [
+            tablerow_collection: [
+              variable_name: ["item"],
+              value: {:variable, [parts: [part: "array"]]},
+              tablerow_params: [offset_param: [2]]
+            ],
+            tablerow_body: []
+          ]
         ]
       )
     end)
@@ -84,13 +91,15 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
       test_combinator(
         tag,
         &Parser.tablerow/1,
-        tablerow: [
-          tablerow_collection: [
-            variable_name: ["item"],
-            value: {:variable, [parts: [part: "array"]]},
-            cols_param: [2]
-          ],
-          tablerow_body: []
+        [
+          tablerow: [
+            tablerow_collection: [
+              variable_name: ["item"],
+              value: {:variable, [parts: [part: "array"]]},
+              tablerow_params: [cols_param: [2]]
+            ],
+            tablerow_body: []
+          ]
         ]
       )
     end)
@@ -107,13 +116,16 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
       test_combinator(
         tag,
         &Parser.tablerow/1,
-        tablerow: [
-          tablerow_collection: [
-            variable_name: ["i"],
-            value: {:range, [start: 1, end: 10]}
-          ],
-          tablerow_body: [
-            liquid_variable: [variable: [parts: [part: "i"]]]
+        [
+          tablerow: [
+            tablerow_collection: [
+              variable_name: ["i"],
+              value: {:range, [start: 1, end: 10]},
+              tablerow_params: []
+            ],
+            tablerow_body: [
+              liquid_variable: [variable: [parts: [part: "i"]]]
+            ]
           ]
         ]
       )
@@ -124,18 +136,17 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
     test_combinator(
       "{% tablerow i in (my_var..10) %}{{ i }}{% endtablerow %}",
       &Parser.tablerow/1,
-      tablerow: [
-        tablerow_collection: [
-          variable_name: ["i"],
-          value:
-            {:range,
-             [
-               start: {:variable, [parts: [part: "my_var"]]},
-               end: 10
-             ]}
-        ],
-        tablerow_body: [
-          liquid_variable: [variable: [parts: [part: "i"]]]
+      [
+        tablerow: [
+          tablerow_collection: [
+            variable_name: ["i"],
+            value: {:range,
+              [start: {:variable, [parts: [part: "my_var"]]}, end: 10]},
+            tablerow_params: []
+          ],
+          tablerow_body: [
+            liquid_variable: [variable: [parts: [part: "i"]]]
+          ]
         ]
       ]
     )
@@ -145,20 +156,17 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
     test_combinator(
       "{% tablerow i in (my_var..10) limit:2 cols:2 %}{{ i }}{% endtablerow %}",
       &Parser.tablerow/1,
-      tablerow: [
-        tablerow_collection: [
-          variable_name: ["i"],
-          value:
-            {:range,
-             [
-               start: {:variable, [parts: [part: "my_var"]]},
-               end: 10
-             ]},
-          limit_param: [2],
-          cols_param: [2]
-        ],
-        tablerow_body: [
-          liquid_variable: [variable: [parts: [part: "i"]]]
+      [
+        tablerow: [
+          tablerow_collection: [
+            variable_name: ["i"],
+            value: {:range,
+              [start: {:variable, [parts: [part: "my_var"]]}, end: 10]},
+            tablerow_params: [limit_param: [2], cols_param: [2]]
+          ],
+          tablerow_body: [
+            liquid_variable: [variable: [parts: [part: "i"]]]
+          ]
         ]
       ]
     )
