@@ -64,9 +64,7 @@ defmodule Liquid.NimbleParser do
   defparsec(
     :__parse__,
     General.liquid_literal()
-    |> optional(
-      choice([parsec(:liquid_tag), parsec(:liquid_variable)])
-    )
+    |> optional(choice([parsec(:liquid_tag), parsec(:liquid_variable)]))
     |> traverse({:clean_empty_strings, []})
   )
 
@@ -106,6 +104,7 @@ defmodule Liquid.NimbleParser do
   defparsec(:tablerow, Tablerow.tag())
 
   defparsec(:case, Case.tag())
+  defparsec(:whens, Case.whens())
 
   defparsec(
     :liquid_tag,

@@ -18,7 +18,8 @@ defmodule Liquid.NimbleTranslator do
     Increment,
     Tablerow,
     Ifchanged,
-    Raw
+    Raw,
+    Case
   }
 
   @doc """
@@ -75,6 +76,7 @@ defmodule Liquid.NimbleTranslator do
       :tablerow -> Tablerow.translate(markup)
       :ifchanged -> Ifchanged.translate(markup)
       :raw -> Raw.translate(markup)
+      :case -> Case.translate(markup)
       _ -> markup
     end
   end

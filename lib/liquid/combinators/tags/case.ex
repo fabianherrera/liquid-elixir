@@ -25,9 +25,10 @@ defmodule Liquid.Combinators.Tags.Case do
   def tag, do: Tag.define_closed("case", &head/1, &body/1)
 
   defp when_tag do
-    Tag.define_else("when", fn combinator ->
+    Tag.define_open("when", fn combinator ->
       combinator
       |> choice([
+        parsec(:condition),
         parsec(:value_definition),
         parsec(:quoted_token),
         parsec(:variable_definition)
@@ -38,9 +39,16 @@ defmodule Liquid.Combinators.Tags.Case do
     end)
   end
 
+  def whens do
+    empty()
+    |> times(when_tag(), min: 1)
+    |> tag(:whens)
+  end
+
   defp head(combinator) do
     combinator
     |> choice([
+      parsec(:condition),
       parsec(:value_definition),
       parsec(:quoted_token),
       parsec(:variable_definition)
@@ -50,7 +58,7 @@ defmodule Liquid.Combinators.Tags.Case do
 
   defp body(combinator) do
     combinator
-    |> times(when_tag(), min: 1)
+    |> choice([parsec(:whens), parsec(:__parse__)])
     |> parsec(:ignore_whitespaces)
     |> optional(times(parsec(:else_tag), min: 1))
   end
