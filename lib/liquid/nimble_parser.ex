@@ -64,11 +64,11 @@ defmodule Liquid.NimbleParser do
   defparsec(
     :__parse__,
     General.liquid_literal()
-    |> optional(choice([parsec(:liquid_tag), parsec(:liquid_variable)]))
+    |> optional(
+      choice([parsec(:liquid_tag), parsec(:liquid_variable)])
+    )
     |> traverse({:clean_empty_strings, []})
   )
-
-  # hola
 
   defparsec(:assign, Assign.tag())
   defparsec(:capture, Capture.tag())

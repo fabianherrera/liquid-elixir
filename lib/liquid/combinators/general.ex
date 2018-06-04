@@ -294,8 +294,6 @@ defmodule Liquid.Combinators.General do
     |> optional(parsec(:ignore_whitespaces))
     |> optional(parsec(:value))
     |> tag(:params)
-
-    # |> optional(parsec(:filter))
   end
 
   def filters do
@@ -308,7 +306,6 @@ defmodule Liquid.Combinators.General do
   start char: ':' plus optional: parameters values [value]
   """
   def filter do
-    # |> reduce({List, :to_tuple, []})
     parsec(:ignore_whitespaces)
     |> ignore(string(@start_filter))
     |> parsec(:ignore_whitespaces)
