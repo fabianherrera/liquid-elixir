@@ -32,6 +32,14 @@ defmodule Liquid.Combinators.Translators.General do
     value_string
   end
 
+  def values_to_string({:condition, values}) do
+    condition_to_string(values)
+  end
+
+  def values_to_string({:logical, values}) do
+    logical_to_string(values)
+  end
+
   def values_to_string([value]) when is_number(value) do
     to_string(value)
   end

@@ -22,12 +22,12 @@ defmodule Liquid.Combinators.Translators.Case do
   end
 
   defp when_to_nodelist({:when, value}) do
-    markup = General.if_markup_to_string(value)
-    [list_value] = markup
+    markup_list = General.if_markup_to_string(value)
+    markup_string = List.to_string(markup_list)
 
     %Liquid.Tag{
       name: :when,
-      markup: list_value
+      markup: markup_string
     }
   end
 
