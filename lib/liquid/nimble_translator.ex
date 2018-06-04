@@ -57,11 +57,9 @@ defmodule Liquid.NimbleTranslator do
     multiprocess_node(nodelist, self())
   end
 
-  def check_blank(%Liquid.Block{nodelist: [nodelist]}
-    = translated) when is_bitstring(nodelist)  do
-    IO.inspect nodelist
-    {:ok, [], element, _, _, _} = Liquid.NimbleParser.ignore_whitespaces(nodelist)
-    if element == "" do
+  def check_blank(%Liquid.Block{nodelist: nodelist}
+    = translated) when is_list(nodelist)  do
+    if Blank.blank?(nodelist) do
       %{translated | blank: true}
     else
       translated
