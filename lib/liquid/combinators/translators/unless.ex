@@ -1,4 +1,4 @@
-defmodule Liquid.Combinators.Translators.If do
+defmodule Liquid.Combinators.Translators.Unless do
   alias Liquid.Combinators.Translators.General
 
   def translate(if_condition: if_condition, body: body) do
@@ -7,7 +7,7 @@ defmodule Liquid.Combinators.Translators.If do
     markup_string = General.if_markup_to_string(if_condition) |> List.to_string()
 
     block = %Liquid.Block{
-      name: :if,
+      name: :unless,
       markup: markup_string,
       nodelist: Liquid.NimbleTranslator.process_node(nodelist),
       elselist: Liquid.NimbleTranslator.process_node(else_list)

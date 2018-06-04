@@ -23,7 +23,7 @@ defmodule Liquid.Combinators.Tags.If do
 
   def else_tag, do: Tag.define_else("else")
 
-  def unless_tag, do: Tag.define_closed("unless", &predicate/1, &body/1)
+  def unless_tag, do: Tag.define_closed_test("unless", &predicate/1, &body/1)
 
   def tag, do: Tag.define_closed_test("if", &predicate/1)
 
