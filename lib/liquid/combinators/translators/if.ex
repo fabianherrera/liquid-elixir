@@ -4,8 +4,7 @@ defmodule Liquid.Combinators.Translators.If do
   def translate(if_condition: if_condition, body: body) do
     nodelist = Enum.filter(body, &not_open_if(&1))
     else_list = Enum.filter(body, &is_else/1)
-    markup_list = if_markup_to_string(if_condition)
-    markup_string = List.to_string(markup_list)
+    markup_string = if_markup_to_string(if_condition) |> List.to_string()
 
     block = %Liquid.Block{
       name: :if,
