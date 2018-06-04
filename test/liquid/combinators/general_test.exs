@@ -12,6 +12,8 @@ defmodule Liquid.Combinators.GeneralTest do
     defparsec(:end_tag, General.end_tag())
     defparsec(:start_variable, General.start_variable())
     defparsec(:end_variable, General.end_variable())
+    defparsec(:variable_definition_for_assignation, General.variable_definition_for_assignation())
+    defparsec(:variable_name_for_assignation, General.variable_name_for_assignation())
     defparsec(:variable_definition, General.variable_definition())
     defparsec(:variable_name, General.variable_name())
     defparsec(:filter, General.filter())
