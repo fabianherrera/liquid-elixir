@@ -76,4 +76,53 @@ defmodule Liquid.Combinators.Translators.General do
   defp filter_param_values_to_string({_key, value}) do
     to_string(value)
   end
+
+  def if_markup_to_string(if_list) do
+    Enum.map(if_list, fn x ->
+      case x do
+        {:variable, [parts: _]} = variable ->
+          values_to_string(variable)
+
+        {:logical, values} ->
+          logical_to_string(values)
+
+        {:condition, value} ->
+          condition_to_string(value)
+
+        value ->
+          values_to_string(value)
+      end
+    end)
+  end
+
+  def is_else({:else, _}), do: true
+  def is_else({:elsif, _}), do: true
+  def is_else(_), do: false
+
+  def not_open_if({:if_condition, _}), do: false
+  def not_open_if({:else, _}), do: false
+  def not_open_if({:else_if, _}), do: false
+  def not_open_if(_), do: true
+
+  defp condition_to_string({left, operator, right}) do
+    left_var = values_to_string(left)
+    right_var = values_to_string(right)
+    left_var <> " #{operator} " <> right_var
+  end
+
+  defp logical_to_string([logical_op, logical_statement]) do
+    logical_string =
+      case logical_statement do
+        {:variable, variable_parts: _} = variable ->
+          values_to_string(variable)
+
+        {:condition, value} ->
+          condition_to_string(value)
+
+        any ->
+          values_to_string(any)
+      end
+
+    " #{logical_op} #{logical_string}"
+  end
 end
