@@ -29,3 +29,18 @@ defmodule Liquid.Combinators.Translators.Include do
 
 end
 # General.values_to_string(value)
+
+[
+  snippet: ["'locale_variables'"],
+  variables: [
+    variable: [
+      variable_name: ["echo1:"],
+      value: {:variable, [variable_parts: [part: "echo1"]]}
+    ],
+    variable: [
+      variable_name: ["echo2:"],
+      value: {:variable,
+        [variable_parts: [part: "more_echos", part: "echo2"]]}
+    ]
+  ]
+]

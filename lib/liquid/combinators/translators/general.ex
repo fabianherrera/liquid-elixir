@@ -32,6 +32,10 @@ defmodule Liquid.Combinators.Translators.General do
     value_string
   end
 
+  def values_to_string([value]) when is_number(value) do
+    to_string(value)
+  end
+
   def values_to_string(value) do
     to_string(value)
   end
