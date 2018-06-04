@@ -9,13 +9,12 @@ defmodule Liquid.Combinators.Translators.Include do
 
   def process_include_markup(snippet: [snippet]), do: snippet
 
-  def process_include_markup(snippet: [snippet], with_param: variable) do
+  def process_include_markup(snippet: [snippet], with_param: [variable]) do
     with_param_value_string = General.values_to_string(variable)
     "#{snippet} with #{with_param_value_string}"
   end
 
   def process_include_markup(snippet: [snippet], for_param: [variable]) do
-    IO.inspect variable
     for_param_value_string = General.values_to_string(variable)
     "#{snippet} for #{for_param_value_string}"
   end
@@ -32,13 +31,3 @@ defmodule Liquid.Combinators.Translators.Include do
   end
 
 end
-#iex(4)> with_param = Liquid.NimbleParser.parse("{% include 'product' with products[0] %}")
-#{:ok,
-#  [
-#    include: [
-#      snippet: ["'product'"],
-#      with_param: [variable: [parts: [part: "products", index: 0]]]
-#    ]
-#  ]}
-#iex(5)> for_param = Liquid.NimbleParser.parse("{% include 'product' for 'products' %}")
-#{:ok, [include: [snippet: ["'product'"], for_param: ["products"]]]}
