@@ -87,6 +87,7 @@ defmodule Liquid.NimbleTranslator do
         :tablerow -> Tablerow.translate(markup)
         :ifchanged -> Ifchanged.translate(markup)
         :raw -> Raw.translate(markup)
+        :case -> Case.translate(markup)
         _ -> markup
       end
 
