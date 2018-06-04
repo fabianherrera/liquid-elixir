@@ -20,6 +20,14 @@ defmodule Liquid.Combinators.Translators.General do
     "'#{value}'"
   end
 
+  def values_to_string(value) when is_number(value) do
+    to_string(value)
+  end
+
+  def values_to_string(value) when is_boolean(value) do
+    to_string(value)
+  end
+
   def values_to_string({:range, [start: start_range, end: end_range]}) do
     start_range_string = values_to_string(start_range)
     end_range_string = values_to_string(end_range)
@@ -53,9 +61,13 @@ defmodule Liquid.Combinators.Translators.General do
   end
 
   def variable_in_parts(variable) do
-    Enum.map(variable, fn {key, value} ->
-      if key == :part, do: "#{value}", else: "[#{value}]"
-    end)
+     Enum.map(variable, fn {key, value} ->
+       case key do
+        :part ->  "#{value}"
+        :index -> "[#{values_to_string(value)}]"
+        _ -> "[#{value}]"
+       end
+       end)
   end
 
   def variable_to_string(parts) do
