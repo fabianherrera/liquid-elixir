@@ -78,6 +78,38 @@ defmodule Liquid.NimbleTranslator do
       :raw -> Raw.translate(markup)
       :case -> Case.translate(markup)
       _ -> markup
+  def check_blank(%Liquid.Block{nodelist: nodelist}
+    = translated) when is_list(nodelist)  do
+    if Blank.blank?(nodelist) do
+      %{translated | blank: true}
+    else
+      translated
     end
+  end
+
+  def check_blank(translated), do: translated
+
+  def process_node({tag, markup}) do
+    translated =
+      case tag do
+        :liquid_variable -> LiquidVariable.translate(markup)
+        :assign -> Assign.translate(markup)
+        :capture -> Capture.translate(markup)
+        :comment -> Comment.translate(markup)
+        :cycle -> Cycle.translate(markup)
+        :decrement -> Decrement.translate(markup)
+        :for -> For.translate(markup)
+        :if -> If.translate(markup)
+        :unless -> Unless.translate(markup)
+        :elsif -> If.translate(markup)
+        :else -> process_node(markup)
+        :include -> Include.translate(markup)
+        :increment -> Increment.translate(markup)
+        :tablerow -> Tablerow.translate(markup)
+        :ifchanged -> Ifchanged.translate(markup)
+        :raw -> Raw.translate(markup)
+        _ -> markup
+      end
+    check_blank(translated)
   end
 end
