@@ -192,7 +192,7 @@ defmodule Liquid.Combinators.General do
 
   def comma_contition_value do
     empty()
-    |> utf8_char([@comma])
+    |> ignore(utf8_char([@comma]))
     |> concat(parsec(:ignore_whitespaces))
     |> concat(
       choice([
@@ -203,6 +203,7 @@ defmodule Liquid.Combinators.General do
       ])
     )
     |> parsec(:ignore_whitespaces)
+    |> tag(:coma)
   end
 
   @doc """

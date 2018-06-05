@@ -161,31 +161,31 @@ defmodule StandardTagTest do
   end
 
   # TODO: Fix this tests for translator
-  # test :test_case_with_else do
-  #   assigns = %{"condition" => 5}
+  test :test_case_with_else do
+    assigns = %{"condition" => 5}
 
-  #   assert_template_result(
-  #     " hit ",
-  #     "{% case condition %}{% when 5 %} hit {% else %} else {% endcase %}",
-  #     assigns
-  #   )
+    assert_template_result(
+      " hit ",
+      "{% case condition %}{% when 5 %} hit {% else %} else {% endcase %}",
+      assigns
+    )
 
-  #   assigns = %{"condition" => 6}
+    assigns = %{"condition" => 6}
 
-  #   assert_template_result(
-  #     " else ",
-  #     "{% case condition %}{% when 5 %} hit {% else %} else {% endcase %}",
-  #     assigns
-  #   )
+    assert_template_result(
+      " else ",
+      "{% case condition %}{% when 5 %} hit {% else %} else {% endcase %}",
+      assigns
+    )
 
-  #   assigns = %{"condition" => 6}
+    assigns = %{"condition" => 6}
 
-  #   assert_template_result(
-  #     " else ",
-  #     "{% case condition %} {% when 5 %} hit {% else %} else {% endcase %}",
-  #     assigns
-  #   )
-  # end
+    assert_template_result(
+      " else ",
+      "{% case condition %} {% when 5 %} hit {% else %} else {% endcase %}",
+      assigns
+    )
+  end
 
   test :test_case_on_size do
     assert_template_result("", "{% case a.size %}{% when 1 %}1{% when 2 %}2{% endcase %}", %{
@@ -252,31 +252,31 @@ defmodule StandardTagTest do
   end
 
   # TODO: Fix this tests for translator
-  # test :test_case_on_length_with_else do
-  #   assert_template_result(
-  #     "else",
-  #     "{% case a.empty? %}{% when true %}true{% when false %}false{% else %}else{% endcase %}",
-  #     %{}
-  #   )
+  test :test_case_on_length_with_else do
+    assert_template_result(
+      "else",
+      "{% case a.empty? %}{% when true %}true{% when false %}false{% else %}else{% endcase %}",
+      %{}
+    )
 
-  #   assert_template_result(
-  #     "false",
-  #     "{% case false %}{% when true %}true{% when false %}false{% else %}else{% endcase %}",
-  #     %{}
-  #   )
+    assert_template_result(
+      "false",
+      "{% case false %}{% when true %}true{% when false %}false{% else %}else{% endcase %}",
+      %{}
+    )
 
-  #   assert_template_result(
-  #     "true",
-  #     "{% case true %}{% when true %}true{% when false %}false{% else %}else{% endcase %}",
-  #     %{}
-  #   )
+    assert_template_result(
+      "true",
+      "{% case true %}{% when true %}true{% when false %}false{% else %}else{% endcase %}",
+      %{}
+    )
 
-  #   assert_template_result(
-  #     "else",
-  #     "{% case NULL %}{% when true %}true{% when false %}false{% else %}else{% endcase %}",
-  #     %{}
-  #   )
-  # end
+    assert_template_result(
+      "else",
+      "{% case NULL %}{% when true %}true{% when false %}false{% else %}else{% endcase %}",
+      %{}
+    )
+  end
 
   test :test_assign_from_case do
     # Example from the shopify forums
@@ -322,24 +322,24 @@ defmodule StandardTagTest do
   end
 
   # TODO: Fix this tests for translator
-  # test :test_case_when_comma do
-  #   code =
-  #     "{% case condition %}{% when 1, 2, 3 %} its 1 or 2 or 3 {% when 4 %} its 4 {% endcase %}"
+  test :test_case_when_comma do
+    code =
+      "{% case condition %}{% when 1, 2, 3 %} its 1 or 2 or 3 {% when 4 %} its 4 {% endcase %}"
 
-  #   assert_template_result(" its 1 or 2 or 3 ", code, %{"condition" => 1})
-  #   assert_template_result(" its 1 or 2 or 3 ", code, %{"condition" => 2})
-  #   assert_template_result(" its 1 or 2 or 3 ", code, %{"condition" => 3})
-  #   assert_template_result(" its 4 ", code, %{"condition" => 4})
-  #   assert_template_result("", code, %{"condition" => 5})
+    assert_template_result(" its 1 or 2 or 3 ", code, %{"condition" => 1})
+    assert_template_result(" its 1 or 2 or 3 ", code, %{"condition" => 2})
+    assert_template_result(" its 1 or 2 or 3 ", code, %{"condition" => 3})
+    assert_template_result(" its 4 ", code, %{"condition" => 4})
+    assert_template_result("", code, %{"condition" => 5})
 
-  #   code =
-  #     "{% case condition %}{% when 1, \"string\", null %} its 1 or 2 or 3 {% when 4 %} its 4 {% endcase %}"
+    code =
+      "{% case condition %}{% when 1, \"string\", null %} its 1 or 2 or 3 {% when 4 %} its 4 {% endcase %}"
 
-  #   assert_template_result(" its 1 or 2 or 3 ", code, %{"condition" => 1})
-  #   assert_template_result(" its 1 or 2 or 3 ", code, %{"condition" => "string"})
-  #   assert_template_result(" its 1 or 2 or 3 ", code, %{"condition" => nil})
-  #   assert_template_result("", code, %{"condition" => "something else"})
-  # end
+    assert_template_result(" its 1 or 2 or 3 ", code, %{"condition" => 1})
+    assert_template_result(" its 1 or 2 or 3 ", code, %{"condition" => "string"})
+    assert_template_result(" its 1 or 2 or 3 ", code, %{"condition" => nil})
+    assert_template_result("", code, %{"condition" => "something else"})
+  end
 
   test :test_assign do
     assert_template_result("variable", "{% assign a = \"variable\"%}{{a}}")

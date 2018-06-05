@@ -58,7 +58,8 @@ defmodule Liquid.Combinators.Tags.Case do
 
   defp body(combinator) do
     combinator
-    |> choice([parsec(:whens), parsec(:__parse__)])
+    |> optional(parsec(:__parse__))
+    |> optional(parsec(:whens))
     |> parsec(:ignore_whitespaces)
     |> optional(times(parsec(:else_tag), min: 1))
   end
