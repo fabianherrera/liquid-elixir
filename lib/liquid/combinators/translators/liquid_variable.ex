@@ -2,13 +2,13 @@ defmodule Liquid.Combinators.Translators.LiquidVariable do
   alias Liquid.Combinators.Translators.General
 
   def translate(variable: [parts: variable_list]) do
-    parts = General.variable_in_parts(variable_list)
+    parts = General.variable_in_parts_neded(variable_list)
     variable_name = General.variable_to_string(parts)
     %Liquid.Variable{name: variable_name, parts: parts}
   end
 
   def translate(variable: [parts: variable_list, filters: filters]) do
-    parts = General.variable_in_parts(variable_list)
+    parts = General.variable_in_parts_neded(variable_list)
     variable_name = General.variable_to_string(parts)
     filters_markup = transform_filters(filters)
     %Liquid.Variable{name: variable_name, parts: parts, filters: filters_markup}
@@ -16,9 +16,11 @@ defmodule Liquid.Combinators.Translators.LiquidVariable do
 
   def translate([value, filters: filters]) do
     filters_markup = transform_filters(filters)
+
     case is_bitstring(value) do
       true ->
         %Liquid.Variable{name: "'#{value}'", filters: filters_markup, literal: "#{value}"}
+
       false ->
         %Liquid.Variable{name: "#{value}", filters: filters_markup, literal: value}
     end
@@ -28,6 +30,7 @@ defmodule Liquid.Combinators.Translators.LiquidVariable do
     case is_bitstring(value) do
       true ->
         %Liquid.Variable{name: "#{value}", literal: "#{value}"}
+
       false ->
         %Liquid.Variable{name: "#{value}", literal: value}
     end
@@ -55,6 +58,7 @@ defmodule Liquid.Combinators.Translators.LiquidVariable do
       case is_bitstring(filter_param_value) do
         true ->
           [String.to_atom(filter_name), ["'#{filter_param_value}'"]]
+
         false ->
           [String.to_atom(filter_name), ["#{filter_param_value}"]]
       end

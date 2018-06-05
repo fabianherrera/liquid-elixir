@@ -40,6 +40,14 @@ defmodule Liquid.Combinators.Translators.General do
     value_string
   end
 
+  def values_to_string({:condition, values}) do
+    condition_to_string(values)
+  end
+
+  def values_to_string({:logical, values}) do
+    logical_to_string(values)
+  end
+
   def values_to_string([value]) when is_number(value) do
     to_string(value)
   end
@@ -53,13 +61,31 @@ defmodule Liquid.Combinators.Translators.General do
   end
 
   def variable_in_parts(variable) do
-     Enum.map(variable, fn {key, value} ->
-       case key do
-        :part ->  "#{value}"
+    Enum.map(variable, fn {key, value} ->
+      case key do
+        :part -> "#{value}"
         :index -> "[#{values_to_string(value)}]"
         _ -> "[#{value}]"
-       end
-       end)
+      end
+    end)
+  end
+
+  def variable_in_parts_neded(variable) do
+    Enum.map(variable, fn {key, value} ->
+      case key do
+        :part -> string_have_question("#{value}")
+        :index -> "[#{values_to_string(value)}]"
+        _ -> "[#{value}]"
+      end
+    end)
+  end
+
+  def string_have_question(value) when is_bitstring(value) do
+    if String.contains?(value, "?") do
+      String.replace(value, "?", "")
+    else
+      "#{value}"
+    end
   end
 
   def variable_to_string(parts) do

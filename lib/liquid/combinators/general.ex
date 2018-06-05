@@ -233,11 +233,24 @@ defmodule Liquid.Combinators.General do
   Valid variable definition represented by:
   start char [A..Z, a..z, _] plus optional n times [A..Z, a..z, 0..9, _, -]
   """
-  def variable_definition do
+  def variable_definition_for_assignation do
     empty()
     |> concat(ignore_whitespaces())
     |> utf8_char([@uppercase_letter, @lowercase_letter, @underscore])
     |> optional(times(utf8_char(allowed_chars_in_variable_definition()), min: 1))
+    |> concat(ignore_whitespaces())
+    |> reduce({List, :to_string, []})
+  end
+
+  def variable_name_for_assignation do
+    parsec(:variable_definition_for_assignation)
+    |> tag(:variable_name)
+  end
+
+  def variable_definition do
+    empty()
+    |> parsec(:variable_definition_for_assignation)
+    |> optional(utf8_char([@question_mark]))
     |> concat(ignore_whitespaces())
     |> reduce({List, :to_string, []})
   end

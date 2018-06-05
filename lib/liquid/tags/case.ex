@@ -15,11 +15,11 @@ defmodule Liquid.Case do
     {split(name |> Variable.create(), b.nodelist), t}
   end
 
-  defp split(%Variable{}, []), do: []
-  defp split(%Variable{} = v, [h | t]) when is_binary(h), do: split(v, t)
-  defp split(%Variable{} = _, [%Liquid.Tag{name: :else} | t]), do: t
+  def split(%Variable{}, []), do: []
+  def split(%Variable{} = v, [h | t]) when is_binary(h), do: split(v, t)
+  def split(%Variable{} = _, [%Liquid.Tag{name: :else} | t]), do: t
 
-  defp split(%Variable{} = v, [%Liquid.Tag{name: :when, markup: markup} | t]) do
+  def split(%Variable{} = v, [%Liquid.Tag{name: :when, markup: markup} | t]) do
     {nodelist, t} = Block.split(t, [:when, :else])
     condition = parse_condition(v, markup)
     %Block{name: :if, nodelist: nodelist, condition: condition, elselist: split(v, t)}

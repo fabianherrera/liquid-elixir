@@ -15,7 +15,7 @@ defmodule Liquid.Combinators.Tags.Assign do
   def tag do
     Tag.define_open("assign", fn combinator ->
       combinator
-      |> parsec(:variable_name)
+      |> parsec(:variable_name_for_assignation)
       |> ignore(string("="))
       |> parsec(:value)
     end)

@@ -20,7 +20,8 @@ defmodule Liquid.NimbleTranslator do
     Ifchanged,
     Raw,
     Continue,
-    Break
+    Break,
+    Case
   }
 
   @doc """
@@ -80,13 +81,14 @@ defmodule Liquid.NimbleTranslator do
         :raw -> Raw.translate(markup)
         :break -> Break.translate(markup)
         :continue -> Continue.translate(markup)
+        :case -> Case.translate(markup)
         _ -> markup
       end
+
     check_blank(translated)
   end
 
-  def check_blank(%Liquid.Block{nodelist: nodelist}
-  = translated) when is_list(nodelist)  do
+  def check_blank(%Liquid.Block{nodelist: nodelist} = translated) when is_list(nodelist) do
     if Blank.blank?(nodelist) do
       %{translated | blank: true}
     else
@@ -95,5 +97,4 @@ defmodule Liquid.NimbleTranslator do
   end
 
   def check_blank(translated), do: translated
-
 end
