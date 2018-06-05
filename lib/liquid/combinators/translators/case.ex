@@ -57,7 +57,7 @@ defmodule Liquid.Combinators.Translators.Case do
         name: :else
       }
 
-      nodelist = [else_liquid_tag | process_list]
+      [else_liquid_tag | process_list]
     else
       else_liquid_tag = %Liquid.Tag{
         name: :else
