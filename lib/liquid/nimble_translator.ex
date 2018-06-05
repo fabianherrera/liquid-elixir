@@ -19,6 +19,8 @@ defmodule Liquid.NimbleTranslator do
     Tablerow,
     Ifchanged,
     Raw,
+    Continue,
+    Break,
     Case
   }
 
@@ -58,16 +60,6 @@ defmodule Liquid.NimbleTranslator do
     multiprocess_node(nodelist, self())
   end
 
-  def check_blank(%Liquid.Block{nodelist: nodelist} = translated) when is_list(nodelist) do
-    if Blank.blank?(nodelist) do
-      %{translated | blank: true}
-    else
-      translated
-    end
-  end
-
-  def check_blank(translated), do: translated
-
   def process_node({tag, markup}) do
     translated =
       case tag do
@@ -87,10 +79,22 @@ defmodule Liquid.NimbleTranslator do
         :tablerow -> Tablerow.translate(markup)
         :ifchanged -> Ifchanged.translate(markup)
         :raw -> Raw.translate(markup)
+        :break -> Break.translate(markup)
+        :continue -> Continue.translate(markup)
         :case -> Case.translate(markup)
         _ -> markup
       end
 
     check_blank(translated)
   end
+
+  def check_blank(%Liquid.Block{nodelist: nodelist} = translated) when is_list(nodelist) do
+    if Blank.blank?(nodelist) do
+      %{translated | blank: true}
+    else
+      translated
+    end
+  end
+
+  def check_blank(translated), do: translated
 end

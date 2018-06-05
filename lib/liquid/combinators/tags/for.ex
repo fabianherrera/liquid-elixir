@@ -80,6 +80,17 @@ defmodule Liquid.Combinators.Tags.For do
     |> tag(:reversed_param)
   end
 
+  defp for_params do
+    empty()
+    |> optional(
+         times(
+           choice([offset_param(), reversed_param(), limit_param()]),
+           min: 1
+         )
+       )
+    |> tag(:for_params)
+  end
+
   defp for_body do
     empty()
     |> optional(parsec(:__parse__))
@@ -105,12 +116,7 @@ defmodule Liquid.Combinators.Tags.For do
     |> ignore(string("in"))
     |> parsec(:ignore_whitespaces)
     |> parsec(:value)
-    |> optional(
-      times(
-        choice([offset_param(), reversed_param(), limit_param()]),
-        min: 1
-      )
-    )
+    |> optional(for_params())
     |> parsec(:ignore_whitespaces)
     |> tag(:for_collection)
   end
