@@ -97,6 +97,15 @@ defmodule Liquid.Combinators.Tags.For do
     |> tag(:for_body)
   end
 
+  defp for_else do
+    empty()
+    |> parsec(:start_tag)
+    |> ignore(string("else"))
+    |> parsec(:end_tag)
+    |> optional(parsec(:__parse__))
+    |> tag(:else)
+  end
+
   def continue_tag, do: Tag.define_open("continue")
 
   def break_tag, do: Tag.define_open("break")
@@ -106,7 +115,7 @@ defmodule Liquid.Combinators.Tags.For do
   defp body(combinator) do
     combinator
     |> concat(for_body())
-    |> optional(Tag.define_open("else"))
+    |> optional(for_else())
   end
 
   defp for_collection(combinator) do
