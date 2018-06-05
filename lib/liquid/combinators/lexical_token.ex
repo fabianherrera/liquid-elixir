@@ -110,7 +110,7 @@ defmodule Liquid.Combinators.LexicalToken do
   # NullValue : `nil`
   def null_value do
     empty()
-    |> choice([string("nil"), string("null")])
+    |> choice([string("nil"), string("null"), string("NIL"), string("NULL")])
     |> replace(nil)
   end
 
@@ -184,7 +184,8 @@ defmodule Liquid.Combinators.LexicalToken do
   defp list_definition do
     choice([
       integer_value(),
-      parsec(:variable_value)
+      parsec(:variable_value),
+      string_value()
     ])
   end
 
