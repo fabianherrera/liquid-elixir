@@ -78,10 +78,12 @@ defmodule IncludeTagTest do
     )
   end
 
+  # TODO: Fix this tests for translator / Open: case parser does not support commas
   test :include_tag_with_local_variables do
     assert_result("Locale: test123 ", "{% include 'locale_variables' echo1: 'test123' %}")
   end
 
+  # TODO: Fix this tests for translator / Open: case parser does not support commas
   test :include_tag_with_multiple_local_variables do
     assert_result(
       "Locale: test123 test321",
@@ -89,6 +91,7 @@ defmodule IncludeTagTest do
     )
   end
 
+  # TODO: Fix this tests for translator / Open: case parser does not support commas
   test :include_tag_with_multiple_local_variables_from_context do
     assert_result(
       "Locale: test123 test321",
