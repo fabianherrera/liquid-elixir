@@ -321,7 +321,7 @@ defmodule StandardTagTest do
     assert_template_result("", code, %{"condition" => "something else"})
   end
 
-  # TODO: Fix this tests for translator / Open: case parser does not support commas
+# TODO: Fix this tests for translator / Open: case parser does not support commas
 #   test :test_case_when_comma do
 #     code =
 #       "{% case condition %}{% when 1, 2, 3 %} its 1 or 2 or 3 {% when 4 %} its 4 {% endcase %}"
