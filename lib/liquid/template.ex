@@ -62,13 +62,19 @@ defmodule Liquid.Template do
 
   def parse(<<markup::binary>>, _presets) do
     # Liquid.Parse.parse(markup, %Template{presets: presets})
-    Liquid.NimbleParser.parse(markup) |> Liquid.NimbleTranslator.translate()
-  end
+    result = Liquid.NimbleParser.parse(markup)
+    case result do
+      {:ok, _value} -> Liquid.NimbleTranslator.translate(result)
+      {:error, value} -> raise value
+      _ -> ""
+    end
+    end
 
   @spec parse(nil, map) :: Liquid.Template
   def parse(nil, presets) do
     Liquid.Parse.parse("", %Template{presets: presets})
   end
+
 
   @doc """
   OLD_PARSER for TEST ONLY Function to parse markup with given presets (if any)
