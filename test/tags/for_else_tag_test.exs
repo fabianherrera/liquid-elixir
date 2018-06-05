@@ -115,6 +115,7 @@ defmodule ForElseTagTest do
     )
   end
 
+# TODO: Fix this tests for translator / Closed: fixed for else body parser
   test :for_else do
     assert_result("+++", "{%for item in array%}+{%else%}-{%endfor%}", %{"array" => [1, 2, 3]})
     assert_result("-", "{%for item in array%}+{%else%}-{%endfor%}", %{"array" => []})

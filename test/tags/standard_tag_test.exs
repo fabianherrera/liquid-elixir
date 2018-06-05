@@ -37,68 +37,68 @@ defmodule StandardTagTest do
     )
   end
 
-  # TODO: Fix this tests for translator
-  # test :test_has_a_block_which_does_nothing do
-  #   assert_template_result(
-  #     "the comment block should be removed  .. right?",
-  #     "the comment block should be removed {%comment%} be gone.. {%endcomment%} .. right?"
-  #   )
+  # TODO: Fix this tests for translator / Open: New parser's comment should take endcomments blocks inside
+  test :test_has_a_block_which_does_nothing do
+    assert_template_result(
+      "the comment block should be removed  .. right?",
+      "the comment block should be removed {%comment%} be gone.. {%endcomment%} .. right?"
+    )
 
-  #   assert_template_result("", "{%comment%}{%endcomment%}")
-  #   assert_template_result("", "{%comment%}{% endcomment %}")
-  #   assert_template_result("", "{% comment %}{%endcomment%}")
-  #   assert_template_result("", "{% comment %}{% endcomment %}")
-  #   assert_template_result("", "{%comment%}comment{%endcomment%}")
-  #   assert_template_result("", "{% comment %}comment{% endcomment %}")
+    assert_template_result("", "{%comment%}{%endcomment%}")
+    assert_template_result("", "{%comment%}{% endcomment %}")
+    assert_template_result("", "{% comment %}{%endcomment%}")
+    assert_template_result("", "{% comment %}{% endcomment %}")
+    assert_template_result("", "{%comment%}comment{%endcomment%}")
+    assert_template_result("", "{% comment %}comment{% endcomment %}")
 
-  #   assert_template_result(
-  #     "11",
-  #     "1{% comment %}{ encomment %}1{%endcomment%}1{% comment %}comment{% endcomment %}"
-  #   )
+    assert_template_result(
+      "11",
+      "1{% comment %}{ encomment %}1{%endcomment%}1{% comment %}comment{% endcomment %}"
+    )
 
-  #   assert_template_result(
-  #     "1",
-  #     "{% comment %} 1 {% comment %} 2 {% endcomment %} 3 {% endcomment %}1"
-  #   )
+    #     assert_template_result(
+    #       "1",
+    #       "{% comment %} 1 {% comment %} 2 {% endcomment %} 3 {% endcomment %}1"
+    #     )
 
-  #   assert_template_result("", "{%comment%}{%blabla%}{%endcomment%}")
-  #   assert_template_result("", "{% comment %}{% blabla %}{% endcomment %}")
-  #   assert_template_result("", "{%comment%}{% endif %}{%endcomment%}")
-  #   assert_template_result("", "{% comment %}{% endwhatever %}{% endcomment %}")
+    assert_template_result("", "{%comment%}{%blabla%}{%endcomment%}")
+    assert_template_result("", "{% comment %}{% blabla %}{% endcomment %}")
+    assert_template_result("", "{%comment%}{% endif %}{%endcomment%}")
+    assert_template_result("", "{% comment %}{% endwhatever %}{% endcomment %}")
 
-  #   assert_template_result(
-  #     "",
-  #     "{% comment %}{% raw %} {{%%%%}}  }} { {% endcomment %} {% comment {% endraw %} {% endcomment %}"
-  #   )
+    #     assert_template_result(
+    #       "",
+    #       "{% comment %}{% raw %} {{%%%%}}  }} { {% endcomment %} {% comment {% endraw %} {% endcomment %}"
+    #     )
 
-  #   assert_template_result("foobar", "foo{%comment%}comment{%endcomment%}bar")
-  #   assert_template_result("foobar", "foo{% comment %}comment{% endcomment %}bar")
-  #   assert_template_result("foobar", "foo{%comment%} comment {%endcomment%}bar")
-  #   assert_template_result("foobar", "foo{% comment %} comment {% endcomment %}bar")
+    assert_template_result("foobar", "foo{%comment%}comment{%endcomment%}bar")
+    assert_template_result("foobar", "foo{% comment %}comment{% endcomment %}bar")
+    assert_template_result("foobar", "foo{%comment%} comment {%endcomment%}bar")
+    assert_template_result("foobar", "foo{% comment %} comment {% endcomment %}bar")
 
-  #   assert_template_result("foo  bar", "foo {%comment%} {%endcomment%} bar")
-  #   assert_template_result("foo  bar", "foo {%comment%}comment{%endcomment%} bar")
-  #   assert_template_result("foo  bar", "foo {%comment%} comment {%endcomment%} bar")
+    assert_template_result("foo  bar", "foo {%comment%} {%endcomment%} bar")
+    assert_template_result("foo  bar", "foo {%comment%}comment{%endcomment%} bar")
+    assert_template_result("foo  bar", "foo {%comment%} comment {%endcomment%} bar")
 
-  #   assert_template_result("foobar", "foo{%comment%}
-  #                                    {%endcomment%}bar")
-  # end
+    assert_template_result("foobar", "foo{%comment%}
+                                      {%endcomment%}bar")
+  end
 
   test :test_hyphenated_assign do
     assigns = %{"a-b" => "1"}
     assert_template_result("a-b:1 a-b:2", "a-b:{{a-b}} {%assign a-b = 2 %}a-b:{{a-b}}", assigns)
   end
 
-  # TODO: Fix this tests for translator
-  # test :test_assign_with_colon_and_spaces do
-  #   assigns = %{"var" => %{"a:b c" => %{"paged" => "1"}}}
-
-  #   assert_template_result(
-  #     "var2: 1",
-  #     "{%assign var2 = var[\"a:b c\"].paged %}var2: {{var2}}",
-  #     assigns
-  #   )
-  # end
+  # TODO: Fix this tests for translator / Open: new parser's vars do not diferenciate between single and double quote as requeriment
+  #   test :test_assign_with_colon_and_spaces do
+  #     assigns = %{"var" => %{"a:b c" => %{"paged" => "1"}}}
+  #
+  #     assert_template_result(
+  #       "var2: 1",
+  #       "{%assign var2 = var[\"a:b c\"].paged %}var2: {{var2}}",
+  #       assigns
+  #     )
+  #   end
 
   test :test_capture do
     assigns = %{"var" => "content"}
