@@ -60,8 +60,9 @@ defmodule Liquid.Template do
   @spec parse(String.t(), map) :: Liquid.Template
   def parse(value, presets \\ %{})
 
-  def parse(<<markup::binary>>, presets) do
-    Liquid.Parse.parse(markup, %Template{presets: presets})
+  def parse(<<markup::binary>>, _presets) do
+    # Liquid.Parse.parse(markup, %Template{presets: presets})
+    Liquid.NimbleParser.parse(markup) |> Liquid.NimbleTranslator.translate()
   end
 
   @spec parse(nil, map) :: Liquid.Template
