@@ -12,7 +12,10 @@ defmodule Liquid.Combinators.Tags.Include do
 
   def var_assignment_param do
     empty()
-    |> parsec(:var_assignment)
+    |> concat(variable_atom())
+    |> parsec(:value)
+    |> tag(:variable)
+    |> optional(parsec(:var_assignment))
     |> tag(:variables)
   end
 
@@ -61,6 +64,7 @@ defmodule Liquid.Combinators.Tags.Include do
   defp head(combinator) do
     combinator
     |> concat(snippet())
+    |> optional(ignore(string(",")))
     |> optional(choice([with_param(), for_param(), var_assignment_param()]))
   end
 end

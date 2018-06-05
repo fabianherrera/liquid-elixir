@@ -20,9 +20,19 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
       ]
     )
 
-    test_combinator_error(
+    test_combinator(
       "{% include 'snippet' my_variable: 'apples', my_other_variable: 'oranges' %}",
-      &Parser.include/1
+      &Parser.include/1,
+      include: [
+        snippet: ["'snippet'"],
+        variables: [
+          variable: [variable_name: ["my_variable:"], value: "apples"],
+          variable: [
+            variable_name: ["my_other_variable:"],
+            value: "oranges"
+          ]
+        ]
+      ]
     )
 
     test_combinator("{% include 'pick_a_source' %}", &Parser.include/1, [
