@@ -47,21 +47,31 @@ defmodule Liquid.Combinators.Translators.LiquidVariable do
 
   defp filters_to_list([filter_name, filter_param]) do
     {_, param_value} = filter_param
+
     value = Keyword.get_values(param_value, :value)
 
-    if length(value) > 1 do
-      filter_param_value = Enum.map(value, fn x -> to_string(x) end)
-      [String.to_atom(filter_name), filter_param_value]
-    else
-      [filter_param_value] = value
+    filter_param_to_string =
+      case value do
+        [variable: [parts: parts]] ->
+          filter_param_value = General.variable_in_parts(parts) |> General.variable_to_string()
 
-      case is_bitstring(filter_param_value) do
-        true ->
-          [String.to_atom(filter_name), ["'#{filter_param_value}'"]]
+          [String.to_atom(filter_name), [filter_param_value]]
 
-        false ->
-          [String.to_atom(filter_name), ["#{filter_param_value}"]]
+        any ->
+          if length(value) > 1 do
+            filter_param_value = Enum.map(value, fn x -> to_string(x) end)
+            [String.to_atom(filter_name), filter_param_value]
+          else
+            [filter_param_value] = value
+
+            case is_bitstring(filter_param_value) do
+              true ->
+                [String.to_atom(filter_name), ["'#{filter_param_value}'"]]
+
+              false ->
+                [String.to_atom(filter_name), ["#{filter_param_value}"]]
+            end
+          end
       end
-    end
   end
 end
