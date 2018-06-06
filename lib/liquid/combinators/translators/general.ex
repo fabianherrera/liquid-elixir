@@ -139,7 +139,7 @@ defmodule Liquid.Combinators.Translators.General do
 
   def not_open_if({:if_condition, _}), do: false
   def not_open_if({:else, _}), do: false
-  def not_open_if({:else_if, _}), do: false
+  def not_open_if({:elsif, _}), do: false
   def not_open_if(_), do: true
 
   defp condition_to_string({left, operator, right}) do
