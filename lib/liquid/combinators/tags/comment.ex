@@ -50,4 +50,5 @@ defmodule Liquid.Combinators.Tags.Comment do
     |> string(General.codepoints().start_tag)
     |> parsec(:comment_content)
   end
+
 end
