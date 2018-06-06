@@ -184,8 +184,8 @@ defmodule Liquid.Combinators.LexicalToken do
   defp list_definition do
     choice([
       integer_value(),
-      parsec(:variable_value),
-      string_value()
+      string_value(),
+      parsec(:variable_value)
     ])
   end
 

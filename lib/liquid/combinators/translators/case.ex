@@ -2,36 +2,93 @@ defmodule Liquid.Combinators.Translators.Case do
   alias Liquid.Combinators.Translators.General
 
   def translate(variable: [:parts, part]) do
-    variable_in_string =
-      General.variable_in_parts(part)
-      |> General.variable_to_string()
+    variable_in_string = variable_to_markup(part)
 
     %Liquid.Block{name: :case, markup: variable_in_string, nodelist: []}
   end
 
   def translate(variable: parts, whens: whens) do
     [parts: part] = parts
-
-    variable_in_string =
-      General.variable_in_parts(part)
-      |> General.variable_to_string()
-
-    nodelist = Enum.map(whens, &when_to_nodelist/1)
-    block = %Liquid.Block{name: :case, markup: variable_in_string, nodelist: nodelist}
-    to_case_block(block)
+    variable_in_string = variable_to_markup(part)
+    create_block_for_case(variable_in_string, whens)
   end
 
   def translate(variable: parts, whens: whens, else: else_tag_values) do
     [parts: part] = parts
+    variable_in_string = variable_to_markup(part)
+    create_block_for_case(variable_in_string, whens, else_tag_values)
+  end
 
-    variable_in_string =
-      General.variable_in_parts(part)
-      |> General.variable_to_string()
+  def translate(variable: parts, else: else_tag_values) do
+    [parts: part] = parts
+    variable_in_string = variable_to_markup(part)
+    create_block_for_case_else(variable_in_string, else_tag_values)
+  end
 
-    nodelist = Enum.map(whens, &when_to_nodelist/1)
-    nodelist_plus_else = [nodelist | else_tag(else_tag_values)]
-    new_nodelist = List.flatten(nodelist_plus_else)
-    block = %Liquid.Block{name: :case, markup: variable_in_string, nodelist: new_nodelist}
+  def translate([{:variable, parts}, badbody]) do
+    [parts: part] = parts
+    variable_in_string = variable_to_markup(part)
+    block = %Liquid.Block{name: :case, markup: variable_in_string, nodelist: badbody}
+    to_case_block(block)
+  end
+
+  def translate([{:variable, parts}, badbody, {:whens, whens}]) do
+    [parts: part] = parts
+    variable_in_string = variable_to_markup(part)
+    create_block_for_case(variable_in_string, badbody, whens)
+  end
+
+  def translate([{:variable, parts}, badbody, {:whens, whens}, {:else, else_tag_values}]) do
+    [parts: part] = parts
+    variable_in_string = variable_to_markup(part)
+    create_block_for_case(variable_in_string, badbody, whens, else_tag_values)
+  end
+
+  def translate([{:variable, parts}, badbody, {:else, else_tag_values}]) do
+    [parts: part] = parts
+    variable_in_string = variable_to_markup(part)
+    create_block_for_case_else(variable_in_string, badbody, else_tag_values)
+  end
+
+  def translate([value]) do
+    markup = General.values_to_string(value)
+    block = %Liquid.Block{name: :case, markup: markup}
+    to_case_block(block)
+  end
+
+  def translate([value, {:whens, whens}]) do
+    markup = General.values_to_string(value)
+    create_block_for_case(markup, whens)
+  end
+
+  def translate([value, {:whens, whens}, {:else, else_tag_values}]) do
+    markup = General.values_to_string(value)
+    create_block_for_case(markup, whens, else_tag_values)
+  end
+
+  def translate([value, {:else, else_tag_values}]) do
+    markup = General.values_to_string(value)
+    create_block_for_case_else(markup, else_tag_values)
+  end
+
+  def translate([value, badbody, {:whens, whens}]) do
+    markup = General.values_to_string(value)
+    create_block_for_case(markup, badbody, whens)
+  end
+
+  def translate([value, badbody, {:whens, whens}, {:else, else_tag_values}]) do
+    markup = General.values_to_string(value)
+    create_block_for_case(markup, badbody, whens, else_tag_values)
+  end
+
+  def translate([value, badbody, {:else, else_tag_values}]) do
+    markup = General.values_to_string(value)
+    create_block_for_case_else(markup, badbody, else_tag_values)
+  end
+
+  def translate([value, badbody]) do
+    markup = General.values_to_string(value)
+    block = %Liquid.Block{name: :case, markup: markup, nodelist: [badbody]}
     to_case_block(block)
   end
 
@@ -65,6 +122,52 @@ defmodule Liquid.Combinators.Translators.Case do
 
       [else_liquid_tag, process_list]
     end
+  end
+
+  defp create_block_for_case(markup, when_alone) do
+    nodelist = Enum.map(when_alone, &when_to_nodelist/1)
+    block = %Liquid.Block{name: :case, markup: markup, nodelist: nodelist}
+    to_case_block(block)
+  end
+
+  defp create_block_for_case(markup, when_tag, else_tag_values) when is_list(when_tag) do
+    nodelist = Enum.map(when_tag, &when_to_nodelist/1)
+    nodelist_plus_else = [nodelist | else_tag(else_tag_values)] |> List.flatten()
+    block = %Liquid.Block{name: :case, markup: markup, nodelist: nodelist_plus_else}
+    to_case_block(block)
+  end
+
+  defp create_block_for_case(markup, badbody, when_tag) do
+    nodelist_when = Enum.map(when_tag, &when_to_nodelist/1)
+    full_list = [badbody | nodelist_when] |> List.flatten()
+    block = %Liquid.Block{name: :case, markup: markup, nodelist: full_list}
+    to_case_block(block)
+  end
+
+  defp create_block_for_case(markup, badbody, when_tag, else_tag_values) do
+    nodelist_when = Enum.map(when_tag, &when_to_nodelist/1)
+    nodelist_plus_else = [nodelist_when | else_tag(else_tag_values)]
+    full_list = [badbody | nodelist_plus_else] |> List.flatten()
+    block = %Liquid.Block{name: :case, markup: markup, nodelist: full_list}
+    to_case_block(block)
+  end
+
+  defp create_block_for_case_else(markup, else_tag_values) do
+    nodelist = else_tag(else_tag_values)
+    block = %Liquid.Block{name: :case, markup: markup, nodelist: nodelist}
+    to_case_block(block)
+  end
+
+  defp create_block_for_case_else(markup, badbody, else_tag_values) do
+    nodelist_plus_else = else_tag(else_tag_values)
+    full_list = [badbody | nodelist_plus_else] |> List.flatten()
+    block = %Liquid.Block{name: :case, markup: markup, nodelist: full_list}
+    to_case_block(block)
+  end
+
+  defp variable_to_markup(part) do
+    General.variable_in_parts(part)
+    |> General.variable_to_string()
   end
 
   defp to_case_block(%Liquid.Block{markup: markup} = b) do

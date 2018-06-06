@@ -72,7 +72,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       case: [
         variable: [parts: [part: "condition"]],
         whens: [
-          {:when, [1, 44, 2, 44, 3]},
+          {:when, [1, {:coma, [2]}, {:coma, [3]}]},
           " its 1 or 2 or 3 ",
           {:when, [4]},
           " its 4 "
@@ -88,7 +88,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       case: [
         variable: [parts: [part: "condition"]],
         whens: [
-          {:when, [1, 44, "string", 44, nil]},
+          {:when, [1, {:coma, ["string"]}, {:coma, [nil]}]},
           " its 1 or 2 or 3 ",
           {:when, [4]},
           " its 4 "
