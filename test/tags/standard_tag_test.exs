@@ -30,6 +30,7 @@ defmodule StandardTagTest do
     assert_template_result(text, text)
   end
 
+#   TODO: Fix this tests for translator / Open: new parser's does not support custom tags
   test "comments trick" do
     assert_template_result(
       "11",

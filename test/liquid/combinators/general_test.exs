@@ -41,8 +41,8 @@ defmodule Liquid.Combinators.GeneralTest do
 
     test_combinator("stop in {{", &Parser.liquid_literal/1, ["stop in "])
     test_combinator("stop in {%", &Parser.liquid_literal/1, ["stop in "])
-    test_combinator("stop in %}", &Parser.liquid_literal/1, ["stop in "])
-    test_combinator("stop in }}", &Parser.liquid_literal/1, ["stop in "])
+    test_combinator("stop in %}", &Parser.liquid_literal/1, ["stop in %}"])
+    test_combinator("stop in }}", &Parser.liquid_literal/1, ["stop in }}"])
     test_combinator("{{ this is not processed", &Parser.liquid_literal/1, [""])
     test_combinator("", &Parser.liquid_literal/1, [""])
   end
