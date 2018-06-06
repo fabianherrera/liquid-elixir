@@ -258,12 +258,23 @@ defmodule Liquid.Combinators.General do
     |> tag(:variable_name)
   end
 
-  def liquid_variable do
+  def not_empty_liquid_variable do
     start_variable()
     |> parsec(:value_definition)
     |> optional(times(parsec(:filters), min: 1))
     |> concat(end_variable())
     |> tag(:liquid_variable)
+  end
+
+  def empty_variable do
+    start_variable()
+    |> string("")
+    |> concat(end_variable())
+    |> tag(:liquid_variable)
+  end
+
+  def liquid_variable do
+    choice([empty_variable(), not_empty_liquid_variable()])
     |> optional(parsec(:__parse__))
   end
 
@@ -317,12 +328,7 @@ defmodule Liquid.Combinators.General do
     parsec(:ignore_whitespaces)
     |> ignore(string(@start_filter))
     |> parsec(:ignore_whitespaces)
-    |> repeat_until(utf8_char([]), [
-      string(@start_filter),
-      string(@end_variable),
-      string(":"),
-      string(" ")
-    ])
+    |> utf8_string([not: 58, not: 124..125, not: 32], min: 1)
     |> parsec(:ignore_whitespaces)
     |> reduce({List, :to_string, []})
     |> optional(parsec(:filter_param))
