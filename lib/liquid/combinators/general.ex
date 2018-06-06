@@ -136,11 +136,11 @@ defmodule Liquid.Combinators.General do
     empty()
     |> choice([
       string(@equals),
+      string(@greater_or_equal),
+      string(@less_or_equal),
       string(@does_not_equal),
       string(@greater_than),
       string(@less_than),
-      string(@greater_or_equal),
-      string(@less_or_equal),
       string("contains")
     ])
     |> traverse({__MODULE__, :to_atom, []})
