@@ -15,7 +15,7 @@ defmodule Liquid.Combinators.Tags.Raw do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.{General, Tag}
+  alias Liquid.Combinators.General
 
   def raw_content do
     empty()
@@ -26,7 +26,7 @@ defmodule Liquid.Combinators.Tags.Raw do
 
   def tag do
     open_tag()
-    |> concat(raw_content())
+    |> times(raw_content(), min: 1)
     |> tag(:raw)
     |> optional(parsec(:__parse__))
   end
@@ -50,4 +50,5 @@ defmodule Liquid.Combinators.Tags.Raw do
     |> string(General.codepoints().start_tag)
     |> parsec(:raw_content)
   end
+
 end
