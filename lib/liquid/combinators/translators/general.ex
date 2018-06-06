@@ -127,9 +127,6 @@ defmodule Liquid.Combinators.Translators.General do
         {:condition, value} ->
           condition_to_string(value)
 
-        {:coma, [value]} ->
-          value_type(value)
-
         value ->
           values_to_string(value)
       end
@@ -173,17 +170,5 @@ defmodule Liquid.Combinators.Translators.General do
 
   def types_only_list(element) do
     if is_list(element), do: element, else: [element]
-  end
-
-  defp value_type(nil) do
-    ", null"
-  end
-
-  defp value_type(value) when is_bitstring(value) do
-    ", '#{value}'"
-  end
-
-  defp value_type(value) do
-    ", #{value}"
   end
 end

@@ -150,6 +150,10 @@ defmodule Liquid.Combinators.General do
     {h |> String.to_atom() |> List.wrap(), context}
   end
 
+  def to_or(_rest, [h | _], context, _line, _offset) do
+    {h |> String.replace(",", "or") |> String.to_atom() |> List.wrap(), context}
+  end
+
   @doc """
   Logical operators:
   `and` `or`
@@ -158,6 +162,12 @@ defmodule Liquid.Combinators.General do
     empty()
     |> choice([string("or"), string("and")])
     |> traverse({__MODULE__, :to_atom, []})
+  end
+
+  def logical_operator_coma do
+    empty()
+    |> string(",")
+    |> traverse({__MODULE__, :to_or, []})
   end
 
   def condition do
@@ -170,7 +180,7 @@ defmodule Liquid.Combinators.General do
   end
 
   def logical_condition do
-    parsec(:logical_operators)
+    choice([parsec(:logical_operators), parsec(:logical_operator_coma)])
     |> choice([parsec(:condition), parsec(:value_definition)])
     |> tag(:logical)
   end
@@ -188,22 +198,6 @@ defmodule Liquid.Combinators.General do
       ])
     )
     |> parsec(:ignore_whitespaces)
-  end
-
-  def comma_contition_value do
-    empty()
-    |> ignore(utf8_char([@comma]))
-    |> concat(parsec(:ignore_whitespaces))
-    |> concat(
-      choice([
-        parsec(:number),
-        parsec(:string_value),
-        parsec(:null_value),
-        parsec(:boolean_value)
-      ])
-    )
-    |> parsec(:ignore_whitespaces)
-    |> tag(:coma)
   end
 
   @doc """
