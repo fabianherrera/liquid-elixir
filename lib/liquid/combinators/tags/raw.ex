@@ -26,7 +26,7 @@ defmodule Liquid.Combinators.Tags.Raw do
 
   def tag do
     open_tag()
-    |> times(raw_content(), min: 1)
+    |> concat(raw_content())
     |> tag(:raw)
     |> optional(parsec(:__parse__))
   end

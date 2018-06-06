@@ -207,9 +207,7 @@ defmodule Liquid.Combinators.General do
     empty()
     |> repeat_until(utf8_char([]), [
       string(@start_variable),
-      string(@end_variable),
-      string(@start_tag),
-      string(@end_tag)
+      string(@start_tag)
     ])
     |> reduce({List, :to_string, []})
   end
