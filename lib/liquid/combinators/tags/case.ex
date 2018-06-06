@@ -21,6 +21,7 @@ defmodule Liquid.Combinators.Tags.Case do
   """
   import NimbleParsec
   alias Liquid.Combinators.Tag
+  alias Liquid.Combinators.Tags.Generic
 
   def tag, do: Tag.define_closed("case", &head/1, &body/1)
 
@@ -59,6 +60,6 @@ defmodule Liquid.Combinators.Tags.Case do
     |> optional(parsec(:__parse__))
     |> optional(parsec(:whens))
     |> parsec(:ignore_whitespaces)
-    |> optional(times(parsec(:else_tag), min: 1))
+    |> optional(times(Generic.else_tag(), min: 1))
   end
 end

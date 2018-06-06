@@ -57,7 +57,7 @@ defmodule Liquid.Combinators.Tag do
     |> optional(parsec(:__parse__))
   end
 
-  def define_else(tag_name, combinator_head \\ & &1) do
+  def define_inverse_open(tag_name, combinator_head \\ & &1) do
     tag_name
     |> open_definition(combinator_head)
     |> optional(parsec(:__parse__))
