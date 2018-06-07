@@ -3,7 +3,7 @@ defmodule Liquid.Combinators.Translators.For do
   alias Liquid.Combinators.Translators.General
   alias Liquid.NimbleTranslator
 
-  def translate([for_collection: for_collection, for_body: for_body, else: else_body]) do
+  def translate(for_collection: for_collection, for_body: for_body, else: else_body) do
     markup = process_for_markup(for_collection)
 
     %Liquid.Block{
@@ -15,7 +15,7 @@ defmodule Liquid.Combinators.Translators.For do
     }
   end
 
-  def translate([for_collection: for_collection, for_body: for_body]) do
+  def translate(for_collection: for_collection, for_body: for_body) do
     markup = process_for_markup(for_collection)
 
     %Liquid.Block{
@@ -46,15 +46,14 @@ defmodule Liquid.Combinators.Translators.For do
 
   defp concat_for_params_in_markup(for_params) do
     for_params
-    |>  Enum.map(fn  param ->
-          case param do
-           {:reversed_param, _value} -> " reversed"
-           {:offset_param, value} -> " offset:#{General.values_to_string(value)}"
-           {:limit_param, value} -> " limit:#{General.values_to_string(value)}"
-            _ -> ""
-          end
-       end)
+    |> Enum.map(fn param ->
+      case param do
+        {:reversed_param, _value} -> " reversed"
+        {:offset_param, value} -> " offset:#{General.values_to_string(value)}"
+        {:limit_param, value} -> " limit:#{General.values_to_string(value)}"
+        _ -> ""
+      end
+    end)
     |> List.to_string()
   end
-
 end

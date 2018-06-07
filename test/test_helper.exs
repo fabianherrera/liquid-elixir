@@ -20,7 +20,14 @@ defmodule Liquid.Helpers do
 
   def test_ast_translation(markup, params \\ %{}) do
     old = markup |> Template.parse() |> Template.render(params) |> elem(1)
-    new = markup |> NimbleParser.parse() |> NimbleTranslator.translate() |> Template.render(params) |> elem(1)
+
+    new =
+      markup
+      |> NimbleParser.parse()
+      |> NimbleTranslator.translate()
+      |> Template.render(params)
+      |> elem(1)
+
     assert old == new
   end
 end

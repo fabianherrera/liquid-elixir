@@ -50,5 +50,4 @@ defmodule Liquid.Combinators.Tags.Raw do
     |> string(General.codepoints().start_tag)
     |> parsec(:raw_content)
   end
-
 end

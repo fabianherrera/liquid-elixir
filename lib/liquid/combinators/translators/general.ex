@@ -182,41 +182,18 @@ defmodule Liquid.Combinators.Translators.General do
           value |> Enum.join(".") |> String.replace(".[", "[")
 
         {:part, value} ->
-          if value == nil do
-            "null"
-          else
-            "#{value}"
-          end
+          "#{value}"
+
+        {:index, value} when is_binary(value) ->
+          "[\"#{value}\"]"
 
         {:index, value} ->
-          cond do
-            is_bitstring(value) -> "['#{value}']"
-            value == nil -> "[null]"
-            true -> "[#{value}]"
-          end
+          "[#{value}]"
 
-        #   {:fiters, value} ->
-        #   Enum.join(value)
+        {:filters, value} -> ""
 
-        # {:filter, value} ->
-        #   value |> Enum.join(".") |> String.replace(".[", "[")
-
-        # {:filter_param, value} ->
-        #   if value == nil do
-        #     "null"
-        #   else
-        #     "#{value}"
-        #   end
-
-        # {:value, value} ->
-        #   if value == nil do
-        #     "null"
-        #   else
-        #     "#{value}"
-        #   end
-
-        _ ->
-          raise "Protocol is not implemented"
+        {_, value} ->
+          "#{value}"
       end
     end
   end

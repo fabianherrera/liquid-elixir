@@ -34,5 +34,4 @@ defmodule Liquid.Combinators.Tags.Ifchanged do
     |> ignore(string("endifchanged"))
     |> parsec(:end_tag)
   end
-
 end

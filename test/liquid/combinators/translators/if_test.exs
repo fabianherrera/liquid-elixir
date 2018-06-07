@@ -14,7 +14,7 @@ defmodule Liquid.Combinators.Translators.IfTest do
       "{% if false %} NO {% else %} YES {% endif %}",
       "{% if true %} YES {% else %} NO {% endif %}",
       "{% if \"foo\" %} YES {% else %} NO {% endif %}",
-      "{% if true %} YES\n\r\n {% else %} NO\n\r\n {% endif %}",
+      "{% if true %} YES\n\r\n {% else %} NO\n\r\n {% endif %}"
     ]
     |> Enum.each(fn tag ->
       test_ast_translation(tag)
@@ -29,7 +29,7 @@ defmodule Liquid.Combinators.Translators.IfTest do
       {"{% if a or b %} YES {% endif %}", %{"a" => false, "b" => true}},
       {"{% if a or b %} YES {% endif %}", %{"a" => false, "b" => false}},
       {"{% if a or b or c%} YES {% endif %}", %{"a" => false, "b" => false, "c" => true}},
-      {"{% if a or b or c%} YES {% endif %}", %{"a" => false, "b" => false, "c" => false}},
+      {"{% if a or b or c%} YES {% endif %}", %{"a" => false, "b" => false, "c" => false}}
     ]
     |> Enum.each(fn {tag, params} ->
       test_ast_translation(tag, params)

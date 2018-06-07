@@ -7,7 +7,7 @@ defmodule Liquid.Combinators.Translators.AssignTest do
       {"{% assign a = 5 %}{{ a }}", %{}},
       {"{% assign foo = values %}.{{ foo[0] }}.", %{"values" => ["foo", "bar", "baz"]}},
       {"{% assign foo = values %}.{{ foo[1] }}.", %{"values" => ["foo", "bar", "baz"]}},
-      {"{% assign foo = values | split: ',' %}.{{ foo[1] }}.", %{"values" => "foo,bar,baz"}},
+      {"{% assign foo = values | split: ',' %}.{{ foo[1] }}.", %{"values" => "foo,bar,baz"}}
     ]
     |> Enum.each(fn {tag, params} ->
       test_ast_translation(tag, params)

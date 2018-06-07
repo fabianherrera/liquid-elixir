@@ -76,11 +76,11 @@ defmodule Liquid.Combinators.Tags.Tablerow do
   defp tablerow_params do
     empty()
     |> optional(
-         times(
-           choice([offset_param(), cols_param(), limit_param()]),
-           min: 1
-         )
-       )
+      times(
+        choice([offset_param(), cols_param(), limit_param()]),
+        min: 1
+      )
+    )
     |> tag(:tablerow_params)
   end
 
@@ -108,5 +108,4 @@ defmodule Liquid.Combinators.Tags.Tablerow do
     |> parsec(:ignore_whitespaces)
     |> tag(:tablerow_collection)
   end
-
 end

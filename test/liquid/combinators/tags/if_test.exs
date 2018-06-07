@@ -38,8 +38,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
       &Parser.if/1,
       if: [
         if_condition: [
-          condition:
-            {{:variable, [parts: [part: "line_item", part: "grams"]]}, :>, 20000},
+          condition: {{:variable, [parts: [part: "line_item", part: "grams"]]}, :>, 20000},
           logical: [
             :and,
             {:condition,
