@@ -171,4 +171,20 @@ defmodule Liquid.Combinators.Translators.General do
   def types_only_list(element) do
     if is_list(element), do: element, else: [element]
   end
+
+  # defimpl String.Chars, for: Tuple do
+  #   def to_string(elem) do
+  #     case elem
+  #       {:variable, value} -> Enum.join(value, ".")
+  #       {:parts, value} -> Enum.join(value, ".")
+  #       {:part, value} -> String.to_string(value)
+  #       {:index, value} -> "[${to_string(value)}]"
+  #       true -> raise "Protocol is not implemented"
+  #     
+  #   end
+  # end
+
+
+
+
 end
