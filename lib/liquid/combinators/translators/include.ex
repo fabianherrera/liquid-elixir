@@ -1,5 +1,5 @@
 defmodule Liquid.Combinators.Translators.Include do
-  alias Liquid.{Tag, Include}
+  alias Liquid.{Tag, Include, Template}
   alias Liquid.Combinators.Translators.General
 
   def translate(markup) do
@@ -22,12 +22,11 @@ defmodule Liquid.Combinators.Translators.Include do
   def process_include_markup(snippet: [snippet], variables: variables) do
     parts = Enum.map(variables, &concat_include_variables_in_markup(&1))
     variables = Enum.join(parts, ", ")
-    "#{snippet}, #{variables}"
+    "#{snippet} #{variables}"
   end
 
   defp concat_include_variables_in_markup({:variable, [variable_name: [variable], value: value]}) do
-    value_string =  General.values_to_string(value)
+    value_string = General.values_to_string(value)
     "#{variable} #{value_string}"
   end
-
 end
