@@ -171,4 +171,53 @@ defmodule Liquid.Combinators.Translators.General do
   def types_only_list(element) do
     if is_list(element), do: element, else: [element]
   end
+
+  defimpl String.Chars, for: Tuple do
+    def to_string(elem) do
+      case elem do
+        {:variable, value} ->
+          Enum.join(value)
+
+        {:parts, value} ->
+          value |> Enum.join(".") |> String.replace(".[", "[")
+
+        {:part, value} ->
+          if value == nil do
+            "null"
+          else
+            "#{value}"
+          end
+
+        {:index, value} ->
+          cond do
+            is_bitstring(value) -> "['#{value}']"
+            value == nil -> "[null]"
+            true -> "[#{value}]"
+          end
+
+        #   {:fiters, value} ->
+        #   Enum.join(value)
+
+        # {:filter, value} ->
+        #   value |> Enum.join(".") |> String.replace(".[", "[")
+
+        # {:filter_param, value} ->
+        #   if value == nil do
+        #     "null"
+        #   else
+        #     "#{value}"
+        #   end
+
+        # {:value, value} ->
+        #   if value == nil do
+        #     "null"
+        #   else
+        #     "#{value}"
+        #   end
+
+        _ ->
+          raise "Protocol is not implemented"
+      end
+    end
+  end
 end
