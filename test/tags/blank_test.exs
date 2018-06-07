@@ -26,6 +26,7 @@ defmodule Liquid.BlankTest do
     assert_result("", wrap_in_for(" "), %{})
   end
 
+  # TODO: Fix this tests for translator / Open: pending check IEX does not show any diferences
   test :test_if_else_are_blank do
     assert_template_result("", "{% if true %} {% elsif false %} {% else %} {% endif %}")
   end
@@ -49,6 +50,7 @@ defmodule Liquid.BlankTest do
     assert_template_result("", wrap(" {% capture foo %} whatever {% endcapture %} "))
   end
 
+  # TODO: Fix this tests for translator / Open: pending check IEX does not show any diferences
   test :test_nested_blocks_are_blank_but_only_if_all_children_are do
     assert_template_result("", wrap(wrap(" ")))
 
