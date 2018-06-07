@@ -9,7 +9,7 @@ defmodule Liquid.Combinators.Translators.CycleTest do
       "{%cycle \"\", \"two\"%} {%cycle \"\", \"two\"%}",
       "{%cycle \"one\", \"two\"%} {%cycle \"one\", \"two\"%} {%cycle \"one\", \"two\"%}",
       "{%cycle \"text-align: left\", \"text-align: right\" %} {%cycle \"text-align: left\", \"text-align: right\"%}",
-      "{%cycle 1,2%} {%cycle 1,2%} {%cycle 1,2%} {%cycle 1,2,3%} {%cycle 1,2,3%} {%cycle 1,2,3%} {%cycle 1,2,3%}",
+      "{%cycle 1,2%} {%cycle 1,2%} {%cycle 1,2%} {%cycle 1,2,3%} {%cycle 1,2,3%} {%cycle 1,2,3%} {%cycle 1,2,3%}"
     ]
     |> Enum.each(fn tag ->
       test_ast_translation(tag)
@@ -22,6 +22,7 @@ defmodule Liquid.Combinators.Translators.CycleTest do
       {%cycle 1: \"one\", \"two\" %} {%cycle 2: \"one\", \"two\" %}
       {%cycle 1: \"one\", \"two\" %} {%cycle 2: \"one\", \"two\" %}
     """
+
     test_ast_translation(tag, params)
   end
 end

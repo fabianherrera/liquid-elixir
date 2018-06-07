@@ -26,9 +26,9 @@ defmodule Liquid.Combinators.Tags.Comment do
 
   def tag do
     open_tag()
-     |> parsec(:__parse__)
-#    |> times(choice([not_evaluated_by_parse_custom_tag(), parsec(:liquid_tag), parsec(:liquid_variable), General.liquid_literal()]), min: 1)
-#    |> concat(comment_content())
+    |> parsec(:__parse__)
+    #    |> times(choice([not_evaluated_by_parse_custom_tag(), parsec(:liquid_tag), parsec(:liquid_variable), General.liquid_literal()]), min: 1)
+    #    |> concat(comment_content())
     |> tag(:comment)
     |> optional(parsec(:__parse__))
   end
@@ -59,5 +59,4 @@ defmodule Liquid.Combinators.Tags.Comment do
     |> repeat_until(utf8_char([]), [string(General.codepoints().end_tag)])
     |> string(General.codepoints().end_tag)
   end
-
 end

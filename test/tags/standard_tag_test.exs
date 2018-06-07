@@ -30,7 +30,7 @@ defmodule StandardTagTest do
     assert_template_result(text, text)
   end
 
-#   TODO: Fix this tests for translator / Open: new parser's does not support custom tags
+  #   TODO: Fix this tests for translator / Open: new parser's does not support custom tags
   test "comments trick" do
     assert_template_result(
       "11",
@@ -56,20 +56,20 @@ defmodule StandardTagTest do
       "1{% comment %}{ encomment %}1{%endcomment%}1{% comment %}comment{% endcomment %}"
     )
 
-     assert_template_result(
-       "1",
-       "{% comment %} 1 {% comment %} 2 {% endcomment %} 3 {% endcomment %}1"
-     )
+    assert_template_result(
+      "1",
+      "{% comment %} 1 {% comment %} 2 {% endcomment %} 3 {% endcomment %}1"
+    )
 
     assert_template_result("", "{%comment%}{%blabla%}{%endcomment%}")
     assert_template_result("", "{% comment %}{% blabla %}{% endcomment %}")
     assert_template_result("", "{%comment%}{% endif %}{%endcomment%}")
     assert_template_result("", "{% comment %}{% endwhatever %}{% endcomment %}")
 
-     assert_template_result(
-       "",
-       "{% comment %}{% raw %} {{%%%%}}  }} { {% endcomment %} {% comment {% endraw %} {% endcomment %}"
-     )
+    assert_template_result(
+      "",
+      "{% comment %}{% raw %} {{%%%%}}  }} { {% endcomment %} {% comment {% endraw %} {% endcomment %}"
+    )
 
     assert_template_result("foobar", "foo{%comment%}comment{%endcomment%}bar")
     assert_template_result("foobar", "foo{% comment %}comment{% endcomment %}bar")

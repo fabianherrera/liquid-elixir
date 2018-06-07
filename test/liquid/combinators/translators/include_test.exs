@@ -45,11 +45,11 @@ defmodule Liquid.Combinators.Translators.IncludeTest do
 
   test "include translate new AST to old AST" do
     [
-      {"{% include 'product' with products[0] %}", %{
-          "products" => [%{"title" => "Draft 151cm"}, %{"title" => "Element 155cm"}]}},
+      {"{% include 'product' with products[0] %}",
+       %{"products" => [%{"title" => "Draft 151cm"}, %{"title" => "Element 155cm"}]}},
       {"{% include 'product' %}", %{"product" => %{"title" => "Draft 151cm"}}},
       {"{% include 'product' for products %}",
-        %{"products" => [%{"title" => "Draft 151cm"}, %{"title" => "Element 155cm"}]}},
+       %{"products" => [%{"title" => "Draft 151cm"}, %{"title" => "Element 155cm"}]}},
       {"{% include 'locale_variables' echo1: 'test123' %}", %{}},
       {"{% include 'locale_variables' echo1: 'test123', echo2: 'test321' %}", %{}},
       {"{% include 'locale_variables' echo1: echo1, echo2: more_echos.echo2 %}",

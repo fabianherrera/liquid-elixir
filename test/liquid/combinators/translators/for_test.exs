@@ -4,6 +4,7 @@ defmodule Liquid.Combinators.Translators.ForTest do
 
   test "for translate new AST to old AST" do
     params = %{"array" => [1, 1, 2, 2, 3, 3], "repeat_array" => [1, 1, 1, 1]}
+
     [
       "{%for item in array%}{%ifchanged%}{{item}}{% endifchanged %}{%endfor%}",
       "{%for i in (1..2) %}{% assign a = \"variable\"%}{% endfor %}{{a}}",
@@ -54,32 +55,32 @@ defmodule Liquid.Combinators.Translators.ForTest do
       {"{%for i in array limit: limit offset: offset %}{{ i }}{%endfor%}",
        %{"array" => [1, 2, 3, 4, 5, 6, 7, 8, 9, 0], "limit" => 2, "offset" => 2}},
       {"""
-        {%for i in array.items limit:3 %}{{i}}{%endfor%}
-          next
-        {%for i in array.items offset:continue limit:3 %}{{i}}{%endfor%}
-          next
-        {%for i in array.items offset:continue limit:3 offset:1000 %}{{i}}{%endfor%}
-      """, %{"array" => %{"items" => [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]}}},
+         {%for i in array.items limit:3 %}{{i}}{%endfor%}
+           next
+         {%for i in array.items offset:continue limit:3 %}{{i}}{%endfor%}
+           next
+         {%for i in array.items offset:continue limit:3 offset:1000 %}{{i}}{%endfor%}
+       """, %{"array" => %{"items" => [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]}}},
       {"""
-        {%for i in array.items limit: 3 %}{{i}}{%endfor%}
-        next
-        {%for i in array.items offset:continue limit: 3 %}{{i}}{%endfor%}
-        next
-        {%for i in array.items offset:continue limit: 3 %}{{i}}{%endfor%}
-      """, %{"array" => %{"items" => [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]}}},
+         {%for i in array.items limit: 3 %}{{i}}{%endfor%}
+         next
+         {%for i in array.items offset:continue limit: 3 %}{{i}}{%endfor%}
+         next
+         {%for i in array.items offset:continue limit: 3 %}{{i}}{%endfor%}
+       """, %{"array" => %{"items" => [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]}}},
       {"""
-        {%for i in array.items limit:3 %}{{i}}{%endfor%}
-        next
-        {%for i in array.items offset:continue limit:3 %}{{i}}{%endfor%}
-        next
-        {%for i in array.items offset:continue limit:1000 %}{{i}}{%endfor%}
-      """, %{"array" => %{"items" => [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]}}},
+         {%for i in array.items limit:3 %}{{i}}{%endfor%}
+         next
+         {%for i in array.items offset:continue limit:3 %}{{i}}{%endfor%}
+         next
+         {%for i in array.items offset:continue limit:1000 %}{{i}}{%endfor%}
+       """, %{"array" => %{"items" => [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]}}},
       {"""
-        {%for i in array.items limit:3 %}{{i}}{%endfor%}
-        next
-        {%for i in array.items offset:continue limit:3 %}{{i}}{%endfor%}
-        next{%for i in array.items offset:continue limit:3 offset:1000 %}{{i}}{%endfor%}
-      """, %{"array" => %{"items" => [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]}}},
+         {%for i in array.items limit:3 %}{{i}}{%endfor%}
+         next
+         {%for i in array.items offset:continue limit:3 %}{{i}}{%endfor%}
+         next{%for i in array.items offset:continue limit:3 offset:1000 %}{{i}}{%endfor%}
+       """, %{"array" => %{"items" => [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]}}}
     ]
     |> Enum.each(fn {markup, params} ->
       test_ast_translation(markup, params)

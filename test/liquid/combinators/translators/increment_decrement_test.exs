@@ -4,6 +4,7 @@ defmodule Liquid.Combinators.Translators.IncrementDecrementTest do
 
   test "increment / decrement translate new AST to old AST" do
     params = %{"port" => 1, "startboard" => 2}
+
     [
       "{%increment port %}",
       "{%increment port %} {%increment port%}",

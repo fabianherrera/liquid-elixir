@@ -83,11 +83,11 @@ defmodule Liquid.Combinators.Tags.For do
   defp for_params do
     empty()
     |> optional(
-         times(
-           choice([offset_param(), reversed_param(), limit_param()]),
-           min: 1
-         )
-       )
+      times(
+        choice([offset_param(), reversed_param(), limit_param()]),
+        min: 1
+      )
+    )
     |> tag(:for_params)
   end
 

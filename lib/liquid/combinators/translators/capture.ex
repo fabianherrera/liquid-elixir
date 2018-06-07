@@ -7,7 +7,9 @@ defmodule Liquid.Combinators.Translators.Capture do
       |> General.variable_in_parts()
       |> General.variable_to_string()
 
-    nodelist = Liquid.NimbleTranslator.process_node(capture_sentences) |> General.types_only_list()
+    nodelist =
+      Liquid.NimbleTranslator.process_node(capture_sentences) |> General.types_only_list()
+
     %Liquid.Block{name: :capture, markup: variable_in_string, blank: true, nodelist: nodelist}
   end
 
@@ -18,7 +20,9 @@ defmodule Liquid.Combinators.Translators.Capture do
       markup = "#{capture_value}"
     end
 
-    nodelist = Liquid.NimbleTranslator.process_node(capture_sentences) |> General.types_only_list()
+    nodelist =
+      Liquid.NimbleTranslator.process_node(capture_sentences) |> General.types_only_list()
+
     %Liquid.Block{name: :capture, markup: markup, blank: true, nodelist: nodelist}
   end
 end
