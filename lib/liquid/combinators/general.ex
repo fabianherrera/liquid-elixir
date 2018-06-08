@@ -212,7 +212,7 @@ defmodule Liquid.Combinators.General do
     |> reduce({List, :to_string, []})
   end
 
-  defp allowed_chars_in_variable_definition do
+  defp allowed_chars do
     [
       @digit,
       @uppercase_letter,
@@ -230,7 +230,7 @@ defmodule Liquid.Combinators.General do
     empty()
     |> concat(ignore_whitespaces())
     |> utf8_char([@uppercase_letter, @lowercase_letter, @underscore])
-    |> optional(times(utf8_char(allowed_chars_in_variable_definition()), min: 1))
+    |> optional(times(utf8_char(allowed_chars()), min: 1))
     |> concat(ignore_whitespaces())
     |> reduce({List, :to_string, []})
   end

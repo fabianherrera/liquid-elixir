@@ -6,65 +6,61 @@ defmodule Liquid.Combinators.Tags.Include do
   alias Liquid.Combinators.General
   alias Liquid.Combinators.Tag
 
-  def tag do
-    Tag.define_open("include", &head/1)
-  end
+  def tag, do: Tag.define_open("include", &head/1)
 
   def var_assignment_param do
     empty()
     |> concat(variable_atom())
     |> parsec(:value)
-    |> tag(:variable)
+    |> tag(:assignment)
     |> optional(parsec(:var_assignment))
-    |> tag(:variables)
+    |> tag(:attributes)
   end
 
   def var_assignment do
     General.cleaned_comma()
     |> concat(variable_atom())
     |> parsec(:value)
-    |> tag(:variable)
+    |> tag(:assignment)
     |> optional(parsec(:var_assignment))
   end
 
   defp snippet do
     parsec(:ignore_whitespaces)
-    |> concat(utf8_char([General.codepoints().single_quote]))
-    |> parsec(:variable_definition)
-    |> ascii_char([General.codepoints().single_quote])
+    |> ignore(utf8_char([General.codepoints().single_quote]))
+    |> parsec(:variable_value)
+    |> ignore(utf8_char([General.codepoints().single_quote]))
     |> parsec(:ignore_whitespaces)
-    |> reduce({List, :to_string, []})
-    |> tag(:snippet)
   end
 
   defp variable_atom do
     empty()
-    |> parsec(:ignore_whitespaces)
     |> parsec(:variable_definition)
-    |> concat(ascii_char([General.codepoints().colon]))
+    |> parsec(:ignore_whitespaces)
+    |> ignore(ascii_char([General.codepoints().colon]))
     |> parsec(:ignore_whitespaces)
     |> reduce({List, :to_string, []})
-    |> tag(:variable_name)
+    |> unwrap_and_tag(:name)
   end
 
-  defp with_param do
+  defp with_include do
     empty()
     |> ignore(string("with"))
     |> parsec(:value_definition)
-    |> tag(:with_param)
+    |> tag(:with_include)
   end
 
-  defp for_param do
+  defp for_include do
     empty()
     |> ignore(string("for"))
     |> concat(parsec(:value_definition))
-    |> tag(:for_param)
+    |> tag(:for_include)
   end
 
   defp head(combinator) do
     combinator
     |> concat(snippet())
     |> optional(ignore(string(",")))
-    |> optional(choice([with_param(), for_param(), var_assignment_param()]))
+    |> optional(choice([with_include(), for_include(), var_assignment_param()]))
   end
 end
