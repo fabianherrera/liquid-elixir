@@ -172,29 +172,4 @@ defmodule Liquid.Combinators.Translators.General do
     if is_list(element), do: element, else: [element]
   end
 
-  defimpl String.Chars, for: Tuple do
-    def to_string(elem) do
-      case elem do
-        {:variable, value} ->
-          Enum.join(value)
-
-        {:parts, value} ->
-          value |> Enum.join(".") |> String.replace(".[", "[")
-
-        {:part, value} ->
-          "#{value}"
-
-        {:index, value} when is_binary(value) ->
-          "[\"#{value}\"]"
-
-        {:index, value} ->
-          "[#{value}]"
-
-        {:filters, value} -> ""
-
-        {_, value} ->
-          "#{value}"
-      end
-    end
-  end
 end

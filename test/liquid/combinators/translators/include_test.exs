@@ -45,9 +45,9 @@ defmodule Liquid.Combinators.Translators.IncludeTest do
 
   test "include translate new AST to old AST" do
     [
+      {"{% include 'product' %}", %{}},
       {"{% include 'product' with products[0] %}",
        %{"products" => [%{"title" => "Draft 151cm"}, %{"title" => "Element 155cm"}]}},
-      {"{% include 'product' %}", %{"product" => %{"title" => "Draft 151cm"}}},
       {"{% include 'product' for products %}",
        %{"products" => [%{"title" => "Draft 151cm"}, %{"title" => "Element 155cm"}]}},
       {"{% include 'locale_variables' echo1: 'test123' %}", %{}},
@@ -59,7 +59,8 @@ defmodule Liquid.Combinators.Translators.IncludeTest do
       {"{% include 'nested_product_template' with product %}",
        %{"product" => %{"title" => "Draft 151cm"}}},
       {"{% include 'nested_product_template' for products %}",
-       %{"products" => [%{"title" => "Draft 151cm"}, %{"title" => "Element 155cm"}]}}
+       %{"products" => [%{"title" => "Draft 151cm"}, %{"title" => "Element 155cm"}]}},
+      {"{% include 'cart' %}", %{"cart" => %{"title" => "Draft 151cm"}}}
     ]
     |> Enum.each(fn {markup, params} ->
       test_ast_translation(markup, params)
