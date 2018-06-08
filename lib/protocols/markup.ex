@@ -7,19 +7,13 @@ defimpl String.Chars, for: Tuple do
     value |> Enum.join(".") |> String.replace(".[", "[")
   end
 
-  defp to_markup({:part, value}), do: "#{value}"
-
   defp to_markup({:index, value}) when is_binary(value), do: "[\"#{value}\"]"
 
   defp to_markup({:index, value}), do: "[#{value}]"
 
   defp to_markup({:filters, _}), do: ""
 
-  defp to_markup({:name, value}), do: "#{value}:"
-
   defp to_markup({:value, value}) when is_binary(value), do: "\"#{value}\""
-
-  defp to_markup({:value, value}), do: "#{value}"
 
   defp to_markup({:assignments, value}), do: Enum.join(value, ", ")
 
