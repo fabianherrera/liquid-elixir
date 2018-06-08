@@ -11,11 +11,15 @@ defimpl String.Chars, for: Tuple do
 
   defp to_markup({:index, value}), do: "[#{value}]"
 
-  defp to_markup({:filters, _}), do: ""
-
   defp to_markup({:value, value}) when is_binary(value), do: "\"#{value}\""
 
   defp to_markup({:assignments, value}), do: Enum.join(value, ", ")
+
+  defp to_markup({:filters, value}), do: " | " <> Enum.join(value, " | ")
+
+  defp to_markup({:filter, value}), do: Enum.join(value)
+
+  defp to_markup({:params, value}), do: ": " <> Enum.join(value, ", ")
 
   defp to_markup({:assignment, value}), do: Enum.join(value)
 

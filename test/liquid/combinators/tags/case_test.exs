@@ -105,11 +105,11 @@ defmodule Liquid.Combinators.Tags.CaseTest do
         variable: [parts: [part: "collection", part: "handle"]],
         whens: [
           when: ["menswear-jackets"],
-          assign: [variable_name: ["ptitle"], value: "menswear"],
+          assign: [variable_name: "ptitle", assign_symbol: "=", value: "menswear"],
           when: ["menswear-t-shirts"],
-          assign: [variable_name: ["ptitle"], value: "menswear"]
+          assign: [variable_name: "ptitle", assign_symbol: "=", value: "menswear"]
         ],
-        else: [assign: [variable_name: ["ptitle"], value: "womenswear"]]
+        else: [assign: [variable_name: "ptitle", assign_symbol: "=", value: "womenswear"]]
       ]
     )
   end

@@ -10,14 +10,13 @@ defmodule Liquid.Combinators.Tags.Assign do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.Tag
+  alias Liquid.Combinators.{General, Tag}
 
   def tag do
     Tag.define_open("assign", fn combinator ->
       combinator
-      |> parsec(:variable_name_for_assignation)
-      |> ignore(string("="))
-      |> parsec(:value)
+      |> concat(General.assignment(General.codepoints().equal))
+      |> optional(parsec(:filters))
     end)
   end
 end

@@ -1,4 +1,4 @@
-defmodule Liquid.Combinators.Translators.GeneralTest do
+defmodule Liquid.Markup do
   use ExUnit.Case
   import Liquid.Helpers
 
@@ -39,18 +39,6 @@ defmodule Liquid.Combinators.Translators.GeneralTest do
     ) == "store.state[0][0][1]"
     assert to_string(
       {:variable, [parts: [part: "var", index: "a:b c", index: "paged"]]}
-    ) == "var[\"a:b c\"][\"paged\"]"
-  end
-
-  test "implement to_string {:filters}" do
-    assert Enum.join(
-      [variable: [
-          parts: [part: "var", index: "a:b c", index: "paged"],
-          filters: [
-            filter: ["capitalize"],
-            filter: ["plus", {:params, [value: 15]}]
-          ]
-        ]]
     ) == "var[\"a:b c\"][\"paged\"]"
   end
 end

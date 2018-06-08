@@ -17,6 +17,7 @@ defmodule Liquid.Combinators.General do
   @question_mark 0x003F
   @underscore 0x005F
   @dash 0x002D
+  @equal 0x003D
   @start_tag "{%"
   @end_tag "%}"
   @start_variable "{{"
@@ -41,6 +42,7 @@ defmodule Liquid.Combinators.General do
       carriage_return: @carriage_return,
       newline: @newline,
       comma: @comma,
+      equal: @equal,
       quote: @double_quote,
       single_quote: @single_quote,
       question_mark: @question_mark,
@@ -342,5 +344,4 @@ defmodule Liquid.Combinators.General do
     |> unwrap_and_tag(utf8_string([symbol], max: 1), :assign_symbol)
     |> parsec(:value)
   end
-
 end
