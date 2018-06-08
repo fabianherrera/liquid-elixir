@@ -333,4 +333,14 @@ defmodule Liquid.Combinators.General do
     |> tag(:filter)
     |> optional(parsec(:filter))
   end
+
+  def assignment(symbol) do
+    empty()
+    |> optional(cleaned_comma())
+    |> parsec(:variable_definition)
+    |> unwrap_and_tag(:variable_name)
+    |> unwrap_and_tag(utf8_string([symbol], max: 1), :assign_symbol)
+    |> parsec(:value)
+  end
+
 end
