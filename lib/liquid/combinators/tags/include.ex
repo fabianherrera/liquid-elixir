@@ -8,17 +8,10 @@ defmodule Liquid.Combinators.Tags.Include do
 
   def tag, do: Tag.define_open("include", &head/1)
 
-  def assignment do
-    empty()
-    |> optional(General.cleaned_comma())
-    |> concat(variable())
-    |> parsec(:value)
-    |> tag(:assignment)
-    |> optional(parsec(:assignment))
-  end
-
   defp assignments do
-    parsec(:assignment)
+    General.codepoints().colon
+    |> General.assignment() |> tag(:assignment)
+    |> times(min: 1)
     |> tag(:assignments)
   end
 
@@ -28,16 +21,6 @@ defmodule Liquid.Combinators.Tags.Include do
     |> parsec(:variable_value)
     |> ignore(utf8_char([General.codepoints().single_quote]))
     |> parsec(:ignore_whitespaces)
-  end
-
-  defp variable do
-    empty()
-    |> parsec(:variable_definition)
-    |> parsec(:ignore_whitespaces)
-    |> ignore(ascii_char([General.codepoints().colon]))
-    |> parsec(:ignore_whitespaces)
-    |> reduce({List, :to_string, []})
-    |> unwrap_and_tag(:name)
   end
 
   defp predicate(name) do

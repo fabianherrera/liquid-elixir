@@ -11,8 +11,8 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
       include: [
         variable: [parts: [part: "snippet"]],
         assignments: [
-          assignment: [name: "my_variable", value: "apples"],
-          assignment: [name: "my_other_variable", value: "oranges"]
+          assignment: [variable_name: "my_variable", assign_symbol: ":", value: "apples"],
+          assignment: [variable_name: "my_other_variable", assign_symbol: ":", value: "oranges"]
         ]
       ]
     )
@@ -23,8 +23,8 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
       include: [
         variable: [parts: [part: "snippet"]],
         assignments: [
-          assignment: [name: "my_variable", value: "apples"],
-          assignment: [name: "my_other_variable", value: "oranges"]
+          assignment: [variable_name: "my_variable", assign_symbol: ":", value: "apples"],
+          assignment: [variable_name: "my_other_variable", assign_symbol: ":", value: "oranges"]
         ]
       ]
     )
