@@ -13,7 +13,7 @@ defimpl String.Chars, for: Tuple do
 
   defp to_markup({:index, value}), do: "[#{value}]"
 
-  defp to_markup({:filters, value}), do: ""
+  defp to_markup({:filters, _}), do: ""
 
   defp to_markup({:name, value}), do: "#{value}:"
 
@@ -21,13 +21,11 @@ defimpl String.Chars, for: Tuple do
 
   defp to_markup({:value, value}), do: "#{value}"
 
-  defp to_markup({:with_include, value}), do: "with #{Enum.join(value)}"
-
-  defp to_markup({:for_include, value}), do: "for #{Enum.join(value)}"
-
-  defp to_markup({:attributes, value}), do: Enum.join(value, ", ")
+  defp to_markup({:assignments, value}), do: Enum.join(value, ", ")
 
   defp to_markup({:assignment, value}), do: Enum.join(value)
+
+  defp to_markup({predicate, value}) when predicate in [:for, :with], do: "#{predicate} #{Enum.join(value)}"
 
   defp to_markup({_, value}), do: "#{value}"
 end

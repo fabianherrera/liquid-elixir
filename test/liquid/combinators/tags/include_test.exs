@@ -10,7 +10,7 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
       &Parser.include/1,
       include: [
         variable: [parts: [part: "snippet"]],
-        attributes: [
+        assignments: [
           assignment: [name: "my_variable", value: "apples"],
           assignment: [name: "my_other_variable", value: "oranges"]
         ]
@@ -22,7 +22,7 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
       &Parser.include/1,
       include: [
         variable: [parts: [part: "snippet"]],
-        attributes: [
+        assignments: [
           assignment: [name: "my_variable", value: "apples"],
           assignment: [name: "my_other_variable", value: "oranges"]
         ]
@@ -38,7 +38,7 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
       &Parser.include/1,
       include: [
         variable: [parts: [part: "product"]],
-        with_include: [
+        with: [
           variable: [parts: [part: "products", index: 0]]
         ]
       ]
@@ -47,13 +47,13 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
     test_combinator(
       "{% include 'product' with 'products' %}",
       &Parser.include/1,
-      include: [variable: [parts: [part: "product"]], with_include: ["products"]]
+      include: [variable: [parts: [part: "product"]], with: ["products"]]
     )
 
     test_combinator(
       "{% include 'product' for 'products' %}",
       &Parser.include/1,
-      include: [variable: [parts: [part: "product"]], for_include: ["products"]]
+      include: [variable: [parts: [part: "product"]], for: ["products"]]
     )
   end
 end

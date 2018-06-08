@@ -17,9 +17,9 @@ defmodule Liquid.Combinators.Tags.Include do
     |> optional(parsec(:assignment))
   end
 
-  defp attributes do
+  defp assignments do
     parsec(:assignment)
-    |> tag(:attributes)
+    |> tag(:assignments)
   end
 
   defp snippet do
@@ -40,24 +40,17 @@ defmodule Liquid.Combinators.Tags.Include do
     |> unwrap_and_tag(:name)
   end
 
-  defp with_include do
+  defp predicate(name) do
     empty()
-    |> ignore(string("with"))
+    |> ignore(string(name))
     |> parsec(:value_definition)
-    |> tag(:with_include)
-  end
-
-  defp for_include do
-    empty()
-    |> ignore(string("for"))
-    |> parsec(:value_definition)
-    |> tag(:for_include)
+    |> tag(String.to_atom(name))
   end
 
   defp head(combinator) do
     combinator
     |> concat(snippet())
     |> optional(ignore(string(",")))
-    |> optional(choice([with_include(), for_include(), attributes()]))
+    |> optional(choice([predicate("with"), predicate("for"), assignments()]))
   end
 end
