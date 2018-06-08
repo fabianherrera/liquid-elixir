@@ -17,7 +17,7 @@ defmodule Liquid.Combinators.Tags.Capture do
     Tag.define_closed(
       "capture",
       fn combinator -> parsec(combinator, :value_definition) end,
-      fn combinator -> optional(combinator, parsec(:__parse__) |> tag(:capture_sentences)) end
+      fn combinator -> optional(combinator, parsec(:__parse__) |> tag(:parts)) end
     )
   end
 end
