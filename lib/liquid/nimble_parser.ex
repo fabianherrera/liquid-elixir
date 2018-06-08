@@ -88,7 +88,7 @@ defmodule Liquid.NimbleParser do
 
   defparsec(:ifchanged, Ifchanged.tag())
 
-  defparsecp(:var_assignment, Include.var_assignment())
+  defparsecp(:assignment, Include.assignment())
   defparsec(:include, Include.tag())
 
   defparsec(:body_elsif, If.body_elsif())

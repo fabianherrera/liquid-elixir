@@ -8,21 +8,18 @@ defmodule Liquid.Combinators.Tags.Include do
 
   def tag, do: Tag.define_open("include", &head/1)
 
-  def var_assignment_param do
+  def assignment do
     empty()
-    |> concat(variable_atom())
+    |> optional(General.cleaned_comma())
+    |> concat(variable())
     |> parsec(:value)
     |> tag(:assignment)
-    |> optional(parsec(:var_assignment))
-    |> tag(:attributes)
+    |> optional(parsec(:assignment))
   end
 
-  def var_assignment do
-    General.cleaned_comma()
-    |> concat(variable_atom())
-    |> parsec(:value)
-    |> tag(:assignment)
-    |> optional(parsec(:var_assignment))
+  defp attributes do
+    parsec(:assignment)
+    |> tag(:attributes)
   end
 
   defp snippet do
@@ -33,7 +30,7 @@ defmodule Liquid.Combinators.Tags.Include do
     |> parsec(:ignore_whitespaces)
   end
 
-  defp variable_atom do
+  defp variable do
     empty()
     |> parsec(:variable_definition)
     |> parsec(:ignore_whitespaces)
@@ -53,7 +50,7 @@ defmodule Liquid.Combinators.Tags.Include do
   defp for_include do
     empty()
     |> ignore(string("for"))
-    |> concat(parsec(:value_definition))
+    |> parsec(:value_definition)
     |> tag(:for_include)
   end
 
@@ -61,6 +58,6 @@ defmodule Liquid.Combinators.Tags.Include do
     combinator
     |> concat(snippet())
     |> optional(ignore(string(",")))
-    |> optional(choice([with_include(), for_include(), var_assignment_param()]))
+    |> optional(choice([with_include(), for_include(), attributes()]))
   end
 end
