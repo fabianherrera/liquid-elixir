@@ -15,7 +15,7 @@ defmodule Liquid.Combinators.Translators.Unless do
 
   defp create_block_if(markup, nodelist, else_list) do
     block = %Liquid.Block{
-      name: :if,
+      name: :unless,
       markup: markup,
       nodelist: Liquid.NimbleTranslator.process_node(nodelist),
       elselist: Liquid.NimbleTranslator.process_node(else_list)
