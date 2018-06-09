@@ -90,15 +90,15 @@ defmodule StandardTagTest do
   end
 
   # TODO: Fix this tests for translator / Open: new parser's vars do not diferenciate between single and double quote as requeriment
-     test :test_assign_with_colon_and_spaces do
-       assigns = %{"var" => %{"a:b c" => %{"paged" => "1"}}}
+  test :test_assign_with_colon_and_spaces do
+    assigns = %{"var" => %{"a:b c" => %{"paged" => "1"}}}
 
-       assert_template_result(
-         "var2: 1",
-         "{%assign var2 = var[\"a:b c\"].paged %}var2: {{var2}}",
-         assigns
-       )
-     end
+    assert_template_result(
+      "var2: 1",
+      "{%assign var2 = var[\"a:b c\"].paged %}var2: {{var2}}",
+      assigns
+    )
+  end
 
   test :test_capture do
     assigns = %{"var" => "content"}

@@ -137,7 +137,7 @@ defmodule Liquid.Combinators.Translators.General do
   def is_else({:elsif, _}), do: true
   def is_else(_), do: false
 
-  def not_open_if({:if_condition, _}), do: false
+  def not_open_if({:evaluation, _}), do: false
   def not_open_if({:else, _}), do: false
   def not_open_if({:elsif, _}), do: false
   def not_open_if(_), do: true
@@ -171,5 +171,4 @@ defmodule Liquid.Combinators.Translators.General do
   def types_only_list(element) do
     if is_list(element), do: element, else: [element]
   end
-
 end

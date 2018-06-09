@@ -109,9 +109,11 @@ defmodule Liquid.Combinators.LexicalToken do
 
   # NullValue : `nil`
   def null_value do
-    empty()
+    parsec(:ignore_whitespaces)
     |> choice([string("nil"), string("null"), string("NIL"), string("NULL")])
     |> replace(nil)
+
+    # |> tag(:null)
   end
 
   def number do

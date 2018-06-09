@@ -22,7 +22,7 @@ defmodule Liquid.Combinators.Tags.If do
 
   def elsif_tag, do: Tag.define_end("elsif", &predicate/1)
 
-  def unless_tag, do: Tag.define_closed_test("unless", &predicate/1, &body/1)
+  def unless_tag, do: Tag.define_closed_test("unless", &predicate/1)
 
   def tag, do: Tag.define_closed_test("if", &predicate/1)
 
@@ -68,6 +68,6 @@ defmodule Liquid.Combinators.Tags.If do
       parsec(:variable_definition)
     ])
     |> optional(times(parsec(:logical_condition), min: 1))
-    |> tag(:if_condition)
+    |> tag(:evaluation)
   end
 end

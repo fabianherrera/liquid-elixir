@@ -16,18 +16,18 @@ defmodule Liquid.Markup do
 
   test "implement to_string {:parts}" do
     assert to_string(
-      {:parts, [{:part, "company"}, {:part, "name"}, {:part, "employee"}, {:index, 0}]}
-    ) == "company.name.employee[0]"
+             {:parts, [{:part, "company"}, {:part, "name"}, {:part, "employee"}, {:index, 0}]}
+           ) == "company.name.employee[0]"
 
     assert to_string(
-      {:parts,
-      [
-        {:part, "company"},
-        {:part, "name"},
-        {:part, "employee"},
-        {:index, {:variable, [parts: [part: "store", part: "state", index: 1]]}}
-      ]}
-    ) == "company.name.employee[store.state[1]]"
+             {:parts,
+              [
+                {:part, "company"},
+                {:part, "name"},
+                {:part, "employee"},
+                {:index, {:variable, [parts: [part: "store", part: "state", index: 1]]}}
+              ]}
+           ) == "company.name.employee[store.state[1]]"
   end
 
   test "implement to_string {:variable}" do
@@ -35,10 +35,28 @@ defmodule Liquid.Markup do
              "store.state[1]"
 
     assert to_string(
-      {:variable, [parts: [part: "store", part: "state", index: 0, index: 0, index: 1]]}
-    ) == "store.state[0][0][1]"
+             {:variable, [parts: [part: "store", part: "state", index: 0, index: 0, index: 1]]}
+           ) == "store.state[0][0][1]"
+
+    assert to_string({:variable, [parts: [part: "var", index: "a:b c", index: "paged"]]}) ==
+             "var[\"a:b c\"][\"paged\"]"
+  end
+
+  test "implement to_string {:or}" do
+    assert to_string({:logical, [:or, {:variable, [parts: [part: "b"]]}]}) == " or b "
+  end
+
+  test "implement to_string {:condition}" do
+    assert to_string({:condition, {true, :==, nil}}) == "true == null"
+  end
+
+  test "implement to_string {:evaluation}" do
     assert to_string(
-      {:variable, [parts: [part: "var", index: "a:b c", index: "paged"]]}
-    ) == "var[\"a:b c\"][\"paged\"]"
+             {:evaluation,
+              [
+                variable: [parts: [part: "a"]],
+                logical: [:or, {:variable, [parts: [part: "b"]]}]
+              ]}
+           ) == "a or b "
   end
 end
