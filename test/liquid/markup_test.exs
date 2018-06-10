@@ -50,7 +50,7 @@ defmodule Liquid.Markup do
     assert to_string({:condition, {true, :==, nil}}) == "true == null"
   end
 
-  test "implement to_string {:evaluation}" do
+  test "implement to_string {:control_flow}" do
     assert to_string(
              {:control_flow,
               [
