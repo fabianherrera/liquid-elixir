@@ -1,8 +1,4 @@
 defmodule Liquid.Combinators.Tags.Case do
-  import NimbleParsec
-  alias Liquid.Combinators.Tag
-  alias Liquid.Combinators.Tags.Generic
-
   @moduledoc """
   Creates a switch statement to compare a variable against different values.
   `case` initializes the switch statement, and `when` compares its values.
@@ -23,6 +19,9 @@ defmodule Liquid.Combinators.Tags.Case do
     This is a cake
   ```
   """
+  import NimbleParsec
+  alias Liquid.Combinators.Tag
+  alias Liquid.Combinators.Tags.Generic
 
   def tag, do: Tag.define_closed("case", &head/1, &body/1)
 
