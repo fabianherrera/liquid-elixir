@@ -52,7 +52,7 @@ defmodule Liquid.Markup do
 
   test "implement to_string {:evaluation}" do
     assert to_string(
-             {:evaluation,
+             {:control_flow,
               [
                 variable: [parts: [part: "a"]],
                 logical: [:or, {:variable, [parts: [part: "b"]]}]

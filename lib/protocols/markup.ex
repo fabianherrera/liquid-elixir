@@ -28,11 +28,11 @@ defimpl String.Chars, for: Tuple do
   defp to_markup({:condition, {left, op, right}}),
     do: "#{normalize_value(left)} #{op} #{normalize_value(right)}"
 
-  defp to_markup({:evaluation, [nil]}), do: "null"
+  defp to_markup({:control_flow, [nil]}), do: "null"
 
-  defp to_markup({:evaluation, [value]}) when is_bitstring(value), do: "\"#{value}\""
+  defp to_markup({:control_flow, [value]}) when is_bitstring(value), do: "\"#{value}\""
 
-  defp to_markup({:evaluation, value}), do: Enum.join(value)
+  defp to_markup({:control_flow, value}), do: Enum.join(value)
 
   defp to_markup({predicate, value}) when predicate in [:for, :with],
     do: "#{predicate} #{Enum.join(value)}"

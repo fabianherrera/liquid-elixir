@@ -1,6 +1,40 @@
 defmodule Liquid.Combinators.Translators.Case do
   alias Liquid.Combinators.Translators.General
 
+  def translate([nil]) do
+    block = %Liquid.Block{name: :case, markup: "null"}
+    to_case_block(block)
+  end
+
+  def translate([nil, {:whens, whens}]) do
+    create_block_for_case("null", whens)
+  end
+
+  def translate([nil, {:whens, whens}, {:else, else_tag_values}]) do
+    create_block_for_case("null", whens, else_tag_values)
+  end
+
+  def translate([nil, {:else, else_tag_values}]) do
+    create_block_for_case_else("null", else_tag_values)
+  end
+
+  def translate([nil, badbody, {:whens, whens}]) do
+    create_block_for_case("null", badbody, whens)
+  end
+
+  def translate([nil, badbody, {:whens, whens}, {:else, else_tag_values}]) do
+    create_block_for_case("null", badbody, whens, else_tag_values)
+  end
+
+  def translate([nil, badbody, {:else, else_tag_values}]) do
+    create_block_for_case_else("null", badbody, else_tag_values)
+  end
+
+  def translate([nil, badbody]) do
+    block = %Liquid.Block{name: :case, markup: "null", nodelist: [badbody]}
+    to_case_block(block)
+  end
+
   def translate([value]) do
     block = %Liquid.Block{name: :case, markup: "#{value}"}
     to_case_block(block)

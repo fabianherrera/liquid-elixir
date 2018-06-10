@@ -3,6 +3,27 @@ defmodule Liquid.Combinators.Tags.Case do
   alias Liquid.Combinators.Tag
   alias Liquid.Combinators.Tags.Generic
 
+  @moduledoc """
+  Creates a switch statement to compare a variable against different values.
+  `case` initializes the switch statement, and `when` compares its values.
+  Input:
+  ```
+    {% assign handle = 'cake' %}
+    {% case handle %}
+    {% when 'cake' %}
+      This is a cake
+    {% when 'cookie' %}
+      This is a cookie
+    {% else %}
+      This is not a cake nor a cookie
+    {% endcase %}
+  ```
+  Output:
+  ```
+    This is a cake
+  ```
+  """
+
   def tag, do: Tag.define_closed("case", &head/1, &body/1)
 
   defp when_tag do
@@ -27,8 +48,6 @@ defmodule Liquid.Combinators.Tags.Case do
     combinator
     |> choice([
       parsec(:condition),
-      # TO-DO: nill to string is "" and the potocolls does by default 
-      parsec(:null_value) |> unwrap_and_tag(:null),
       parsec(:value_definition),
       parsec(:variable_definition)
     ])

@@ -89,7 +89,6 @@ defmodule StandardTagTest do
     assert_template_result("a-b:1 a-b:2", "a-b:{{a-b}} {%assign a-b = 2 %}a-b:{{a-b}}", assigns)
   end
 
-  # TODO: Fix this tests for translator / Open: new parser's vars do not diferenciate between single and double quote as requeriment
   test :test_assign_with_colon_and_spaces do
     assigns = %{"var" => %{"a:b c" => %{"paged" => "1"}}}
 

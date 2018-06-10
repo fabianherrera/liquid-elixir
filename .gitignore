@@ -6,4 +6,4 @@
 erl_crash.dump
 /cover
 /bench/results/
-*.exs#
+
