@@ -10,7 +10,10 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       &Parser.case/1,
       case: [
         variable: [parts: [part: "condition"]],
-        whens: [{:when, [1]}, " its 1 ", {:when, [2]}, " its 2 "]
+        clauses: [
+          when: [statements: [1], value_if_true: [" its 1 "]],
+          when: [statements: [2], value_if_true: [" its 2 "]]
+        ]
       ]
     )
   end
@@ -21,7 +24,9 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       &Parser.case/1,
       case: [
         variable: [parts: [part: "condition"]],
-        whens: [{:when, ["string here"]}, " hit "]
+        clauses: [
+          when: [statements: ["string here"], value_if_true: [" hit "]]
+        ]
       ]
     )
   end
@@ -32,7 +37,10 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       &Parser.case/1,
       case: [
         variable: [parts: [part: "a", part: "size"]],
-        whens: [{:when, [1]}, "1", {:when, [2]}, "2"]
+        clauses: [
+          when: [statements: [1], value_if_true: ["1"]],
+          when: [statements: [2], value_if_true: ["2"]]
+        ]
       ]
     )
   end
@@ -43,7 +51,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       &Parser.case/1,
       case: [
         variable: [parts: [part: "condition"]],
-        whens: [{:when, [5]}, " hit "],
+        clauses: [when: [statements: [5], value_if_true: [" hit "]]],
         else: [" else "]
       ]
     )
@@ -55,11 +63,12 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       &Parser.case/1,
       case: [
         variable: [parts: [part: "condition"]],
-        whens: [
-          {:when, [1, {:logical, [:or, 2]}, {:logical, [:or, 3]}]},
-          " its 1 or 2 or 3 ",
-          {:when, [4]},
-          " its 4 "
+        clauses: [
+          when: [
+            statements: [1, {:logical, [:or, 2]}, {:logical, [:or, 3]}],
+            value_if_true: [" its 1 or 2 or 3 "]
+          ],
+          when: [statements: [4], value_if_true: [" its 4 "]]
         ]
       ]
     )
@@ -71,11 +80,12 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       &Parser.case/1,
       case: [
         variable: [parts: [part: "condition"]],
-        whens: [
-          {:when, [1, {:logical, [:or, 2]}, {:logical, [:or, 3]}]},
-          " its 1 or 2 or 3 ",
-          {:when, [4]},
-          " its 4 "
+        clauses: [
+          when: [
+            statements: [1, {:logical, [:or, 2]}, {:logical, [:or, 3]}],
+            value_if_true: [" its 1 or 2 or 3 "]
+          ],
+          when: [statements: [4], value_if_true: [" its 4 "]]
         ]
       ]
     )
@@ -87,11 +97,16 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       &Parser.case/1,
       case: [
         variable: [parts: [part: "condition"]],
-        whens: [
-          {:when, [1, {:logical, [:or, "string"]}, {:logical, [:or, nil]}]},
-          " its 1 or 2 or 3 ",
-          {:when, [4]},
-          " its 4 "
+        clauses: [
+          when: [
+            statements: [
+              1,
+              {:logical, [:or, "string"]},
+              {:logical, [:or, nil]}
+            ],
+            value_if_true: [" its 1 or 2 or 3 "]
+          ],
+          when: [statements: [4], value_if_true: [" its 4 "]]
         ]
       ]
     )
@@ -103,13 +118,35 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       &Parser.case/1,
       case: [
         variable: [parts: [part: "collection", part: "handle"]],
-        whens: [
-          when: ["menswear-jackets"],
-          assign: [variable_name: "ptitle", assign_symbol: "=", value: "menswear"],
-          when: ["menswear-t-shirts"],
-          assign: [variable_name: "ptitle", assign_symbol: "=", value: "menswear"]
+        clauses: [
+          when: [
+            statements: ["menswear-jackets"],
+            value_if_true: [
+              assign: [
+                variable_name: "ptitle",
+                assign_symbol: "=",
+                value: "menswear"
+              ]
+            ]
+          ],
+          when: [
+            statements: ["menswear-t-shirts"],
+            value_if_true: [
+              assign: [
+                variable_name: "ptitle",
+                assign_symbol: "=",
+                value: "menswear"
+              ]
+            ]
+          ]
         ],
-        else: [assign: [variable_name: "ptitle", assign_symbol: "=", value: "womenswear"]]
+        else: [
+          assign: [
+            variable_name: "ptitle",
+            assign_symbol: "=",
+            value: "womenswear"
+          ]
+        ]
       ]
     )
   end
