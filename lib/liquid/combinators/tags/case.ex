@@ -31,7 +31,6 @@ defmodule Liquid.Combinators.Tags.Case do
       |> choice([
         parsec(:condition),
         parsec(:value_definition),
-        parsec(:quoted_token),
         parsec(:variable_definition)
       ])
       |> optional(times(parsec(:logical_condition), min: 1))
@@ -49,7 +48,6 @@ defmodule Liquid.Combinators.Tags.Case do
     |> choice([
       parsec(:condition),
       parsec(:value_definition),
-      parsec(:quoted_token),
       parsec(:variable_definition)
     ])
     |> optional(times(parsec(:logical_condition), min: 1))

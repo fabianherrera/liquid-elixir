@@ -44,12 +44,12 @@ defmodule Liquid.NimbleParser do
   defparsec(:condition, General.condition())
   defparsec(:logical_condition, General.logical_condition())
 
+  defparsec(:null_value, LexicalToken.null_value())
   defparsec(:number, LexicalToken.number())
   defparsec(:value_definition, LexicalToken.value_definition())
   defparsec(:value, LexicalToken.value())
   defparsec(:object_property, LexicalToken.object_property())
   defparsec(:boolean_value, LexicalToken.boolean_value())
-  defparsec(:null_value, LexicalToken.null_value())
   defparsec(:string_value, LexicalToken.string_value())
   defparsec(:object_value, LexicalToken.object_value())
   defparsec(:variable_value, LexicalToken.variable_value())

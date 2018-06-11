@@ -23,7 +23,33 @@ defimpl String.Chars, for: Tuple do
 
   defp to_markup({:assignment, value}), do: Enum.join(value)
 
-  defp to_markup({predicate, value}) when predicate in [:for, :with], do: "#{predicate} #{Enum.join(value)}"
+  defp to_markup({:logical, [key, value]}), do: " #{key} #{normalize_value(value)} "
 
+  defp to_markup({:condition, {left, op, right}}),
+    do: "#{normalize_value(left)} #{op} #{normalize_value(right)}"
+
+  defp to_markup({:control_flow, [nil]}), do: "null"
+
+  defp to_markup({:control_flow, [value]}) when is_bitstring(value), do: "\"#{value}\""
+
+  defp to_markup({:control_flow, value}), do: Enum.join(value)
+
+  defp to_markup({predicate, value}) when predicate in [:for, :with],
+    do: "#{predicate} #{Enum.join(value)}"
+
+  defp to_markup({_, nil}), do: "null"
   defp to_markup({_, value}), do: "#{value}"
+
+  # This is to manage the strings and nulls to string 
+  defp normalize_value(value) when is_nil(value) do
+    {:null, nil}
+  end
+
+  defp normalize_value(value) when is_bitstring(value) do
+    "\"#{value}\""
+  end
+
+  defp normalize_value(value) do
+    value
+  end
 end
