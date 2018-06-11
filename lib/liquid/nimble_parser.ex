@@ -39,7 +39,7 @@ defmodule Liquid.NimbleParser do
   defparsec(:quoted_token, General.quoted_token())
   defparsec(:comparison_operators, General.comparison_operators())
   defparsec(:logical_operators, General.logical_operators())
-  defparsec(:logical_operator_coma, General.logical_operator_coma())
+  defparsec(:logical_operator_comma, General.logical_operator_comma())
   defparsec(:ignore_whitespaces, General.ignore_whitespaces())
   defparsec(:condition, General.condition())
   defparsec(:logical_condition, General.logical_condition())

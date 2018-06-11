@@ -182,7 +182,7 @@ defmodule Liquid.Combinators.General do
   end
 
   def logical_condition do
-    choice([parsec(:logical_operators), parsec(:logical_operator_coma)])
+    choice([parsec(:logical_operators), parsec(:logical_operator_comma)])
     |> choice([parsec(:condition), parsec(:value_definition)])
     |> tag(:logical)
   end
