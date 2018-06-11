@@ -6,24 +6,24 @@ defmodule Liquid.Combinators.Translators.Case do
     to_case_block(block)
   end
 
-  def translate([nil, {:whens, whens}]) do
-    create_block_for_case("null", whens)
+  def translate([nil, {:clauses, clauses}]) do
+    create_block_for_case("null", clauses)
   end
 
-  def translate([nil, {:whens, whens}, {:else, else_tag_values}]) do
-    create_block_for_case("null", whens, else_tag_values)
+  def translate([nil, {:clauses, clauses}, {:else, else_tag_values}]) do
+    create_block_for_case("null", clauses, else_tag_values)
   end
 
   def translate([nil, {:else, else_tag_values}]) do
     create_block_for_case_else("null", else_tag_values)
   end
 
-  def translate([nil, badbody, {:whens, whens}]) do
-    create_block_for_case("null", badbody, whens)
+  def translate([nil, badbody, {:clauses, clauses}]) do
+    create_block_for_case("null", badbody, clauses)
   end
 
-  def translate([nil, badbody, {:whens, whens}, {:else, else_tag_values}]) do
-    create_block_for_case("null", badbody, whens, else_tag_values)
+  def translate([nil, badbody, {:clauses, clauses}, {:else, else_tag_values}]) do
+    create_block_for_case("null", badbody, clauses, else_tag_values)
   end
 
   def translate([nil, badbody, {:else, else_tag_values}]) do
@@ -40,24 +40,24 @@ defmodule Liquid.Combinators.Translators.Case do
     to_case_block(block)
   end
 
-  def translate([value, {:whens, whens}]) do
-    create_block_for_case("#{value}", whens)
+  def translate([value, {:clauses, clauses}]) do
+    create_block_for_case("#{value}", clauses)
   end
 
-  def translate([value, {:whens, whens}, {:else, else_tag_values}]) do
-    create_block_for_case("#{value}", whens, else_tag_values)
+  def translate([value, {:clauses, clauses}, {:else, else_tag_values}]) do
+    create_block_for_case("#{value}", clauses, else_tag_values)
   end
 
   def translate([value, {:else, else_tag_values}]) do
     create_block_for_case_else("#{value}", else_tag_values)
   end
 
-  def translate([value, badbody, {:whens, whens}]) do
-    create_block_for_case("#{value}", badbody, whens)
+  def translate([value, badbody, {:clauses, clauses}]) do
+    create_block_for_case("#{value}", badbody, clauses)
   end
 
-  def translate([value, badbody, {:whens, whens}, {:else, else_tag_values}]) do
-    create_block_for_case("#{value}", badbody, whens, else_tag_values)
+  def translate([value, badbody, {:clauses, clauses}, {:else, else_tag_values}]) do
+    create_block_for_case("#{value}", badbody, clauses, else_tag_values)
   end
 
   def translate([value, badbody, {:else, else_tag_values}]) do
@@ -69,22 +69,25 @@ defmodule Liquid.Combinators.Translators.Case do
     to_case_block(block)
   end
 
-  defp when_to_nodelist({:when, [head | tail]}) when is_bitstring(head) do
-    %Liquid.Tag{
+  defp when_to_nodelist({:when, [statements: [head | tail], value_if_true: values]})
+       when is_bitstring(head) do
+    tag = %Liquid.Tag{
       name: :when,
-      markup: "\"#{head}\""
+      markup: "\"#{head}\"" <> Enum.join(tail)
     }
+
+    result = Liquid.NimbleTranslator.process_node(values)
+    [tag, result]
   end
 
-  defp when_to_nodelist({:when, value}) do
-    %Liquid.Tag{
+  defp when_to_nodelist({:when, [statements: statements, value_if_true: values]}) do
+    tag = %Liquid.Tag{
       name: :when,
-      markup: Enum.join(value)
+      markup: Enum.join(statements)
     }
-  end
 
-  defp when_to_nodelist(any) do
-    Liquid.NimbleTranslator.process_node(any)
+    result = Liquid.NimbleTranslator.process_node(values)
+    [tag, result]
   end
 
   defp else_tag(values) do
@@ -106,27 +109,27 @@ defmodule Liquid.Combinators.Translators.Case do
   end
 
   defp create_block_for_case(markup, when_alone) do
-    nodelist = Enum.map(when_alone, &when_to_nodelist/1)
+    nodelist = Enum.map(when_alone, &when_to_nodelist/1) |> List.flatten()
     block = %Liquid.Block{name: :case, markup: markup, nodelist: nodelist}
     to_case_block(block)
   end
 
   defp create_block_for_case(markup, when_tag, else_tag_values) when is_list(when_tag) do
-    nodelist = Enum.map(when_tag, &when_to_nodelist/1)
+    nodelist = Enum.map(when_tag, &when_to_nodelist/1) |> List.flatten()
     nodelist_plus_else = [nodelist | else_tag(else_tag_values)] |> List.flatten()
     block = %Liquid.Block{name: :case, markup: markup, nodelist: nodelist_plus_else}
     to_case_block(block)
   end
 
   defp create_block_for_case(markup, badbody, when_tag) do
-    nodelist_when = Enum.map(when_tag, &when_to_nodelist/1)
+    nodelist_when = Enum.map(when_tag, &when_to_nodelist/1) |> List.flatten()
     full_list = [badbody | nodelist_when] |> List.flatten()
     block = %Liquid.Block{name: :case, markup: markup, nodelist: full_list}
     to_case_block(block)
   end
 
   defp create_block_for_case(markup, badbody, when_tag, else_tag_values) do
-    nodelist_when = Enum.map(when_tag, &when_to_nodelist/1)
+    nodelist_when = Enum.map(when_tag, &when_to_nodelist/1) |> List.flatten()
     nodelist_plus_else = [nodelist_when | else_tag(else_tag_values)]
     full_list = [badbody | nodelist_plus_else] |> List.flatten()
     block = %Liquid.Block{name: :case, markup: markup, nodelist: full_list}

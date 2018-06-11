@@ -104,7 +104,7 @@ defmodule Liquid.NimbleParser do
   defparsec(:tablerow, Tablerow.tag())
 
   defparsec(:case, Case.tag())
-  defparsec(:whens, Case.whens())
+  defparsec(:clauses, Case.clauses())
 
   defparsec(
     :liquid_tag,
