@@ -15,14 +15,7 @@ defmodule Liquid.Combinators.Translators.Cycle do
     %Liquid.Tag{name: :cycle, markup: markup, parts: parts}
   end
 
-  defp cycle_to_string(value) do
-    result =
-      case is_bitstring(value) do
-        true ->
-          "'#{value}'"
-
-        false ->
-          "#{value}"
-      end
-  end
+  defp cycle_to_string(value) when is_bitstring(value), do: "'#{value}'"
+  defp cycle_to_string(nil), do: "null"
+  defp cycle_to_string(value), do: "#{value}"
 end
