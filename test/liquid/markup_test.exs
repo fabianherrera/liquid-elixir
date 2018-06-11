@@ -1,6 +1,5 @@
 defmodule Liquid.Markup do
   use ExUnit.Case
-  import Liquid.Helpers
 
   test "implement to_string {:part}" do
     assert to_string({:part, 5}) == "5"
