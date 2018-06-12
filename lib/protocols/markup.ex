@@ -1,7 +1,7 @@
 defimpl String.Chars, for: Tuple do
   def to_string(elem), do: to_markup(elem)
 
-  defp to_markup({:variable, value}), do: Enum.join(value)
+  defp to_markup({tag, value}) when tag in [:range, :control_flow, :assignment, :filter, :variable], do: Enum.join(value)
 
   defp to_markup({:parts, value}) do
     value |> Enum.join(".") |> String.replace(".[", "[")
@@ -13,15 +13,9 @@ defimpl String.Chars, for: Tuple do
 
   defp to_markup({:value, value}) when is_binary(value), do: "\"#{value}\""
 
-  defp to_markup({:assignments, value}), do: Enum.join(value, ", ")
-
   defp to_markup({:filters, value}), do: " | " <> Enum.join(value, " | ")
 
-  defp to_markup({:filter, value}), do: Enum.join(value)
-
   defp to_markup({:params, value}), do: ": " <> Enum.join(value, ", ")
-
-  defp to_markup({:assignment, value}), do: Enum.join(value)
 
   defp to_markup({:logical, [key, value]}), do: " #{key} #{normalize_value(value)} "
 
@@ -32,18 +26,12 @@ defimpl String.Chars, for: Tuple do
 
   defp to_markup({:control_flow, [value]}) when is_bitstring(value), do: "\"#{value}\""
 
-  defp to_markup({:control_flow, value}), do: Enum.join(value)
-
   defp to_markup({predicate, value}) when predicate in [:for, :with],
     do: "#{predicate} #{Enum.join(value)}"
-
-  defp to_markup({:range, value}), do: Enum.join(value)
 
   defp to_markup({:start, value}), do: "(#{value}."
 
   defp to_markup({:end, value}), do: ".#{value})"
-
-  defp to_markup({:for_params, value}), do: " #{Enum.join(value)}"
 
   defp to_markup({parameter, value}) when parameter in [:offset, :limit, :cols],
     do: " #{parameter}: #{Enum.join(value)}"

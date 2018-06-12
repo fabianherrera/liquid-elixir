@@ -13,7 +13,7 @@ defmodule Liquid.Combinators.Tags.Include do
     |> General.assignment()
     |> tag(:assignment)
     |> times(min: 1)
-    |> tag(:assignments)
+    |> tag(:params)
   end
 
   defp snippet do
