@@ -3,13 +3,13 @@ defmodule Liquid.Combinators.Translators.LiquidVariable do
 
   def translate(variable: [parts: variable_list]) do
     parts = General.variable_in_parts(variable_list)
-    variable_name = Enum.join(variable_list)
+    variable_name = Enum.join(parts: variable_list)
     %Liquid.Variable{name: variable_name, parts: parts}
   end
 
   def translate(variable: [parts: variable_list, filters: filters]) do
     parts = General.variable_in_parts(variable_list)
-    variable_name = Enum.join(variable_list)
+    variable_name = Enum.join(parts: variable_list)
     filters_markup = transform_filters(filters)
     %Liquid.Variable{name: variable_name, parts: parts, filters: filters_markup}
   end
