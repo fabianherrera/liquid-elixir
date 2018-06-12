@@ -18,7 +18,7 @@ defmodule Liquid.Combinators.Translators.If do
       name: :if,
       markup: markup,
       nodelist: Liquid.NimbleTranslator.process_node(nodelist),
-      blank: Blank.blank?(nodelist),
+      blank: Blank.blank?(nodelist) and Blank.blank?(else_list),
       elselist: Liquid.NimbleTranslator.process_node(else_list)
     }
 
