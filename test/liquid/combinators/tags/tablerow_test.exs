@@ -16,8 +16,8 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
         tag,
         &Parser.tablerow/1,
         tablerow: [
-          tablerow_collection: [
-            variable_name: ["item"],
+          tablerow_statements: [
+            variable: [parts: [part: "item"]],
             value: {:variable, [parts: [part: "array"]]},
             tablerow_params: []
           ],
@@ -40,10 +40,10 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
         tag,
         &Parser.tablerow/1,
         tablerow: [
-          tablerow_collection: [
-            variable_name: ["item"],
+          tablerow_statements: [
+            variable: [parts: [part: "item"]],
             value: {:variable, [parts: [part: "array"]]},
-            tablerow_params: [limit_param: [2]]
+            tablerow_params: [limit: [2]]
           ],
           tablerow_body: []
         ]
@@ -63,10 +63,10 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
         tag,
         &Parser.tablerow/1,
         tablerow: [
-          tablerow_collection: [
-            variable_name: ["item"],
+          tablerow_statements: [
+            variable: [parts: [part: "item"]],
             value: {:variable, [parts: [part: "array"]]},
-            tablerow_params: [offset_param: [2]]
+            tablerow_params: [offset: [2]]
           ],
           tablerow_body: []
         ]
@@ -86,10 +86,10 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
         tag,
         &Parser.tablerow/1,
         tablerow: [
-          tablerow_collection: [
-            variable_name: ["item"],
+          tablerow_statements: [
+            variable: [parts: [part: "item"]],
             value: {:variable, [parts: [part: "array"]]},
-            tablerow_params: [cols_param: [2]]
+            tablerow_params: [cols: [2]]
           ],
           tablerow_body: []
         ]
@@ -109,8 +109,8 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
         tag,
         &Parser.tablerow/1,
         tablerow: [
-          tablerow_collection: [
-            variable_name: ["i"],
+          tablerow_statements: [
+            variable: [parts: [part: "i"]],
             value: {:range, [start: 1, end: 10]},
             tablerow_params: []
           ],
@@ -127,8 +127,8 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
       "{% tablerow i in (my_var..10) %}{{ i }}{% endtablerow %}",
       &Parser.tablerow/1,
       tablerow: [
-        tablerow_collection: [
-          variable_name: ["i"],
+        tablerow_statements: [
+          variable: [parts: [part: "i"]],
           value: {:range, [start: {:variable, [parts: [part: "my_var"]]}, end: 10]},
           tablerow_params: []
         ],
@@ -144,10 +144,10 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
       "{% tablerow i in (my_var..10) limit:2 cols:2 %}{{ i }}{% endtablerow %}",
       &Parser.tablerow/1,
       tablerow: [
-        tablerow_collection: [
-          variable_name: ["i"],
+        tablerow_statements: [
+          variable: [parts: [part: "i"]],
           value: {:range, [start: {:variable, [parts: [part: "my_var"]]}, end: 10]},
-          tablerow_params: [limit_param: [2], cols_param: [2]]
+          tablerow_params: [limit: [2], cols: [2]]
         ],
         tablerow_body: [
           liquid_variable: [variable: [parts: [part: "i"]]]

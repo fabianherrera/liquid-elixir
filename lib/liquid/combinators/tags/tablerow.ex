@@ -48,7 +48,7 @@ defmodule Liquid.Combinators.Tags.Tablerow do
     |> parsec(:ignore_whitespaces)
     |> concat(choice([parsec(:number), parsec(:variable_definition)]))
     |> parsec(:ignore_whitespaces)
-    |> tag(:offset_param)
+    |> tag(:offset)
   end
 
   defp limit_param do
@@ -59,7 +59,7 @@ defmodule Liquid.Combinators.Tags.Tablerow do
     |> parsec(:ignore_whitespaces)
     |> concat(choice([parsec(:number), parsec(:variable_definition)]))
     |> parsec(:ignore_whitespaces)
-    |> tag(:limit_param)
+    |> tag(:limit)
   end
 
   defp cols_param do
@@ -70,7 +70,7 @@ defmodule Liquid.Combinators.Tags.Tablerow do
     |> parsec(:ignore_whitespaces)
     |> concat(choice([parsec(:number), parsec(:variable_definition)]))
     |> parsec(:ignore_whitespaces)
-    |> tag(:cols_param)
+    |> tag(:cols)
   end
 
   defp tablerow_params do
@@ -90,22 +90,22 @@ defmodule Liquid.Combinators.Tags.Tablerow do
     |> tag(:tablerow_body)
   end
 
-  def tag, do: Tag.define_closed("tablerow", &tablerow_collection/1, &body/1)
+  def tag, do: Tag.define_closed("tablerow", &tablerow_statements/1, &body/1)
 
   defp body(combinator) do
     combinator
     |> concat(tablerow_body())
   end
 
-  defp tablerow_collection(combinator) do
+  defp tablerow_statements(combinator) do
     combinator
-    |> parsec(:variable_name)
+    |> parsec(:variable_value)
     |> parsec(:ignore_whitespaces)
     |> ignore(string("in"))
     |> parsec(:ignore_whitespaces)
     |> parsec(:value)
     |> optional(tablerow_params())
     |> parsec(:ignore_whitespaces)
-    |> tag(:tablerow_collection)
+    |> tag(:tablerow_statements)
   end
 end
