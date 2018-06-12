@@ -17,9 +17,10 @@ defmodule Liquid.Combinators.Translators.If do
     block = %Liquid.Block{
       name: :if,
       markup: markup,
-      nodelist: Liquid.NimbleTranslator.process_node(nodelist),
-      blank: Blank.blank?(nodelist),
-      elselist: Liquid.NimbleTranslator.process_node(else_list)
+      nodelist: General.types_only_list(Liquid.NimbleTranslator.process_node(nodelist)),
+      blank: Blank.blank?(nodelist) and Blank.blank?(else_list),
+      elselist:
+        General.types_only_list(Liquid.NimbleTranslator.process_node(else_list) |> List.flatten())
     }
 
     Liquid.IfElse.parse_conditions(block)
