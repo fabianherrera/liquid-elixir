@@ -1,25 +1,24 @@
 defmodule Liquid.Test.Integration.CasesTest do
   use ExUnit.Case, async: true
-#  import Liquid.Helpers
+  import Liquid.Helpers
 
-#  @cases_dir "test/templates"
-#  @levels ["simple", "medium", "complex"]
-#  @data "#{@cases_dir}/db.json"
-#        |> File.read!()
-#        |> Poison.decode!()
+  @cases_dir "test/templates"
+  @levels ["simple", "medium", "complex"]
+  @data "#{@cases_dir}/db.json"
+        |> File.read!()
+        |> Poison.decode!()
 
-  # TODO: Fix this tests for translator
-  # for level <- @levels,
-  #     test_case <- File.ls!("#{@cases_dir}/#{level}") do
-  #   test "case #{level} - #{test_case}" do
-  #     input_liquid =
-  #       File.read!("#{@cases_dir}/#{unquote(level)}/#{unquote(test_case)}/input.liquid")
+  for level <- @levels,
+      test_case <- File.ls!("#{@cases_dir}/#{level}") do
+    test "case #{level} - #{test_case}" do
+      input_liquid =
+        File.read!("#{@cases_dir}/#{unquote(level)}/#{unquote(test_case)}/input.liquid")
 
-  #     expected_output =
-  #       File.read!("#{@cases_dir}/#{unquote(level)}/#{unquote(test_case)}/output.html")
+      expected_output =
+        File.read!("#{@cases_dir}/#{unquote(level)}/#{unquote(test_case)}/output.html")
 
-  #     liquid_output = render(input_liquid, @data)
-  #     assert liquid_output == expected_output
-  #   end
-  # end
+      liquid_output = render(input_liquid, @data)
+      assert liquid_output == expected_output
+    end
+  end
 end
