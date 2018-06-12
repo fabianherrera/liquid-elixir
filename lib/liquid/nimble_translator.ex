@@ -89,7 +89,7 @@ defmodule Liquid.NimbleTranslator do
   end
 
   def check_blank(%Liquid.Block{nodelist: nodelist, elselist: elselist} = translated) when is_list(nodelist) do
-    if Blank.blank?(nodelist) and elselist == [] do
+    if Blank.blank?(nodelist) and Blank.blank?(nodelist) do
       %{translated | blank: true}
     else
       translated
