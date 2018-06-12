@@ -1,7 +1,7 @@
 defmodule Liquid.StrictParseTest do
   use ExUnit.Case
 
-  alias Liquid.{Template, SyntaxError}
+  alias Liquid.Template
 
   test "error on empty filter" do
     assert_syntax_error("{{|test}}")
