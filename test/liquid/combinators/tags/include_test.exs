@@ -10,7 +10,7 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
       &Parser.include/1,
       include: [
         variable: [parts: [part: "snippet"]],
-        assignments: [
+        params: [
           assignment: [variable_name: "my_variable", assign_symbol: ":", value: "apples"],
           assignment: [variable_name: "my_other_variable", assign_symbol: ":", value: "oranges"]
         ]
@@ -22,7 +22,7 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
       &Parser.include/1,
       include: [
         variable: [parts: [part: "snippet"]],
-        assignments: [
+        params: [
           assignment: [variable_name: "my_variable", assign_symbol: ":", value: "apples"],
           assignment: [variable_name: "my_other_variable", assign_symbol: ":", value: "oranges"]
         ]
