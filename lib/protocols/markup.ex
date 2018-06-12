@@ -1,8 +1,6 @@
 defimpl String.Chars, for: Tuple do
   def to_string(elem), do: to_markup(elem)
 
-  defp to_markup({tag, value}) when tag in [:range, :control_flow, :assignment, :filter, :variable], do: Enum.join(value)
-
   defp to_markup({:parts, value}) do
     value |> Enum.join(".") |> String.replace(".[", "[")
   end
@@ -39,18 +37,13 @@ defimpl String.Chars, for: Tuple do
   defp to_markup({:reversed, _value}), do: " reversed"
 
   defp to_markup({_, nil}), do: "null"
+  defp to_markup({_, value}) when is_list(value), do: Enum.join(value)
   defp to_markup({_, value}), do: "#{value}"
 
   # This is to manage the strings and nulls to string 
-  defp normalize_value(value) when is_nil(value) do
-    {:null, nil}
-  end
+  defp normalize_value(value) when is_nil(value), do: {:null, nil}
 
-  defp normalize_value(value) when is_bitstring(value) do
-    "\"#{value}\""
-  end
+  defp normalize_value(value) when is_bitstring(value), do: "\"#{value}\""
 
-  defp normalize_value(value) do
-    value
-  end
+  defp normalize_value(value), do: value
 end
