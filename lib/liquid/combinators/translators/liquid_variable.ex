@@ -40,15 +40,7 @@ defmodule Liquid.Combinators.Translators.LiquidVariable do
 
   defp filters_to_list([filter_name, filter_param]) do
     {_, param_value} = filter_param
-    filter_list = Enum.map(param_value, &filter_param_value/1)
+    filter_list = Enum.map(param_value, &to_string/1)
     [String.to_atom(filter_name), filter_list]
-  end
-
-  defp filter_param_value({:value, value}) when is_bitstring(value) do
-    "'#{value}'"
-  end
-
-  defp filter_param_value({:value, value}) do
-    "#{value}"
   end
 end
