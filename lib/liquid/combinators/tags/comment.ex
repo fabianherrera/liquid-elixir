@@ -34,8 +34,9 @@ defmodule Liquid.Combinators.Tags.Comment do
   def internal_comment_tag do
     open_tag()
     |> parsec(:comment_content)
-#    |> tag(:comment)
-#    |> optional(comment_content())
+
+    #    |> tag(:comment)
+    #    |> optional(comment_content())
   end
 
   defp open_tag do
@@ -57,5 +58,4 @@ defmodule Liquid.Combinators.Tags.Comment do
     |> string(General.codepoints().start_tag)
     |> parsec(:comment_content)
   end
-
 end

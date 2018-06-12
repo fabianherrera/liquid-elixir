@@ -6,6 +6,7 @@ defmodule Liquid.Combinators.Translators.Capture do
       parts
       |> Liquid.NimbleTranslator.process_node()
       |> General.types_only_list()
+
     %Liquid.Block{name: :capture, markup: "#{variable}", blank: true, nodelist: nodelist}
   end
 end

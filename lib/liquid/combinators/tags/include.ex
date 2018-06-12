@@ -10,7 +10,8 @@ defmodule Liquid.Combinators.Tags.Include do
 
   defp assignments do
     General.codepoints().colon
-    |> General.assignment() |> tag(:assignment)
+    |> General.assignment()
+    |> tag(:assignment)
     |> times(min: 1)
     |> tag(:assignments)
   end

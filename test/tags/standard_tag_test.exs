@@ -30,7 +30,6 @@ defmodule StandardTagTest do
     assert_template_result(text, text)
   end
 
-  #   TODO: Fix this tests for translator / Open: new parser's does not support custom tags
   test "comments trick" do
     assert_template_result(
       "11",
@@ -159,7 +158,6 @@ defmodule StandardTagTest do
     )
   end
 
-  # TODO: Fix this tests for translator
   test :test_case_with_else do
     assigns = %{"condition" => 5}
 
@@ -250,7 +248,6 @@ defmodule StandardTagTest do
     )
   end
 
-  # TODO: Fix this tests for translator
   test :test_case_on_length_with_else do
     assert_template_result(
       "else",
@@ -320,7 +317,6 @@ defmodule StandardTagTest do
     assert_template_result("", code, %{"condition" => "something else"})
   end
 
-  # TODO: Fix this tests for translator
   test :test_case_when_comma do
     code =
       "{% case condition %}{% when 1, 2, 3 %} its 1 or 2 or 3 {% when 4 %} its 4 {% endcase %}"

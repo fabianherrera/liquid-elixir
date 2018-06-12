@@ -34,7 +34,6 @@ defmodule Liquid.RawTest do
 
     assert_template_result(" Foobar {% {% {% ", "{% raw %} Foobar {% {% {% {% endraw %}")
 
-    # # TODO: Fix this tests for translator / Literal does not parse "endraw %}"
     assert_template_result(
       " test {% raw %} {% endraw %}",
       "{% raw %} test {% raw %} {% {% endraw %}endraw %}"

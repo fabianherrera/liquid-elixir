@@ -5,7 +5,6 @@ defmodule Liquid.StrictParseTest do
 
   test "error on empty filter" do
     assert_syntax_error("{{|test}}")
-    # # TODO: Fix this tests for translator / Duplicating test for matching errors types
     assert_syntax_error("{{test |a|b|}}")
   end
 

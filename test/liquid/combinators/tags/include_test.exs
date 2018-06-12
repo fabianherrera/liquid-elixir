@@ -29,9 +29,11 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
       ]
     )
 
-    test_combinator("{% include 'pick_a_source' %}", &Parser.include/1, [
+    test_combinator(
+      "{% include 'pick_a_source' %}",
+      &Parser.include/1,
       include: [variable: [parts: [part: "pick_a_source"]]]
-    ])
+    )
 
     test_combinator(
       "{% include 'product' with products[0] %}",
