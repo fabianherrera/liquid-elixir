@@ -187,21 +187,6 @@ defmodule Liquid.Combinators.General do
     |> tag(:logical)
   end
 
-  # TODO: Check this `or` without `and`
-  def or_contition_value do
-    string("or")
-    |> concat(parsec(:ignore_whitespaces))
-    |> concat(
-      choice([
-        parsec(:number),
-        parsec(:string_value),
-        parsec(:null_value),
-        parsec(:boolean_value)
-      ])
-    )
-    |> parsec(:ignore_whitespaces)
-  end
-
   @doc """
   All utf8 valid characters or empty limited by start/end of tag/variable
   """
