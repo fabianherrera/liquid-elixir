@@ -1,12 +1,12 @@
 defmodule Liquid.Test.Integration.CasesTest do
   use ExUnit.Case, async: true
-  import Liquid.Helpers
+#  import Liquid.Helpers
 
-  @cases_dir "test/templates"
-  @levels ["simple", "medium", "complex"]
-  @data "#{@cases_dir}/db.json"
-        |> File.read!()
-        |> Poison.decode!()
+#  @cases_dir "test/templates"
+#  @levels ["simple", "medium", "complex"]
+#  @data "#{@cases_dir}/db.json"
+#        |> File.read!()
+#        |> Poison.decode!()
 
   # TODO: Fix this tests for translator
   # for level <- @levels,
