@@ -164,6 +164,8 @@ defmodule Liquid.Combinators.Translators.General do
     " #{logical_op} #{logical_string}"
   end
 
+  def types_no_list([]), do: []
+
   def types_no_list(element) do
     if is_list(element), do: List.first(element), else: element
   end

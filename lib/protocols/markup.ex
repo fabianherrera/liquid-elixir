@@ -37,6 +37,20 @@ defimpl String.Chars, for: Tuple do
   defp to_markup({predicate, value}) when predicate in [:for, :with],
     do: "#{predicate} #{Enum.join(value)}"
 
+
+  defp to_markup({:range, value}), do: Enum.join(value)
+
+  defp to_markup({:start, value}), do: "(#{value}."
+
+  defp to_markup({:end, value}), do: ".#{value})"
+
+  defp to_markup({:for_params, value}), do: " #{Enum.join(value)}"
+
+  defp to_markup({parameter, value}) when parameter in [:offset, :limit, :cols], do: " #{parameter}: #{Enum.join(value)}"
+
+  defp to_markup({:reversed, _value}), do: " reversed"
+
+
   defp to_markup({_, nil}), do: "null"
   defp to_markup({_, value}), do: "#{value}"
 

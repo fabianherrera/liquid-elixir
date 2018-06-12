@@ -1,6 +1,6 @@
 defmodule Liquid.Combinators.Tags.Include do
   @moduledoc """
-  Include allows templates to relate with other templates
+  Include enables the possibility to include and render other liquid templates. Templates can also be recursively included
   """
   import NimbleParsec
   alias Liquid.Combinators.General
