@@ -49,9 +49,9 @@ defmodule Liquid.Markup do
     assert to_string({:condition, {true, :==, nil}}) == "true == null"
   end
 
-  test "implement to_string {:control_flow}" do
+  test "implement to_string {:conditions}" do
     assert to_string(
-             {:control_flow,
+             {:conditions,
               [
                 variable: [parts: [part: "a"]],
                 logical: [:or, {:variable, [parts: [part: "b"]]}]

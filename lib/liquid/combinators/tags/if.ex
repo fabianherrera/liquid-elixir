@@ -68,6 +68,6 @@ defmodule Liquid.Combinators.Tags.If do
       parsec(:variable_definition)
     ])
     |> optional(times(parsec(:logical_condition), min: 1))
-    |> tag(:control_flow)
+    |> tag(:conditions)
   end
 end
