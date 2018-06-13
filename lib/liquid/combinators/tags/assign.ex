@@ -16,7 +16,7 @@ defmodule Liquid.Combinators.Tags.Assign do
     Tag.define_open("assign", fn combinator ->
       combinator
       |> concat(General.assignment(General.codepoints().equal))
-      |> optional(parsec(:filters))
+      |> optional(General.filters())
     end)
   end
 end

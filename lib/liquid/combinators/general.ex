@@ -152,24 +152,18 @@ defmodule Liquid.Combinators.General do
     {h |> String.to_atom() |> List.wrap(), context}
   end
 
-  def comma_to_or(_rest, [h | _], context, _line, _offset) do
-    {h |> String.replace(",", "or") |> String.to_atom() |> List.wrap(), context}
-  end
-
   @doc """
   Logical operators:
   `and` `or`
   """
   def logical_operators do
     empty()
-    |> choice([string("or"), string("and")])
+    |> choice([
+      string("or"),
+      string("and"),
+      string(",") |> replace("or")
+    ])
     |> traverse({__MODULE__, :to_atom, []})
-  end
-
-  def logical_operator_comma do
-    empty()
-    |> string(",")
-    |> traverse({__MODULE__, :comma_to_or, []})
   end
 
   def condition do
@@ -182,7 +176,7 @@ defmodule Liquid.Combinators.General do
   end
 
   def logical_condition do
-    choice([parsec(:logical_operators), parsec(:logical_operator_comma)])
+    parsec(:logical_operators)
     |> choice([parsec(:condition), parsec(:value_definition)])
     |> tag(:logical)
   end
