@@ -9,7 +9,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
       "{% if false %} this text should not go into the output {% endif %}",
       &Parser.if/1,
       if: [
-        control_flow: [false],
+        conditions: [false],
         body: [" this text should not go into the output "]
       ]
     )
@@ -18,7 +18,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
       "{% if true %} this text should go into the output {% endif %}",
       &Parser.if/1,
       if: [
-        control_flow: [true],
+        conditions: [true],
         body: [" this text should go into the output "]
       ]
     )
@@ -28,7 +28,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
     test_combinator(
       "{% if \"foo\" %} YES {% else %} NO {% endif %}",
       &Parser.if/1,
-      if: [control_flow: ["foo"], body: [" YES ", {:else, [" NO "]}]]
+      if: [conditions: ["foo"], body: [" YES ", {:else, [" NO "]}]]
     )
   end
 
@@ -37,7 +37,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
       "{% if line_item.grams > 20000 and customer_address.city == 'Ottawa' or customer_address.city == 'Seatle' %}hello test{% endif %}",
       &Parser.if/1,
       if: [
-        control_flow: [
+        conditions: [
           condition: {{:variable, [parts: [part: "line_item", part: "grams"]]}, :>, 20000},
           logical: [
             :and,
@@ -60,7 +60,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
       "{% if a == true or b == 4 %} YES {% endif %}",
       &Parser.if/1,
       if: [
-        control_flow: [
+        conditions: [
           condition: {{:variable, [parts: [part: "a"]]}, :==, true},
           logical: [
             :or,
@@ -80,7 +80,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
       "{% if #{awful_markup} %} YES {% endif %}",
       &Parser.if/1,
       if: [
-        control_flow: [
+        conditions: [
           condition: {{:variable, [parts: [part: "a"]]}, :==, "and"},
           logical: [
             :and,
@@ -111,8 +111,8 @@ defmodule Liquid.Combinators.Tags.IfTest do
       "{% if false %}{% if false %} NO {% endif %}{% endif %}",
       &Parser.if/1,
       if: [
-        control_flow: [false],
-        body: [if: [control_flow: [false], body: [" NO "]]]
+        conditions: [false],
+        body: [if: [conditions: [false], body: [" NO "]]]
       ]
     )
 
@@ -120,10 +120,10 @@ defmodule Liquid.Combinators.Tags.IfTest do
       "{% if false %}{% if shipping_method.title == 'International Shipping' %}You're shipping internationally. Your order should arrive in 2–3 weeks.{% elsif shipping_method.title == 'Domestic Shipping' %}Your order should arrive in 3–4 days.{% else %} Thank you for your order!{% endif %}{% endif %}",
       &Parser.if/1,
       if: [
-        control_flow: [false],
+        conditions: [false],
         body: [
           if: [
-            control_flow: [
+            conditions: [
               condition:
                 {{:variable,
                   [
@@ -137,7 +137,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
               "You're shipping internationally. Your order should arrive in 2–3 weeks.",
               {:elsif,
                [
-                 control_flow: [
+                 conditions: [
                    condition:
                      {{:variable,
                        [
@@ -163,13 +163,13 @@ defmodule Liquid.Combinators.Tags.IfTest do
     test_combinator(
       "{% if null < 10 %} NO {% endif %}",
       &Parser.if/1,
-      if: [control_flow: [condition: {nil, :<, 10}], body: [" NO "]]
+      if: [conditions: [condition: {nil, :<, 10}], body: [" NO "]]
     )
 
     test_combinator(
       "{% if 10 < null %} NO {% endif %}",
       &Parser.if/1,
-      if: [control_flow: [condition: {10, :<, nil}], body: [" NO "]]
+      if: [conditions: [condition: {10, :<, nil}], body: [" NO "]]
     )
   end
 
@@ -178,7 +178,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
       "{% if    'bob'     contains     'f'     %}yes{% else %}no{% endif %}",
       &Parser.if/1,
       if: [
-        control_flow: [condition: {"bob", :contains, "f"}],
+        conditions: [condition: {"bob", :contains, "f"}],
         body: ["yes", {:else, ["no"]}]
       ]
     )
@@ -189,7 +189,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
       "{% if shipping_method.title == 'International Shipping' %}You're shipping internationally. Your order should arrive in 2–3 weeks.{% elsif shipping_method.title == 'Domestic Shipping' %}Your order should arrive in 3–4 days.{% else %} Thank you for your order!{% endif %}",
       &Parser.if/1,
       if: [
-        control_flow: [
+        conditions: [
           condition:
             {{:variable, [parts: [part: "shipping_method", part: "title"]]}, :==,
              "International Shipping"}
@@ -198,7 +198,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
           "You're shipping internationally. Your order should arrive in 2–3 weeks.",
           {:elsif,
            [
-             control_flow: [
+             conditions: [
                condition:
                  {{:variable, [parts: [part: "shipping_method", part: "title"]]}, :==,
                   "Domestic Shipping"}
@@ -218,7 +218,7 @@ defmodule Liquid.Combinators.Tags.IfTest do
       "{% if true %}test{% else %} a {% else %} b {% endif %}",
       &Parser.if/1,
       if: [
-        control_flow: [true],
+        conditions: [true],
         body: ["test", {:else, [" a "]}, {:else, [" b "]}]
       ]
     )
