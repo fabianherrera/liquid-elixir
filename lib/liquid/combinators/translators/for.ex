@@ -32,6 +32,7 @@ defmodule Liquid.Combinators.Translators.For do
     }
   end
 
+
   defp process_iterator(%Block{markup: markup}) do
     Liquid.ForElse.parse_iterator(%Block{markup: markup})
   end

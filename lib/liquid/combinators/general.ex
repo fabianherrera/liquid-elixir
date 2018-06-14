@@ -323,4 +323,13 @@ defmodule Liquid.Combinators.General do
     |> unwrap_and_tag(utf8_string([symbol], max: 1), :assign_symbol)
     |> parsec(:value)
   end
+
+  def custom_tag() do
+    empty()
+    |> parsec(:start_tag)
+    |> repeat_until(utf8_char([]), [string(@end_tag)])
+    |> reduce({List, :to_string, []})
+    |> concat(parsec(:end_tag))
+    |> optional(parsec(:__parse__))
+  end
 end

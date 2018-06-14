@@ -46,7 +46,7 @@ defmodule Liquid.Combinators.Tags.Comment do
     |> concat(parsec(:end_tag))
   end
 
-  defp close_tag do
+  def close_tag do
     empty()
     |> parsec(:start_tag)
     |> ignore(string("endcomment"))
@@ -59,3 +59,4 @@ defmodule Liquid.Combinators.Tags.Comment do
     |> parsec(:comment_content)
   end
 end
+
