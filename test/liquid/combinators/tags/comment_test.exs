@@ -21,4 +21,20 @@ defmodule Liquid.Combinators.Tags.CommentTest do
       comment: [" {% if true %} "]
     )
   end
+
+  test "comment with any tags in body" do
+    test_combinator(
+      "{% comment %} {% if true %} sadsadasd  {% afi true %}{% endcomment %}",
+      &Parser.comment/1,
+      comment: [" {% if true %} "]
+    )
+  end
+
+  test "comment with any tags  and comments or raw in body" do
+    test_combinator(
+      "{% comment %} {% if true %} {% comment %} {% if true %} {% endcomment %} {% endcomment %}",
+      &Parser.comment/1,
+      comment: [" {% if true %} "]
+    )
+  end
 end
