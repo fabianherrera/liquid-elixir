@@ -80,37 +80,6 @@ defmodule Liquid.Combinators.Tags.Comment do
     |> optional(parsec(:comment_content))
   end
 
-  # def strigs_with_endcomment do
-  #   utf8_char([?a..?z])
-  #   |> concat(string_helper())
-  #   |> utf8_char([?e])
-  #   |> utf8_char([?n])
-  #   |> utf8_char([?d])
-  #   |> utf8_char([?c])
-  #   |> utf8_char([?o])
-  #   |> utf8_char([?m])
-  #   |> utf8_char([?m])
-  #   |> utf8_char([?e])
-  #   |> utf8_char([?n])
-  #   |> utf8_char([?t])
-  #   |> optional(string_helper())
-  #   |> reduce({List, :to_string, []})
-  # end
-
-  # def strigs_with_comment do
-  #   utf8_char([?a..?z])
-  #   |> concat(string_helper())
-  #   |> utf8_char([?c])
-  #   |> utf8_char([?o])
-  #   |> utf8_char([?m])
-  #   |> utf8_char([?m])
-  #   |> utf8_char([?e])
-  #   |> utf8_char([?n])
-  #   |> utf8_char([?t])
-  #   |> concat(string_helper())
-  #   |> reduce({List, :to_string, []})
-  # end
-
   def strigs_with_endcomment do
     utf8_char([?a..?z])
     |> concat(string_helper())
