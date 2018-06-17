@@ -328,8 +328,13 @@ defmodule Liquid.Combinators.General do
     empty()
     |> parsec(:start_tag)
     |> repeat_until(utf8_char([]), [string(@end_tag)])
+    |> parsec(:start_tag)
     |> reduce({List, :to_string, []})
-    |> concat(parsec(:end_tag))
-    |> optional(parsec(:__parse__))
+    |> traverse({__MODULE__, :comment_tag?, []})
   end
+
+  def comment_tag?(_rest, [args], context, _line, _offset) do
+    if Regex.match?(~r/{%\s*comment\s*%}/, args), do: {:error, "Open tag comment without a close"}, else: {[args], context}
+  end
+
 end

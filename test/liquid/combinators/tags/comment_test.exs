@@ -18,7 +18,7 @@ defmodule Liquid.Combinators.Tags.CommentTest do
     test_combinator(
       "{% comment %} {% if true %} {% endcomment %}",
       &Parser.comment/1,
-      comment: [" {% if true %} "]
+      [comment: [" ", "{%", " if true %} "]]
     )
   end
 
@@ -26,7 +26,10 @@ defmodule Liquid.Combinators.Tags.CommentTest do
     test_combinator(
       "{% comment %} {% if true %} sadsadasd  {% afi true %}{% endcomment %}",
       &Parser.comment/1,
-      comment: [" {% if true %} "]
+      [
+        comment: [" ", "{%", " if true %} sadsadasd  ", "{%",
+          " afi true %}"]
+      ]
     )
   end
 
@@ -34,7 +37,15 @@ defmodule Liquid.Combinators.Tags.CommentTest do
     test_combinator(
       "{% comment %} {% if true %} {% comment %} {% if true %} {% endcomment %} {% endcomment %}",
       &Parser.comment/1,
-      comment: [" {% if true %} "]
+      [
+        comment: [
+          " ",
+          "{%",
+          " if true %} ",
+          {:comment, [" ", "{%", " if true %} "]},
+          " "
+        ]
+      ]
     )
   end
 
