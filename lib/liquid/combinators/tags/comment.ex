@@ -15,104 +15,54 @@ defmodule Liquid.Combinators.Tags.Comment do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.General
-
-  # def comment_content do
-  #   empty()
-  #   |> optional(repeat_until(utf8_char([]), [string(General.codepoints().start_tag)]))
-  #   |> optional(parsec(:comment))
-  #   |> optional(repeat_until(utf8_char([]), [string(General.codepoints().start_tag)]))
-  #   |> optional(parsec(:raw))
-  #   |> optional(repeat_until(utf8_char([]), [string(General.codepoints().start_tag)]))
-  #   |> optional(times(any_tag(), min: 1))
-  #   |> optional(repeat_until(utf8_char([]), [string(General.codepoints().start_tag)]))
-  # end
-
-  defp literal_comment do
-    optional(repeat_until(utf8_char([]), [string(General.codepoints().start_tag)]))
-    |> reduce({List, :to_string, []})
-  end
+  alias Liquid.Combinators.{General, Tag}
 
   def comment_content do
-    literal_comment()
+    empty()
+    |> optional(General.literal_until_tag())
     |> optional(
       choice([
         parsec(:comment),
         parsec(:raw),
-        times(any_tag(), min: 1)
+        any_tag()
       ])
     )
-    |> concat(literal_comment())
+    |> optional(General.literal_until_tag())
   end
 
   def tag do
-    open_tag()
-    |> parsec(:comment_content)
-    |> concat(close_tag())
-    |> reduce({Enum, :join, []})
-    |> tag(:comment)
-    |> optional(parsec(:__parse__))
-  end
-
-  defp open_tag do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string("comment"))
-    |> concat(parsec(:end_tag))
-  end
-
-  defp close_tag do
-    parsec(:ignore_whitespaces)
-    |> parsec(:start_tag)
-    |> ignore(string("endcomment"))
-    |> concat(parsec(:end_tag))
+    Tag.define_closed("comment", & &1, fn combinator ->
+      combinator
+      |> optional(parsec(:comment_content))
+      |> reduce({Enum, :join, []})
+    end)
   end
 
   def any_tag do
-    optional(literal_comment())
-    |> parsec(:start_tag)
+    empty()
+    |> string(General.codepoints().start_tag)
     |> choice([
-      strigs_with_comment(),
-      strigs_with_endcomment(),
+      string_with_comment(),
       string_without_comment()
     ])
-    |> concat(parsec(:end_tag))
+    |> reduce({List, :to_string, []})
+    |> string(General.codepoints().end_tag)
     |> optional(parsec(:comment_content))
   end
 
-  def strigs_with_endcomment do
-    utf8_char([?a..?z])
-    |> concat(string_helper())
-    |> concat(string("endcomment"))
-    |> optional(string_helper())
-    |> reduce({List, :to_string, []})
-  end
-
-  def strigs_with_comment do
-    utf8_char([?a..?z])
-    |> concat(string_helper())
-    |> concat(string("comment"))
-    |> concat(string_helper())
-    |> reduce({List, :to_string, []})
-  end
-
-  def string_helper do
-    repeat_until(utf8_char([]), [
-      string(General.codepoints().start_tag),
-      string(General.codepoints().end_tag),
-      string("nd"),
-      string("comment")
-    ])
-    |> reduce({List, :to_string, []})
+  def string_with_comment do
+    string_without_comment()
+    |> string("comment")
+    |> concat(string_without_comment())
   end
 
   def string_without_comment do
-    repeat_until(utf8_char([]), [
+    empty()
+    |> repeat_until(utf8_char([]), [
       string(General.codepoints().start_tag),
       string(General.codepoints().end_tag),
       string("endcomment"),
       string("comment")
     ])
-    |> reduce({List, :to_string, []})
   end
 end

@@ -193,6 +193,15 @@ defmodule Liquid.Combinators.General do
     |> reduce({List, :to_string, []})
   end
 
+  @doc """
+  All utf8 valid characters or empty limited by start of tag
+  """
+  def literal_until_tag do
+    empty()
+    |> repeat_until(utf8_char([]), [string(@start_tag)])
+    |> reduce({List, :to_string, []})
+  end
+
   defp allowed_chars do
     [
       @digit,
