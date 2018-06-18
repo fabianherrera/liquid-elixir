@@ -15,50 +15,61 @@ defmodule Liquid.Combinators.Tags.Comment do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.General
+  alias Liquid.Combinators.{General, Tag}
 
   def comment_content do
-    empty()
-    |> optional(repeat_until(utf8_char([]), [string(General.codepoints().start_tag)]))
-    |> reduce({List, :to_string, []})
-    |> optional(choice([close_tag(), internal_comment_tag(), not_close_tag()]))
-
+    General.literal_until_tag()
+    |> optional(
+      choice([
+        parsec(:comment) |> optional(parsec(:comment_content)),
+        parsec(:raw) |> optional(parsec(:comment_content)),
+        any_tag() |> optional(parsec(:comment_content))
+      ])
+    )
+    |> concat(General.literal_until_tag())
   end
 
   def tag do
-    open_tag()
-    |> concat(comment_content())
-    |> tag(:comment)
-    |> optional(parsec(:__parse__))
+    Tag.define_closed("comment", & &1, fn combinator ->
+      combinator
+      |> optional(parsec(:comment_content))
+      |> reduce({Enum, :join, []})
+    end)
   end
 
-  def internal_comment_tag do
-    open_tag()
-    |> parsec(:comment_content)
-    |> optional(close_tag())
-    |> tag(:comment)
-    |> optional(parsec(:comment_content))
-  end
-
-  defp open_tag do
+  def any_tag do
     empty()
-    |> parsec(:start_tag)
-    |> ignore(string("comment"))
-    |> concat(parsec(:end_tag))
+    |> string(General.codepoints().start_tag)
+    |> optional(repeat(General.whitespace()))
+    |> choice([
+      string_with_comment(),
+      string_with_endcomment(),
+      string_without_comment()
+    ])
+    |> reduce({List, :to_string, []})
+    |> string(General.codepoints().end_tag)
   end
 
-  def close_tag do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string("endcomment"))
-    |> concat(parsec(:end_tag))
+  def string_with_endcomment do
+    utf8_char([])
+    |> concat(string_without_comment())
+    |> concat(string("endcomment"))
+    |> optional(string_without_comment())
   end
 
-  defp not_close_tag do
+  def string_with_comment do
+    string_without_comment()
+    |> concat(string("comment"))
+    |> concat(string_without_comment())
+  end
+
+  def string_without_comment do
     empty()
-    |> optional(internal_comment_tag())
-    |> optional(string(General.codepoints().start_tag))
-    |> parsec(:comment_content)
+    |> repeat_until(utf8_char([]), [
+        string(General.codepoints().start_tag),
+        string(General.codepoints().end_tag),
+        string("endcomment"),
+        string("comment")
+      ])
   end
 end
-

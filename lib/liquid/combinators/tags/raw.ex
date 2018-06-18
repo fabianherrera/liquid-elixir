@@ -15,37 +15,24 @@ defmodule Liquid.Combinators.Tags.Raw do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.General
+  alias Liquid.Combinators.{Tag, General}
+  @name "raw"
 
   def raw_content do
-    empty()
-    |> repeat_until(utf8_char([]), [string(General.codepoints().start_tag)])
-    |> choice([close_tag(), not_close_tag()])
+    General.literal_until_tag()
+    |> choice([Tag.close_tag(@name), any_tag()])
     |> reduce({List, :to_string, []})
   end
 
   def tag do
-    open_tag()
+    @name
+    |> Tag.open_tag()
     |> concat(raw_content())
     |> tag(:raw)
     |> optional(parsec(:__parse__))
   end
 
-  defp open_tag do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string("raw"))
-    |> concat(parsec(:end_tag))
-  end
-
-  defp close_tag do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string("endraw"))
-    |> concat(parsec(:end_tag))
-  end
-
-  defp not_close_tag do
+  defp any_tag do
     empty()
     |> string(General.codepoints().start_tag)
     |> parsec(:raw_content)
