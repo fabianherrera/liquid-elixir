@@ -340,8 +340,7 @@ defmodule Liquid.Combinators.General do
   def assignment(symbol) do
     empty()
     |> optional(cleaned_comma())
-    |> parsec(:variable_definition)
-    |> unwrap_and_tag(:variable_name)
+    |> parsec(:variable_name)
     |> ignore(utf8_string([symbol], max: 1))
     |> parsec(:value)
   end
