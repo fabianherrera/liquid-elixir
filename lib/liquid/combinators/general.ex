@@ -148,10 +148,6 @@ defmodule Liquid.Combinators.General do
     |> traverse({__MODULE__, :to_atom, []})
   end
 
-  def to_atom(_rest, [h | _], context, _line, _offset) do
-    {h |> String.to_atom() |> List.wrap(), context}
-  end
-
   @doc """
   Logical operators:
   `and` `or`
@@ -324,12 +320,46 @@ defmodule Liquid.Combinators.General do
     |> optional(parsec(:filter))
   end
 
+  @doc """
+  Helper for traverse combinator. Transforms first element in `acc` from string to atom
+  """
+  def to_atom(_rest, [h | t], context, _line, _offset), do: {[String.to_atom(h) | t], context}
+
+  @doc """
+  Parse and ignore an assign symbol
+  """
   def assignment(symbol) do
     empty()
     |> optional(cleaned_comma())
     |> parsec(:variable_definition)
     |> unwrap_and_tag(:variable_name)
-    |> unwrap_and_tag(utf8_string([symbol], max: 1), :assign_symbol)
+    |> ignore(utf8_string([symbol], max: 1))
     |> parsec(:value)
   end
+
+  # defparsec(:conditional, General.conditional())
+  # defparsec(:or_statement, General.or_statement())
+  # defparsec(:and_statement, General.and_statement())
+
+  # def conditional do
+  #   choice([or_statement(), and_statement()])
+  # end
+
+  # def or_statement do
+  #   empty()
+  #   |> choice([parsec(:condition), parsec(:and_statement), parsec(:value)])
+  #   |> ignore(string("or"))
+  #   |> choice([parsec(:condition), parsec(:or_statement), parsec(:and_statement), parsec(:value)])
+  #   |> reduce({List, :to_tuple, []})
+  #   |> unwrap_and_tag(:or)
+  # end
+
+  # def and_statement do
+  #   empty()
+  #   |> choice([parsec(:condition), parsec(:value)])
+  #   |> ignore(string("and"))
+  #   |> choice([parsec(:condition), parsec(:and_statement), parsec(:value)])
+  #   |> reduce({List, :to_tuple, []})
+  #   |> unwrap_and_tag(:and)
+  # end
 end
