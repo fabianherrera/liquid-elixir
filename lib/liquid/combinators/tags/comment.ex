@@ -21,23 +21,12 @@ defmodule Liquid.Combinators.Tags.Comment do
     General.literal_until_tag()
     |> optional(
       choice([
-        internal_comment(),
-        internal_raw(),
-        dummy_open(),
-        any_tag()
+        parsec(:comment) |> optional(parsec(:comment_content)),
+        parsec(:raw) |> optional(parsec(:comment_content)),
+        any_tag() |> optional(parsec(:comment_content))
       ])
     )
     |> concat(General.literal_until_tag())
-  end
-
-  def internal_raw do
-    parsec(:raw)
-    |> optional(parsec(:comment_content))
-  end
-
-  def internal_comment do
-    parsec(:comment)
-    |> optional(parsec(:comment_content))
   end
 
   def tag do
@@ -46,11 +35,6 @@ defmodule Liquid.Combinators.Tags.Comment do
       |> optional(parsec(:comment_content))
       |> reduce({Enum, :join, []})
     end)
-  end
-
-  defp dummy_open do
-    Tag.open_tag("comment")
-    |> parsec(:comment_content)
   end
 
   def any_tag do
@@ -64,7 +48,6 @@ defmodule Liquid.Combinators.Tags.Comment do
     ])
     |> reduce({List, :to_string, []})
     |> string(General.codepoints().end_tag)
-    |> optional(parsec(:comment_content))
   end
 
   def string_with_endcomment do

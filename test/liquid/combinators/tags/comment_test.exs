@@ -138,6 +138,12 @@ defmodule Liquid.Combinators.Tags.CommentTest do
     {result, _, _, _, _, _} = Parser.comment("{% comment %}{%}{% endcomment %}")
     assert result == :error
 
+    {result, _} = Parser.parse("{% comment %} {% comment %} {% endcomment %}")
+    assert result == :error
+
+    {result, _} = Parser.parse("{%comment%}{%comment%}{%endcomment%}")
+    assert result == :error
+
     {result, _} = Parser.parse("{% comment %} {% endcomment %} {% endcomment %}")
     assert result == :error
   end
