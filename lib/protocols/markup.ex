@@ -17,6 +17,8 @@ defimpl String.Chars, for: Tuple do
 
   defp to_markup({:logical, [key, value]}), do: " #{key} #{normalize_value(value)} "
 
+  defp to_markup({:assignment, [name | value]}), do: "#{name}: #{Enum.join(value)}"
+
   defp to_markup({:condition, {left, op, right}}),
     do: "#{normalize_value(left)} #{op} #{normalize_value(right)}"
 

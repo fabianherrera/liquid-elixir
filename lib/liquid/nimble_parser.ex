@@ -25,6 +25,7 @@ defmodule Liquid.NimbleParser do
   defparsec(:liquid_variable, General.liquid_variable())
   defparsec(:variable_definition, General.variable_definition())
   defparsec(:variable_name, General.variable_name())
+  defparsec(:quoted_variable_name, General.quoted_variable_name())
   defparsec(:variable_definition_for_assignation, General.variable_definition_for_assignation())
   defparsec(:variable_name_for_assignation, General.variable_name_for_assignation())
   defparsec(:start_tag, General.start_tag())

@@ -3,25 +3,16 @@ defmodule Liquid.Combinators.Tags.Include do
   Include enables the possibility to include and render other liquid templates. Templates can also be recursively included
   """
   import NimbleParsec
-  alias Liquid.Combinators.General
-  alias Liquid.Combinators.Tag
+  alias Liquid.Combinators.{Tag, General}
 
   def tag, do: Tag.define_open("include", &head/1)
 
-  defp assignments do
+  defp params do
     General.codepoints().colon
     |> General.assignment()
     |> tag(:assignment)
     |> times(min: 1)
     |> tag(:params)
-  end
-
-  defp snippet do
-    parsec(:ignore_whitespaces)
-    |> ignore(utf8_char([General.codepoints().single_quote]))
-    |> parsec(:variable_value)
-    |> ignore(utf8_char([General.codepoints().single_quote]))
-    |> parsec(:ignore_whitespaces)
   end
 
   defp predicate(name) do
@@ -33,8 +24,7 @@ defmodule Liquid.Combinators.Tags.Include do
 
   defp head(combinator) do
     combinator
-    |> concat(snippet())
-    |> optional(ignore(string(",")))
-    |> optional(choice([predicate("with"), predicate("for"), assignments()]))
+    |> parsec(:quoted_variable_name)
+    |> optional(choice([predicate("with"), predicate("for"), params()]))
   end
 end

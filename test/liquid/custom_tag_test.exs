@@ -23,11 +23,12 @@ defmodule Liquid.CustomTagTest do
   end
 
   # TODO: Custom Tag
-  # test "custom tag from example(almost random now :)" do
-  #   assert_template_result("123", "123{% assign qwe = 5 %}")
-  #   assert_template_result("4", "{% minus_one 5 %}")
-  #   assert_template_result("a1b", "a{% minus_one 2 %}b")
-  # end
+  @tag :skip
+  test "custom tag from example(almost random now :)" do
+    assert_template_result("123", "123{% assign qwe = 5 %}")
+    assert_template_result("4", "{% minus_one 5 %}")
+    assert_template_result("a1b", "a{% minus_one 2 %}b")
+  end
 
   defp assert_template_result(expected, markup, assigns \\ %{}) do
     assert_result(expected, markup, assigns)

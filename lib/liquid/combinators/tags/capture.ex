@@ -13,10 +13,19 @@ defmodule Liquid.Combinators.Tags.Capture do
   import NimbleParsec
   alias Liquid.Combinators.Tag
 
+  @type parts :: [String.t() | LexicalToken.liquid_variable()]
+  @type t :: [capture: [variable_name: String.t(), value: LexicalToken.value()]]
+
   def tag do
     Tag.define_closed(
       "capture",
-      fn combinator -> parsec(combinator, :value_definition) end,
+      fn combinator ->
+        combinator
+        |> choice([
+          parsec(:quoted_variable_name),
+          parsec(:variable_name),
+        ])
+      end,
       fn combinator -> optional(combinator, parsec(:__parse__) |> tag(:parts)) end
     )
   end

@@ -239,7 +239,16 @@ defmodule Liquid.Combinators.General do
   """
   def variable_name do
     parsec(:variable_definition)
-    |> tag(:variable_name)
+    |> unwrap_and_tag(:variable_name)
+  end
+
+  def quoted_variable_name do
+    parsec(:ignore_whitespaces)
+    |> ignore(utf8_char([@single_quote]))
+    |> parsec(:variable_definition)
+    |> ignore(utf8_char([@single_quote]))
+    |> parsec(:ignore_whitespaces)
+    |> unwrap_and_tag(:variable_name)
   end
 
   def not_empty_liquid_variable do
