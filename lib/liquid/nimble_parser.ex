@@ -91,9 +91,8 @@ defmodule Liquid.NimbleParser do
   defparsec(:include, Include.tag())
 
   defparsec(:body_elsif, If.body_elsif())
-  defparsec(:body_if, If.body_if())
+  defparsec(:body_if, If.body())
   defparsec(:if, If.tag())
-  defparsec(:endif, If.close_tag())
   defparsec(:elsif_tag, If.elsif_tag())
   defparsec(:unless, If.unless_tag())
 

@@ -23,7 +23,7 @@ defmodule Liquid.Combinators.Tags.Capture do
         combinator
         |> choice([
           parsec(:quoted_variable_name),
-          parsec(:variable_name),
+          parsec(:variable_name)
         ])
       end,
       fn combinator -> optional(combinator, parsec(:__parse__) |> tag(:parts)) end

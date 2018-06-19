@@ -345,6 +345,16 @@ defmodule Liquid.Combinators.General do
     |> parsec(:value)
   end
 
+  def conditions(combinator) do
+    combinator
+    |> choice([
+      parsec(:condition),
+      parsec(:value_definition),
+      parsec(:variable_definition)
+    ])
+    |> optional(times(parsec(:logical_condition), min: 1))
+  end
+
   # defparsec(:conditional, General.conditional())
   # defparsec(:or_statement, General.or_statement())
   # defparsec(:and_statement, General.and_statement())
