@@ -17,25 +17,23 @@ defmodule Liquid.Combinators.Tags.If do
   """
 
   import NimbleParsec
-  alias Liquid.Combinators.Tag
+  alias Liquid.Combinators.{Tag, General}
   alias Liquid.Combinators.Tags.Generic
 
-  def elsif_tag, do: Tag.define_end("elsif", &predicate/1)
-
-  def unless_tag, do: Tag.define_closed_test("unless", &predicate/1)
-
-  def tag, do: Tag.define_closed_test("if", &predicate/1)
-
-  def body_if do
-    empty()
+  def elsif_tag do
+    "elsif"
+    |> Tag.open_tag(&predicate/1)
+    |> parsec(:body_elsif)
+    |> tag(:elsif)
     |> optional(parsec(:__parse__))
-    |> optional(times(parsec(:elsif_tag), min: 1))
-    |> optional(times(Generic.else_tag(), min: 1))
-    |> tag(:body)
   end
 
-  def body(combinator) do
-    combinator
+  def unless_tag, do: do_tag("unless")
+
+  def tag, do: do_tag("if")
+
+  def body do
+    empty()
     |> optional(parsec(:__parse__))
     |> optional(times(parsec(:elsif_tag), min: 1))
     |> optional(times(Generic.else_tag(), min: 1))
@@ -53,21 +51,16 @@ defmodule Liquid.Combinators.Tags.If do
     |> tag(:body)
   end
 
-  def close_tag do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string("endif"))
-    |> parsec(:end_tag)
+  defp do_tag(name) do
+    Tag.define_closed(name,
+      &predicate/1,
+      fn combinator -> parsec(combinator, :body_if) end
+    )
   end
 
   defp predicate(combinator) do
     combinator
-    |> choice([
-      parsec(:condition),
-      parsec(:value_definition),
-      parsec(:variable_definition)
-    ])
-    |> optional(times(parsec(:logical_condition), min: 1))
+    |> General.conditions()
     |> tag(:conditions)
   end
 end

@@ -148,10 +148,6 @@ defmodule Liquid.Combinators.General do
     |> traverse({__MODULE__, :to_atom, []})
   end
 
-  def to_atom(_rest, [h | _], context, _line, _offset) do
-    {h |> String.to_atom() |> List.wrap(), context}
-  end
-
   @doc """
   Logical operators:
   `and` `or`
@@ -243,7 +239,16 @@ defmodule Liquid.Combinators.General do
   """
   def variable_name do
     parsec(:variable_definition)
-    |> tag(:variable_name)
+    |> unwrap_and_tag(:variable_name)
+  end
+
+  def quoted_variable_name do
+    parsec(:ignore_whitespaces)
+    |> ignore(utf8_char([@single_quote]))
+    |> parsec(:variable_definition)
+    |> ignore(utf8_char([@single_quote]))
+    |> parsec(:ignore_whitespaces)
+    |> unwrap_and_tag(:variable_name)
   end
 
   def not_empty_liquid_variable do
@@ -254,7 +259,7 @@ defmodule Liquid.Combinators.General do
     |> tag(:liquid_variable)
   end
 
-  def empty_variable do
+  def empty_liquid_variable do
     start_variable()
     |> string("")
     |> concat(end_variable())
@@ -262,7 +267,8 @@ defmodule Liquid.Combinators.General do
   end
 
   def liquid_variable do
-    choice([empty_variable(), not_empty_liquid_variable()])
+    empty()
+    |> choice([empty_liquid_variable(), not_empty_liquid_variable()])
     |> optional(parsec(:__parse__))
   end
 
@@ -324,26 +330,66 @@ defmodule Liquid.Combinators.General do
     |> optional(parsec(:filter))
   end
 
+  @doc """
+  Helper for traverse combinator. Transforms first element in `acc` from string to atom
+  """
+  def to_atom(_rest, [h | t], context, _line, _offset), do: {[String.to_atom(h) | t], context}
+
+  @doc """
+  Parse and ignore an assign symbol
+  """
   def assignment(symbol) do
     empty()
     |> optional(cleaned_comma())
-    |> parsec(:variable_definition)
-    |> unwrap_and_tag(:variable_name)
-    |> unwrap_and_tag(utf8_string([symbol], max: 1), :assign_symbol)
+    |> parsec(:variable_name)
+    |> ignore(utf8_string([symbol], max: 1))
     |> parsec(:value)
   end
 
-  def custom_tag() do
+  def tag_param(name) do
     empty()
-    |> parsec(:start_tag)
-    |> repeat_until(utf8_char([]), [string(@end_tag)])
-    |> parsec(:start_tag)
-    |> reduce({List, :to_string, []})
-    |> traverse({__MODULE__, :comment_tag?, []})
+    |> parsec(:ignore_whitespaces)
+    |> ignore(string(name))
+    |> ignore(ascii_char([@colon]))
+    |> parsec(:ignore_whitespaces)
+    |> choice([parsec(:number), parsec(:variable_definition)])
+    |> parsec(:ignore_whitespaces)
+    |> tag(String.to_atom(name))
   end
 
-  def comment_tag?(_rest, [args], context, _line, _offset) do
-    if Regex.match?(~r/{%\s*comment\s*%}/, args), do: {:error, "Open tag comment without a close"}, else: {[args], context}
+  def conditions(combinator) do
+    combinator
+    |> choice([
+      parsec(:condition),
+      parsec(:value_definition),
+      parsec(:variable_definition)
+    ])
+    |> optional(times(parsec(:logical_condition), min: 1))
   end
 
+  # defparsec(:conditional, General.conditional())
+  # defparsec(:or_statement, General.or_statement())
+  # defparsec(:and_statement, General.and_statement())
+
+  # def conditional do
+  #   choice([or_statement(), and_statement()])
+  # end
+
+  # def or_statement do
+  #   empty()
+  #   |> choice([parsec(:condition), parsec(:and_statement), parsec(:value)])
+  #   |> ignore(string("or"))
+  #   |> choice([parsec(:condition), parsec(:or_statement), parsec(:and_statement), parsec(:value)])
+  #   |> reduce({List, :to_tuple, []})
+  #   |> unwrap_and_tag(:or)
+  # end
+
+  # def and_statement do
+  #   empty()
+  #   |> choice([parsec(:condition), parsec(:value)])
+  #   |> ignore(string("and"))
+  #   |> choice([parsec(:condition), parsec(:and_statement), parsec(:value)])
+  #   |> reduce({List, :to_tuple, []})
+  #   |> unwrap_and_tag(:and)
+  # end
 end

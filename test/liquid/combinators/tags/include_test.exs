@@ -9,10 +9,10 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
       "{% include 'snippet', my_variable: 'apples', my_other_variable: 'oranges' %}",
       &Parser.include/1,
       include: [
-        variable: [parts: [part: "snippet"]],
+        variable_name:  "snippet",
         params: [
-          assignment: [variable_name: "my_variable", assign_symbol: ":", value: "apples"],
-          assignment: [variable_name: "my_other_variable", assign_symbol: ":", value: "oranges"]
+          assignment: [variable_name: "my_variable", value: "apples"],
+          assignment: [variable_name: "my_other_variable", value: "oranges"]
         ]
       ]
     )
@@ -21,10 +21,10 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
       "{% include 'snippet' my_variable: 'apples', my_other_variable: 'oranges' %}",
       &Parser.include/1,
       include: [
-        variable: [parts: [part: "snippet"]],
+        variable_name: "snippet",
         params: [
-          assignment: [variable_name: "my_variable", assign_symbol: ":", value: "apples"],
-          assignment: [variable_name: "my_other_variable", assign_symbol: ":", value: "oranges"]
+          assignment: [variable_name: "my_variable", value: "apples"],
+          assignment: [variable_name: "my_other_variable", value: "oranges"]
         ]
       ]
     )
@@ -32,14 +32,14 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
     test_combinator(
       "{% include 'pick_a_source' %}",
       &Parser.include/1,
-      include: [variable: [parts: [part: "pick_a_source"]]]
+      include: [variable_name: "pick_a_source"]
     )
 
     test_combinator(
       "{% include 'product' with products[0] %}",
       &Parser.include/1,
       include: [
-        variable: [parts: [part: "product"]],
+        variable_name: "product",
         with: [
           variable: [parts: [part: "products", index: 0]]
         ]
@@ -49,13 +49,13 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
     test_combinator(
       "{% include 'product' with 'products' %}",
       &Parser.include/1,
-      include: [variable: [parts: [part: "product"]], with: ["products"]]
+      include: [variable_name: "product", with: ["products"]]
     )
 
     test_combinator(
       "{% include 'product' for 'products' %}",
       &Parser.include/1,
-      include: [variable: [parts: [part: "product"]], for: ["products"]]
+      include: [variable_name: "product", for: ["products"]]
     )
   end
 end

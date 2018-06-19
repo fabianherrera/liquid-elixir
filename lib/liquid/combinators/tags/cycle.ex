@@ -33,7 +33,7 @@ defmodule Liquid.Combinators.Tags.Cycle do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.General
+  alias Liquid.Combinators.{Tag, General}
 
   def cycle_group do
     parsec(:ignore_whitespaces)
@@ -61,15 +61,11 @@ defmodule Liquid.Combinators.Tags.Cycle do
   end
 
   def tag do
-    empty()
-    |> parsec(:start_tag)
-    |> string("cycle")
-    |> ignore()
-    |> optional(parsec(:cycle_group))
-    |> parsec(:ignore_whitespaces)
-    |> parsec(:cycle_body)
-    |> tag(:cycle)
-    |> parsec(:end_tag)
-    |> optional(parsec(:__parse__))
+    Tag.define_open("cycle", fn combinator ->
+      combinator
+      |> optional(parsec(:cycle_group))
+      |> parsec(:ignore_whitespaces)
+      |> parsec(:cycle_body)
+    end)
   end
 end

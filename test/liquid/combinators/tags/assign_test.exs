@@ -17,7 +17,7 @@ defmodule Liquid.Combinators.Tags.AssignTest do
       test_combinator(
         tag,
         &Parser.assign/1,
-        assign: [variable_name: "cart", assign_symbol: "=", value: 5]
+        assign: [variable_name: "cart", value: 5]
       )
     end)
 
@@ -26,7 +26,6 @@ defmodule Liquid.Combinators.Tags.AssignTest do
       &Parser.assign/1,
       assign: [
         variable_name: "cart",
-        assign_symbol: "=",
         value: {:variable, [parts: [part: "old_var"]]}
       ]
     )
@@ -34,13 +33,13 @@ defmodule Liquid.Combinators.Tags.AssignTest do
     test_combinator(
       "{% assign cart = 'empty cart' %}",
       &Parser.assign/1,
-      assign: [variable_name: "cart", assign_symbol: "=", value: "empty cart"]
+      assign: [variable_name: "cart", value: "empty cart"]
     )
 
     test_combinator(
       ~s({% assign cart = "empty cart" %}),
       &Parser.assign/1,
-      assign: [variable_name: "cart", assign_symbol: "=", value: "empty cart"]
+      assign: [variable_name: "cart", value: "empty cart"]
     )
   end
 
@@ -48,7 +47,7 @@ defmodule Liquid.Combinators.Tags.AssignTest do
     test_combinator(
       "{% assign cart = 5 %}{{ cart }}",
       &Parser.assign/1,
-      assign: [variable_name: "cart", assign_symbol: "=", value: 5],
+      assign: [variable_name: "cart", value: 5],
       liquid_variable: [variable: [parts: [part: "cart"]]]
     )
   end
@@ -59,7 +58,6 @@ defmodule Liquid.Combinators.Tags.AssignTest do
       &Parser.assign/1,
       assign: [
         variable_name: "cart",
-        assign_symbol: "=",
         value: {:variable, [parts: [part: "product", index: 0]]}
       ]
     )
@@ -69,7 +67,6 @@ defmodule Liquid.Combinators.Tags.AssignTest do
       &Parser.assign/1,
       assign: [
         variable_name: "cart",
-        assign_symbol: "=",
         value: {:variable, [parts: [part: "products", index: 0, index: 0]]}
       ]
     )
@@ -79,7 +76,6 @@ defmodule Liquid.Combinators.Tags.AssignTest do
       &Parser.assign/1,
       assign: [
         variable_name: "cart",
-        assign_symbol: "=",
         value: {:variable, [parts: [part: "products", index: 0, index: 0]]}
       ]
     )
@@ -91,7 +87,6 @@ defmodule Liquid.Combinators.Tags.AssignTest do
       &Parser.assign/1,
       assign: [
         variable_name: "cart",
-        assign_symbol: "=",
         value:
           {:variable,
            [
@@ -110,7 +105,6 @@ defmodule Liquid.Combinators.Tags.AssignTest do
       &Parser.assign/1,
       assign: [
         variable_name: "cart",
-        assign_symbol: "=",
         value:
           {:variable,
            [
@@ -129,7 +123,6 @@ defmodule Liquid.Combinators.Tags.AssignTest do
       &Parser.assign/1,
       assign: [
         variable_name: "cart",
-        assign_symbol: "=",
         value:
           {:variable,
            [

@@ -12,26 +12,11 @@ defmodule Liquid.Combinators.Tags.Ifchanged do
   {% endfor %}
   """
   import NimbleParsec
+  alias Liquid.Combinators.Tag
 
   def tag do
-    open_tag()
-    |> optional(parsec(:__parse__))
-    |> concat(close_tag())
-    |> tag(:ifchanged)
-    |> optional(parsec(:__parse__))
-  end
-
-  defp open_tag do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string("ifchanged"))
-    |> parsec(:end_tag)
-  end
-
-  defp close_tag do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string("endifchanged"))
-    |> parsec(:end_tag)
+    Tag.define_closed("ifchanged", & &1, fn combinator ->
+      optional(combinator, parsec(:__parse__))
+    end)
   end
 end

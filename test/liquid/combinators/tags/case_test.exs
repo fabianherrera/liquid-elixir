@@ -124,7 +124,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
             value_if_true: [
               assign: [
                 variable_name: "ptitle",
-                assign_symbol: "=",
+               
                 value: "menswear"
               ]
             ]
@@ -134,7 +134,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
             value_if_true: [
               assign: [
                 variable_name: "ptitle",
-                assign_symbol: "=",
+               
                 value: "menswear"
               ]
             ]
@@ -143,7 +143,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
         else: [
           assign: [
             variable_name: "ptitle",
-            assign_symbol: "=",
+           
             value: "womenswear"
           ]
         ]

@@ -10,6 +10,9 @@ defmodule Liquid.Combinators.LexicalToken do
   """
   import NimbleParsec
 
+  @type variable_value :: {:variable, [parts: [part: String.t(), index: integer() | variable_value]]}
+  @type value :: number() | boolean() | nil | String.t() | Range.t() | variable_value()
+
   # NegativeSign :: -
   def negative_sign, do: ascii_char([?-])
 
@@ -77,15 +80,11 @@ defmodule Liquid.Combinators.LexicalToken do
     |> ignore(ascii_char([?"]))
   end
 
-  defp quoted_string do
+  def quoted_string do
     empty()
     |> ignore(ascii_char([?']))
     |> repeat_until(utf8_char([]), [utf8_char([?'])])
     |> ignore(ascii_char([?']))
-  end
-
-  def to_atom(_rest, [h | _], context, _line, _offset) do
-    {h |> String.to_atom() |> List.wrap(), context}
   end
 
   # StringValue ::
@@ -104,7 +103,7 @@ defmodule Liquid.Combinators.LexicalToken do
       string("true"),
       string("false")
     ])
-    |> traverse({Liquid.Combinators.LexicalToken, :to_atom, []})
+    |> traverse({Liquid.Combinators.General, :to_atom, []})
   end
 
   # NullValue : `nil`
@@ -157,6 +156,7 @@ defmodule Liquid.Combinators.LexicalToken do
 
   def variable_value, do: tag(object_value(), :variable)
 
+  @spec value :: value
   def value do
     parsec(:value_definition)
     |> unwrap_and_tag(:value)
