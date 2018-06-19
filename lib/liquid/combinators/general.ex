@@ -259,7 +259,7 @@ defmodule Liquid.Combinators.General do
     |> tag(:liquid_variable)
   end
 
-  def empty_variable do
+  def empty_liquid_variable do
     start_variable()
     |> string("")
     |> concat(end_variable())
@@ -267,7 +267,8 @@ defmodule Liquid.Combinators.General do
   end
 
   def liquid_variable do
-    choice([empty_variable(), not_empty_liquid_variable()])
+    empty()
+    |> choice([empty_liquid_variable(), not_empty_liquid_variable()])
     |> optional(parsec(:__parse__))
   end
 
@@ -343,6 +344,17 @@ defmodule Liquid.Combinators.General do
     |> parsec(:variable_name)
     |> ignore(utf8_string([symbol], max: 1))
     |> parsec(:value)
+  end
+
+  def tag_param(name) do
+    empty()
+    |> parsec(:ignore_whitespaces)
+    |> ignore(string(name))
+    |> ignore(ascii_char([@colon]))
+    |> parsec(:ignore_whitespaces)
+    |> choice([parsec(:number), parsec(:variable_definition)])
+    |> parsec(:ignore_whitespaces)
+    |> tag(String.to_atom(name))
   end
 
   def conditions(combinator) do

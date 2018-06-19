@@ -40,61 +40,22 @@ defmodule Liquid.Combinators.Tags.Tablerow do
   import NimbleParsec
   alias Liquid.Combinators.{General, Tag}
 
-  defp offset_param do
-    empty()
-    |> parsec(:ignore_whitespaces)
-    |> ignore(string("offset"))
-    |> ignore(ascii_char([General.codepoints().colon]))
-    |> parsec(:ignore_whitespaces)
-    |> concat(choice([parsec(:number), parsec(:variable_definition)]))
-    |> parsec(:ignore_whitespaces)
-    |> tag(:offset)
-  end
-
-  defp limit_param do
-    empty()
-    |> parsec(:ignore_whitespaces)
-    |> ignore(string("limit"))
-    |> ignore(ascii_char([General.codepoints().colon]))
-    |> parsec(:ignore_whitespaces)
-    |> concat(choice([parsec(:number), parsec(:variable_definition)]))
-    |> parsec(:ignore_whitespaces)
-    |> tag(:limit)
-  end
-
-  defp cols_param do
-    empty()
-    |> parsec(:ignore_whitespaces)
-    |> ignore(string("cols"))
-    |> ignore(ascii_char([General.codepoints().colon]))
-    |> parsec(:ignore_whitespaces)
-    |> concat(choice([parsec(:number), parsec(:variable_definition)]))
-    |> parsec(:ignore_whitespaces)
-    |> tag(:cols)
+  def tag do
+    Tag.define_closed(
+      "tablerow",
+      &tablerow_statements/1,
+      fn combinator -> optional(combinator, parsec(:__parse__) |> tag(:tablerow_body)) end
+    )
   end
 
   defp tablerow_params do
     empty()
-    |> optional(
-      times(
-        choice([offset_param(), cols_param(), limit_param()]),
+    |> times(
+        choice([General.tag_param("offset"), General.tag_param("cols"), General.tag_param("limit")]),
         min: 1
       )
-    )
+    |> optional()
     |> tag(:tablerow_params)
-  end
-
-  defp tablerow_body do
-    empty()
-    |> optional(parsec(:__parse__))
-    |> tag(:tablerow_body)
-  end
-
-  def tag, do: Tag.define_closed("tablerow", &tablerow_statements/1, &body/1)
-
-  defp body(combinator) do
-    combinator
-    |> concat(tablerow_body())
   end
 
   defp tablerow_statements(combinator) do

@@ -49,28 +49,7 @@ defmodule Liquid.Combinators.Tags.For do
   """
   import NimbleParsec
   alias Liquid.Combinators.{General, Tag}
-
-  def offset_param do
-    empty()
-    |> parsec(:ignore_whitespaces)
-    |> ignore(string("offset"))
-    |> ignore(ascii_char([General.codepoints().colon]))
-    |> parsec(:ignore_whitespaces)
-    |> concat(choice([parsec(:number), parsec(:variable_definition)]))
-    |> parsec(:ignore_whitespaces)
-    |> tag(:offset)
-  end
-
-  def limit_param do
-    empty()
-    |> parsec(:ignore_whitespaces)
-    |> ignore(string("limit"))
-    |> ignore(ascii_char([General.codepoints().colon]))
-    |> parsec(:ignore_whitespaces)
-    |> concat(choice([parsec(:number), parsec(:variable_definition)]))
-    |> parsec(:ignore_whitespaces)
-    |> tag(:limit)
-  end
+  alias Liquid.Combinators.Tags.Generic
 
   defp reversed_param do
     empty()
@@ -84,7 +63,7 @@ defmodule Liquid.Combinators.Tags.For do
     empty()
     |> optional(
       times(
-        choice([offset_param(), reversed_param(), limit_param()]),
+        choice([General.tag_param("offset"), General.tag_param("limit"), reversed_param()]),
         min: 1
       )
     )
@@ -97,15 +76,6 @@ defmodule Liquid.Combinators.Tags.For do
     |> tag(:for_body)
   end
 
-  defp for_else do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string("else"))
-    |> parsec(:end_tag)
-    |> optional(parsec(:__parse__))
-    |> tag(:else)
-  end
-
   def continue_tag, do: Tag.define_open("continue")
 
   def break_tag, do: Tag.define_open("break")
@@ -115,7 +85,7 @@ defmodule Liquid.Combinators.Tags.For do
   defp body(combinator) do
     combinator
     |> concat(for_body())
-    |> optional(for_else())
+    |> optional(Generic.else_tag())
   end
 
   defp for_statements(combinator) do
