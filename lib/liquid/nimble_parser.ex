@@ -20,7 +20,7 @@ defmodule Liquid.NimbleParser do
     Case,
     Capture,
     Ifchanged,
-    Custom_tag
+    Custom
   }
 
   defparsec(:liquid_variable, General.liquid_variable())
@@ -129,9 +129,9 @@ defmodule Liquid.NimbleParser do
     ])
   )
 
-  defparsec(:custom_tag, Custom_tag.tag())
-  defparsec(:custom_name, Custom_tag.name())
-  defparsec(:custom_markup, Custom_tag.markup())
+  defparsec(:custom_tag, Custom.tag())
+  defparsec(:custom_name, Custom.name())
+  defparsec(:custom_markup, Custom.markup())
 
   @doc """
   Validate and parse liquid markup.

@@ -13,6 +13,13 @@ defmodule Liquid.Combinators.Tags.Capture do
   import NimbleParsec
   alias Liquid.Combinators.Tag
 
+  @type capture :: [
+          capture: [
+            variable_name: String.t(),
+            parts: String.t() | Liquid.NimbleParsec.__parse__()
+          ]
+        ]
+
   def tag do
     Tag.define_closed(
       "capture",

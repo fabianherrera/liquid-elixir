@@ -23,6 +23,8 @@ defmodule Liquid.Combinators.Tags.Decrement do
   import NimbleParsec
   alias Liquid.Combinators.Tag
 
+  @type decrement :: [decrement: [variable_name: String.t()]]
+
   def tag do
     Tag.define_open("decrement", fn combinator ->
       parsec(combinator, :variable_name)
