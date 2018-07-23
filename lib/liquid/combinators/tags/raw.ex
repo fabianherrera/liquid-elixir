@@ -18,6 +18,8 @@ defmodule Liquid.Combinators.Tags.Raw do
   alias Liquid.Combinators.{Tag, General}
   @name "raw"
 
+  @type raw :: [raw: [String.t()]]
+
   def raw_content do
     General.literal_until_tag()
     |> choice([Tag.close_tag(@name), any_tag()])
