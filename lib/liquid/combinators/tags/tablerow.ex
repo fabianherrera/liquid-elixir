@@ -40,11 +40,14 @@ defmodule Liquid.Combinators.Tags.Tablerow do
   import NimbleParsec
   alias Liquid.Combinators.{General, Tag}
 
-  @type tablerow :: [
+  @type t :: [
           tablerow: [
-            tablerow_statements: tablerow_statements,
-            tablerow_params: tablerow_params,
-            tablerow_body: Liquid.NimbleParser.__parse__()
+            tablerow_statements: [
+              variable: Liquid.Combinators.LexicalToken.variable_value(),
+              value: Liquid.Combinators.LexicalToken.value()
+            ],
+            tablerow_params: [limit: [LexicalToken.value()], cols: [LexicalToken.value()]],
+            tablerow_body: Liquid.NimbleParser.t()
           ]
         ]
 
@@ -53,10 +56,6 @@ defmodule Liquid.Combinators.Tags.Tablerow do
       optional(combinator, parsec(:__parse__) |> tag(:tablerow_body))
     end)
   end
-
-  @type tablerow_params :: [
-          tablerow_params: [limit: General.tag_param(), cols: General.tag_param()]
-        ]
 
   defp tablerow_params do
     empty()
@@ -67,13 +66,6 @@ defmodule Liquid.Combinators.Tags.Tablerow do
     |> optional()
     |> tag(:tablerow_params)
   end
-
-  @type tablerow_statements :: [
-          tablerow_statements: [
-            variable: Liquid.Combinators.LexicalToken.variable_value(),
-            value: Liquid.Combinators.LexicalToken.value()
-          ]
-        ]
 
   defp tablerow_statements(combinator) do
     combinator

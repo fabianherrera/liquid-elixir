@@ -17,7 +17,7 @@ defmodule Liquid.Combinators.Tags.Comment do
   import NimbleParsec
   alias Liquid.Combinators.{General, Tag}
 
-  @type comment :: [comment: String.t() | Liquid.NimbleParsec.__parse__()]
+  @type t :: [comment: String.t() | Comment.t() | Raw.t()]
 
   def comment_content do
     General.literal_until_tag()

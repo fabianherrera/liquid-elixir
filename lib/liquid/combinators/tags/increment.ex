@@ -19,7 +19,7 @@ defmodule Liquid.Combinators.Tags.Increment do
   import NimbleParsec
   alias Liquid.Combinators.Tag
 
-  @type increment :: [increment: [variable_name: String.t()]]
+  @type t :: [increment: [variable_name: String.t()]]
 
   def tag do
     Tag.define_open("increment", fn combinator ->

@@ -23,10 +23,10 @@ defmodule Liquid.Combinators.Tags.Case do
   alias Liquid.Combinators.{Tag, General}
   alias Liquid.Combinators.Tags.Generic
 
-  @type case :: [
+  @type t :: [
           case: [
             variable: LexicalToken.value(),
-            clauses: String.t() | when_tag()
+            clauses: String.t() | [when: [statements: [value_if_true: Liquid.NimbleParsec.t()]]]
           ]
         ]
 
@@ -37,13 +37,6 @@ defmodule Liquid.Combinators.Tags.Case do
     |> times(when_tag(), min: 1)
     |> tag(:clauses)
   end
-
-  @type when_tag :: [
-          when: [
-            statements: String.t(),
-            value_if_true: Liquid.NimbleParsec.__parse__()
-          ]
-        ]
 
   defp when_tag do
     "when"

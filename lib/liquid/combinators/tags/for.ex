@@ -51,15 +51,18 @@ defmodule Liquid.Combinators.Tags.For do
   alias Liquid.Combinators.{General, Tag}
   alias Liquid.Combinators.Tags.Generic
 
-  @type for_tag :: [
+  @type t :: [
           for: [
             for_statements: [
               variable: String.t(),
               value: LexicalToken.value(),
-              for_params: for_params
-            ],
-            for_body: Liquid.NimbleParsec.__parse__(),
-            else: Generic.else_tag()
+              for_params: [
+                offset: Integer.t() | String.t(),
+                limit: Integer.t() | String.t()
+              ],
+              for_body: Liquid.NimbleParsec.t(),
+              else: Generic.t()
+            ]
           ]
         ]
 
@@ -71,9 +74,6 @@ defmodule Liquid.Combinators.Tags.For do
     |> tag(:reversed)
   end
 
-  @type for_params :: [
-          for_params: [offset: Integer.t() | String.t(), limit: Integer.t() | String.t()]
-        ]
   defp for_params do
     empty()
     |> optional(

@@ -5,16 +5,15 @@ defmodule Liquid.Combinators.Tags.Include do
   import NimbleParsec
   alias Liquid.Combinators.{Tag, General}
 
-  @type include :: [
+  @type t :: [
           include: [
             variable_name: String.t(),
-            params: include_params()
+            params: [assignment: [variable_name: String.t(), value: LexicalToken.value()]]
           ]
         ]
 
   def tag, do: Tag.define_open("include", &head/1)
 
-  @type include_params :: [params: [General.assignment()]]
   defp params do
     General.codepoints().colon
     |> General.assignment()

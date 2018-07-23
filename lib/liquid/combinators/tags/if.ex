@@ -20,7 +20,6 @@ defmodule Liquid.Combinators.Tags.If do
   alias Liquid.Combinators.{Tag, General}
   alias Liquid.Combinators.Tags.Generic
 
-  @type elsif_tag :: [body: elsif_body | Liquid.NimbleParser.__parse__()]
   def elsif_tag do
     "elsif"
     |> Tag.open_tag(&predicate/1)
@@ -29,31 +28,41 @@ defmodule Liquid.Combinators.Tags.If do
     |> optional(parsec(:__parse__))
   end
 
-  @type unless_tag :: [
-          unless: [
-            conditions: if_predicate,
-            body: if_body,
-            elsif: elsif_tag,
-            else: Generic.else_tag()
-          ]
-        ]
+  @type unless_tag :: [If.t()]
 
   def unless_tag, do: do_tag("unless")
 
-  @type if_tag :: [
+  @type t :: [
           if: [
-            conditions: if_predicate,
-            body: if_body,
-            elsif: elsif_tag,
-            else: Generic.else_tag()
+            conditions: [
+              condition:
+                {LexicalToken.value(), General.comparison_operators(), LexicalToken.value()}
+                | [
+                    logical: [
+                      or: [
+                        condition:
+                          {LexicalToken.value(), General.comparison_operators(),
+                           LexicalToken.value()}
+                      ]
+                    ]
+                  ]
+                | [
+                    logical: [
+                      and: [
+                        condition:
+                          {LexicalToken.value(), General.comparison_operators(),
+                           LexicalToken.value()}
+                      ]
+                    ]
+                  ]
+            ],
+            body: [Liquid.NimbleParser.t() | If.t() | Generic.t()],
+            elsif: [If.t()],
+            else: Generic.t()
           ]
         ]
 
   def tag, do: do_tag("if")
-
-  @type if_body :: [
-          body: [Liquid.NimbleParser.__parse__() | elsif_tag | Generic.else_tag()]
-        ]
 
   def body do
     empty()
@@ -62,10 +71,6 @@ defmodule Liquid.Combinators.Tags.If do
     |> optional(times(Generic.else_tag(), min: 1))
     |> tag(:body)
   end
-
-  @type elsif_body :: [
-          body: [Liquid.NimbleParser.__parse__() | elsif_tag | Generic.else_tag()]
-        ]
 
   def body_elsif do
     empty()
@@ -81,13 +86,6 @@ defmodule Liquid.Combinators.Tags.If do
   defp do_tag(name) do
     Tag.define_closed(name, &predicate/1, fn combinator -> parsec(combinator, :body_if) end)
   end
-
-  @type if_predicate :: [
-          conditions: [
-            condition:
-              {LexicalToken.value(), General.comparison_operators(), LexicalToken.value()}
-          ]
-        ]
 
   defp predicate(combinator) do
     combinator

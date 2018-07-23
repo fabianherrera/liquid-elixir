@@ -86,7 +86,7 @@ defmodule Liquid.Template do
   def old_parse(value, presets \\ %{})
 
   def old_parse(<<markup::binary>>, presets) do
-    result = Liquid.Parse.parse(markup, %Template{presets: presets})
+    Liquid.Parse.parse(markup, %Template{presets: presets})
     # Liquid.NimbleParser.parse(markup) |> Liquid.NimbleTranslator.translate()
   end
 
