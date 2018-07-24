@@ -47,7 +47,7 @@ defmodule Liquid.Combinators.Tags.Tablerow do
               value: Liquid.Combinators.LexicalToken.value()
             ],
             tablerow_params: [limit: [LexicalToken.value()], cols: [LexicalToken.value()]],
-            tablerow_body: Liquid.NimbleParser.t()
+            tablerow_body: Liquid.t()
           ]
         ]
 
