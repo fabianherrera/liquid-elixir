@@ -28,7 +28,17 @@ defmodule Liquid.Combinators.Tags.If do
     |> optional(parsec(:__parse__))
   end
 
-  @type unless_tag :: [unless: [If.t()]]
+  @type unless_tag :: [
+          unless: [
+            conditions:
+              General.condition()
+              | [logical: [or: General.condition()]]
+              | [logical: [and: General.condition()]],
+            body: Liquid.t(),
+            elsif: If.t(),
+            else: Generic.else_tag()
+          ]
+        ]
 
   def unless_tag, do: do_tag("unless")
 
@@ -38,7 +48,7 @@ defmodule Liquid.Combinators.Tags.If do
               General.condition()
               | [logical: [or: General.condition()]]
               | [logical: [and: General.condition()]],
-            body: Liquid.t() | If.t() | Generic.else_tagt(),
+            body: Liquid.t(),
             elsif: If.t(),
             else: Generic.else_tag()
           ]

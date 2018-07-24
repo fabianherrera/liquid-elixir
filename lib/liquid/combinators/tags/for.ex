@@ -62,7 +62,7 @@ defmodule Liquid.Combinators.Tags.For do
               ],
               for_body:
                 Liquid.t()
-                | [else: Generic.else_tag()]
+                | Generic.else_tag()
             ]
           ]
         ]

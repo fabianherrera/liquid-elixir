@@ -167,7 +167,7 @@ defmodule Liquid.Combinators.General do
   end
 
   @type condition :: [
-          condition: {LexicalToken.value(), General.comparison_operators(), LexicalToken.value()}
+          condition: {LexicalToken.value(), Atom.t(), LexicalToken.value()}
         ]
 
   def condition do

@@ -67,7 +67,7 @@ defmodule Liquid.NimbleParser do
   defparsec(
     :__parse__,
     General.liquid_literal()
-    |> optional(choice([parsec(:liquid_tag), parsec(:liquid_variable), parsec(:custom_tag)]))
+    |> optional(choice([parsec(:liquid_tag), parsec(:liquid_variable), parsec(:custom)]))
     |> traverse({:clean_empty_strings, []})
   )
 
@@ -128,7 +128,7 @@ defmodule Liquid.NimbleParser do
     ])
   )
 
-  defparsec(:custom_tag, Custom.tag())
+  defparsec(:custom, Custom.tag())
 
   @doc """
   Validate and parse liquid markup.
