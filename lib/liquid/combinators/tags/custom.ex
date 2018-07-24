@@ -1,34 +1,24 @@
 defmodule Liquid.Combinators.Tags.Custom do
-  @moduledoc """
-  Sets variables in a template
-  ```
-    {% assign foo = 'monkey' %}
-  ```
-  User can then use the variables later in the page
-  ```
-    {{ foo }}
-  ```
-  """
   import NimbleParsec
   alias Liquid.Combinators.{General, Tag, LexicalToken}
 
   def tag do
     empty()
     |> parsec(:start_tag)
-    |> parsec(:custom_name)
-    |> parsec(:custom_markup)
+    |> concat(name())
+    |> concat(markup())
     |> parsec(:end_tag)
-    |> tag(:custom_tag)
+    |> tag(:custom)
     |> optional(parsec(:__parse__))
   end
 
-  def name do
+  defp name do
     not_register_tag_name()
     |> reduce({List, :to_string, []})
     |> unwrap_and_tag(:custom_name)
   end
 
-  def markup do
+  defp markup do
     empty()
     |> parsec(:ignore_whitespaces)
     |> concat(not_register_tag_name())

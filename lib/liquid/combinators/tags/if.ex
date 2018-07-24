@@ -28,37 +28,19 @@ defmodule Liquid.Combinators.Tags.If do
     |> optional(parsec(:__parse__))
   end
 
-  @type unless_tag :: [If.t()]
+  @type unless_tag :: [unless: [If.t()]]
 
   def unless_tag, do: do_tag("unless")
 
   @type t :: [
           if: [
-            conditions: [
-              condition:
-                {LexicalToken.value(), General.comparison_operators(), LexicalToken.value()}
-                | [
-                    logical: [
-                      or: [
-                        condition:
-                          {LexicalToken.value(), General.comparison_operators(),
-                           LexicalToken.value()}
-                      ]
-                    ]
-                  ]
-                | [
-                    logical: [
-                      and: [
-                        condition:
-                          {LexicalToken.value(), General.comparison_operators(),
-                           LexicalToken.value()}
-                      ]
-                    ]
-                  ]
-            ],
-            body: [Liquid.NimbleParser.t() | If.t() | Generic.t()],
-            elsif: [If.t()],
-            else: Generic.t()
+            conditions:
+              General.condition()
+              | [logical: [or: General.condition()]]
+              | [logical: [and: General.condition()]],
+            body: Liquid.t() | If.t() | Generic.else_tagt(),
+            elsif: If.t(),
+            else: Generic.else_tag()
           ]
         ]
 

@@ -26,7 +26,7 @@ defmodule Liquid.Combinators.Tags.Case do
   @type t :: [
           case: [
             variable: LexicalToken.value(),
-            clauses: String.t() | [when: [statements: [value_if_true: Liquid.NimbleParsec.t()]]]
+            clauses: [String.t() | [when: [statements: [value_if_true: Liquid.t()]]]]
           ]
         ]
 

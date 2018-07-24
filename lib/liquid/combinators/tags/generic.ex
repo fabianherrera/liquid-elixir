@@ -7,8 +7,8 @@ defmodule Liquid.Combinators.Tags.Generic do
   """
   alias Liquid.Combinators.Tag
 
-  @type t :: [
-          else: [String.t() | Liquid.NimbleParser.t()]
+  @type else_tag :: [
+          else: [String.t() | Liquid.t()]
         ]
 
   def else_tag, do: Tag.define_inverse_open("else")

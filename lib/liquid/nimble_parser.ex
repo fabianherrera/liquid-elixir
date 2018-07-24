@@ -64,25 +64,6 @@ defmodule Liquid.NimbleParser do
     {result, context}
   end
 
-  @type t :: [
-          Assign.t()
-          | Capture.t()
-          | Increment.t()
-          | Decrement.t()
-          | Include.t()
-          | Cycle.t()
-          | Raw.t()
-          | Comment.t()
-          | For.t()
-          | If.t()
-          | Unless.t()
-          | Tablerow.t()
-          | Case.t()
-          | Ifchanged.t()
-          | Custom.t()
-          | General.liquid_variable()
-        ]
-
   defparsec(
     :__parse__,
     General.liquid_literal()
@@ -149,8 +130,6 @@ defmodule Liquid.NimbleParser do
   )
 
   defparsec(:custom_tag, Custom.tag())
-  defparsec(:custom_name, Custom.name())
-  defparsec(:custom_markup, Custom.markup())
 
   @doc """
   Validate and parse liquid markup.

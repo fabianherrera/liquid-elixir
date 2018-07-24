@@ -57,11 +57,12 @@ defmodule Liquid.Combinators.Tags.For do
               variable: String.t(),
               value: LexicalToken.value(),
               for_params: [
-                offset: Integer.t() | String.t(),
-                limit: Integer.t() | String.t()
+                [offset: Integer.t() | String.t()]
+                | [limit: Integer.t() | String.t()]
               ],
-              for_body: Liquid.NimbleParsec.t(),
-              else: Generic.t()
+              for_body:
+                Liquid.t()
+                | [else: Generic.else_tag()]
             ]
           ]
         ]

@@ -166,6 +166,10 @@ defmodule Liquid.Combinators.General do
     |> traverse({__MODULE__, :to_atom, []})
   end
 
+  @type condition :: [
+          condition: {LexicalToken.value(), General.comparison_operators(), LexicalToken.value()}
+        ]
+
   def condition do
     empty()
     |> parsec(:value_definition)
@@ -326,7 +330,10 @@ defmodule Liquid.Combinators.General do
     parsec(:ignore_whitespaces)
     |> ignore(string(@start_filter))
     |> parsec(:ignore_whitespaces)
-    |> utf8_string([not: @colon, not: @vertical_line, not: @rigth_curly_bracket, not: @space], min: 1)
+    |> utf8_string(
+      [not: @colon, not: @vertical_line, not: @rigth_curly_bracket, not: @space],
+      min: 1
+    )
     |> parsec(:ignore_whitespaces)
     |> reduce({List, :to_string, []})
     |> optional(parsec(:filter_param))
