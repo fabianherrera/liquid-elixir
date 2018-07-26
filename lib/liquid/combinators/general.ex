@@ -262,8 +262,6 @@ defmodule Liquid.Combinators.General do
     |> unwrap_and_tag(:variable_name)
   end
 
-  @type liquid_variable :: [liquid_variable: LexicalToken.variable_value(), filters: filter()]
-
   def not_empty_liquid_variable do
     start_variable()
     |> parsec(:value_definition)

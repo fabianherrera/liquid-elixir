@@ -39,15 +39,13 @@ defmodule Liquid.Combinators.Tags.If do
   def tag, do: do_tag("if")
 
   @type conditional_body :: [
-          [
-            conditions:
-              General.condition()
-              | [logical: [or: General.condition()]]
-              | [logical: [and: General.condition()]]
-          ],
-          [body: Liquid.t()],
-          [elsif: conditional_body()],
-          Generic.else_tag()
+          conditions:
+            General.condition()
+            | [logical: [or: General.condition()]]
+            | [logical: [and: General.condition()]],
+          body: Liquid.t(),
+          elsif: conditional_body(),
+          else: Liquid.t()
         ]
 
   def body do
