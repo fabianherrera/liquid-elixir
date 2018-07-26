@@ -20,24 +20,10 @@ defmodule Liquid.Combinators.Tags.If do
   alias Liquid.Combinators.{Tag, General}
   alias Liquid.Combinators.Tags.Generic
 
-  def elsif_tag do
-    "elsif"
-    |> Tag.open_tag(&predicate/1)
-    |> parsec(:body_elsif)
-    |> tag(:elsif)
-    |> optional(parsec(:__parse__))
-  end
-
-  @type unless_tag :: [unless: conditional_body()]
-
-  def unless_tag, do: do_tag("unless")
-
   @type t :: [
           if: conditional_body()
         ]
-
-  def tag, do: do_tag("if")
-
+  @type unless_tag :: [unless: conditional_body()]
   @type conditional_body :: [
           conditions:
             General.condition()
@@ -47,6 +33,18 @@ defmodule Liquid.Combinators.Tags.If do
           elsif: conditional_body(),
           else: Liquid.t()
         ]
+
+  def elsif_tag do
+    "elsif"
+    |> Tag.open_tag(&predicate/1)
+    |> parsec(:body_elsif)
+    |> tag(:elsif)
+    |> optional(parsec(:__parse__))
+  end
+
+  def unless_tag, do: do_tag("unless")
+
+  def tag, do: do_tag("if")
 
   def body do
     empty()
