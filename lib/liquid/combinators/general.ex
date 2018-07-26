@@ -3,6 +3,7 @@ defmodule Liquid.Combinators.General do
   General purpose combinators used by almost every other combinator
   """
   import NimbleParsec
+  alias Liquid.Combinators.LexicalToken
 
   # Codepoints
   @horizontal_tab 0x0009
@@ -138,6 +139,8 @@ defmodule Liquid.Combinators.General do
   Comparison operators:
   == != > < >= <=
   """
+  @type comparison_operators :: :== | :!= | :> | :< | :>= | :<= | :contains
+
   def comparison_operators do
     empty()
     |> choice([
@@ -167,7 +170,7 @@ defmodule Liquid.Combinators.General do
   end
 
   @type condition :: [
-          condition: {LexicalToken.value(), Atom.t(), LexicalToken.value()}
+          condition: {LexicalToken.value(), comparison_operators(), LexicalToken.value()}
         ]
 
   def condition do
@@ -259,6 +262,8 @@ defmodule Liquid.Combinators.General do
     |> unwrap_and_tag(:variable_name)
   end
 
+  @type liquid_variable :: [liquid_variable: LexicalToken.variable_value(), filters: filter()]
+
   def not_empty_liquid_variable do
     start_variable()
     |> parsec(:value_definition)
@@ -273,6 +278,8 @@ defmodule Liquid.Combinators.General do
     |> concat(end_variable())
     |> tag(:liquid_variable)
   end
+
+  @type liquid_variable :: [liquid_variable: LexicalToken.variable_value(), filters: filter()]
 
   def liquid_variable do
     empty()
@@ -326,6 +333,9 @@ defmodule Liquid.Combinators.General do
   Filter parameters structure:  it acepts any kind of parameters with the following structure:
   start char: ':' plus optional: parameters values [value]
   """
+
+  @type filter :: [filter: String.t(), params: [values: LexicalToken.value()]]
+
   def filter do
     parsec(:ignore_whitespaces)
     |> ignore(string(@start_filter))
