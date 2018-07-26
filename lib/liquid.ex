@@ -1,6 +1,26 @@
 defmodule Liquid do
   use Application
 
+  @type t :: [
+          Assign.t()
+          | Capture.t()
+          | Increment.t()
+          | Decrement.t()
+          | Include.t()
+          | Cycle.t()
+          | Raw.t()
+          | Comment.t()
+          | For.t()
+          | If.t()
+          | Unless.t()
+          | Tablerow.t()
+          | Case.t()
+          | Ifchanged.t()
+          | Custom.t()
+          | General.liquid_variable()
+          | String.t()
+        ]
+
   def start(_type, _args), do: start()
 
   def start do

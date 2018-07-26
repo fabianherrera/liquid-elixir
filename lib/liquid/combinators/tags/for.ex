@@ -51,6 +51,22 @@ defmodule Liquid.Combinators.Tags.For do
   alias Liquid.Combinators.{General, Tag}
   alias Liquid.Combinators.Tags.Generic
 
+  @type t :: [
+          for: [
+            for_statements: [
+              variable: String.t(),
+              value: LexicalToken.value(),
+              for_params: [
+                [offset: Integer.t() | String.t()]
+                | [limit: Integer.t() | String.t()]
+              ],
+              for_body:
+                Liquid.t()
+                | Generic.else_tag()
+            ]
+          ]
+        ]
+
   defp reversed_param do
     empty()
     |> parsec(:ignore_whitespaces)

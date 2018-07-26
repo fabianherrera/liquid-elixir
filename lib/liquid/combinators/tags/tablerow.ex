@@ -40,20 +40,29 @@ defmodule Liquid.Combinators.Tags.Tablerow do
   import NimbleParsec
   alias Liquid.Combinators.{General, Tag}
 
+  @type t :: [
+          tablerow: [
+            tablerow_statements: [
+              variable: Liquid.Combinators.LexicalToken.variable_value(),
+              value: Liquid.Combinators.LexicalToken.value()
+            ],
+            tablerow_params: [limit: [LexicalToken.value()], cols: [LexicalToken.value()]],
+            tablerow_body: Liquid.t()
+          ]
+        ]
+
   def tag do
-    Tag.define_closed(
-      "tablerow",
-      &tablerow_statements/1,
-      fn combinator -> optional(combinator, parsec(:__parse__) |> tag(:tablerow_body)) end
-    )
+    Tag.define_closed("tablerow", &tablerow_statements/1, fn combinator ->
+      optional(combinator, parsec(:__parse__) |> tag(:tablerow_body))
+    end)
   end
 
   defp tablerow_params do
     empty()
     |> times(
-        choice([General.tag_param("offset"), General.tag_param("cols"), General.tag_param("limit")]),
-        min: 1
-      )
+      choice([General.tag_param("offset"), General.tag_param("cols"), General.tag_param("limit")]),
+      min: 1
+    )
     |> optional()
     |> tag(:tablerow_params)
   end

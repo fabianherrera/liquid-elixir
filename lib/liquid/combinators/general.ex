@@ -3,6 +3,14 @@ defmodule Liquid.Combinators.General do
   General purpose combinators used by almost every other combinator
   """
   import NimbleParsec
+  alias Liquid.Combinators.LexicalToken
+
+  @type comparison_operators :: :== | :!= | :> | :< | :>= | :<= | :contains
+  @type condition :: [
+          condition: {LexicalToken.value(), comparison_operators(), LexicalToken.value()}
+        ]
+  @type liquid_variable :: [liquid_variable: LexicalToken.variable_value(), filters: filter()]
+  @type filter :: [filter: String.t(), params: [values: LexicalToken.value()]]
 
   # Codepoints
   @horizontal_tab 0x0009
@@ -138,6 +146,7 @@ defmodule Liquid.Combinators.General do
   Comparison operators:
   == != > < >= <=
   """
+
   def comparison_operators do
     empty()
     |> choice([
@@ -322,11 +331,15 @@ defmodule Liquid.Combinators.General do
   Filter parameters structure:  it acepts any kind of parameters with the following structure:
   start char: ':' plus optional: parameters values [value]
   """
+
   def filter do
     parsec(:ignore_whitespaces)
     |> ignore(string(@start_filter))
     |> parsec(:ignore_whitespaces)
-    |> utf8_string([not: @colon, not: @vertical_line, not: @rigth_curly_bracket, not: @space], min: 1)
+    |> utf8_string(
+      [not: @colon, not: @vertical_line, not: @rigth_curly_bracket, not: @space],
+      min: 1
+    )
     |> parsec(:ignore_whitespaces)
     |> reduce({List, :to_string, []})
     |> optional(parsec(:filter_param))

@@ -19,7 +19,8 @@ defmodule Liquid.NimbleParser do
     Tablerow,
     Case,
     Capture,
-    Ifchanged
+    Ifchanged,
+    Custom
   }
 
   defparsec(:liquid_variable, General.liquid_variable())
@@ -66,7 +67,7 @@ defmodule Liquid.NimbleParser do
   defparsec(
     :__parse__,
     General.liquid_literal()
-    |> optional(choice([parsec(:liquid_tag), parsec(:liquid_variable)]))
+    |> optional(choice([parsec(:liquid_tag), parsec(:liquid_variable), parsec(:custom)]))
     |> traverse({:clean_empty_strings, []})
   )
 
@@ -126,6 +127,8 @@ defmodule Liquid.NimbleParser do
       parsec(:ifchanged)
     ])
   )
+
+  defparsec(:custom, Custom.tag())
 
   @doc """
   Validate and parse liquid markup.

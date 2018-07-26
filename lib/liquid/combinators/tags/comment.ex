@@ -17,6 +17,8 @@ defmodule Liquid.Combinators.Tags.Comment do
   import NimbleParsec
   alias Liquid.Combinators.{General, Tag}
 
+  @type t :: [comment: [String.t() | Comment.t() | Raw.t()]]
+
   def comment_content do
     General.literal_until_tag()
     |> optional(
@@ -66,10 +68,10 @@ defmodule Liquid.Combinators.Tags.Comment do
   def string_without_comment do
     empty()
     |> repeat_until(utf8_char([]), [
-        string(General.codepoints().start_tag),
-        string(General.codepoints().end_tag),
-        string("endcomment"),
-        string("comment")
-      ])
+      string(General.codepoints().start_tag),
+      string(General.codepoints().end_tag),
+      string("endcomment"),
+      string("comment")
+    ])
   end
 end

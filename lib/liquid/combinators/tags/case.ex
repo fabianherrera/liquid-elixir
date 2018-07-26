@@ -23,6 +23,13 @@ defmodule Liquid.Combinators.Tags.Case do
   alias Liquid.Combinators.{Tag, General}
   alias Liquid.Combinators.Tags.Generic
 
+  @type t :: [
+          case: [
+            variable: LexicalToken.value(),
+            clauses: [String.t() | [when: [statements: [value_if_true: Liquid.t()]]]]
+          ]
+        ]
+
   def tag, do: Tag.define_closed("case", &General.conditions/1, &body/1)
 
   def clauses do

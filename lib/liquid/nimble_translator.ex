@@ -21,7 +21,8 @@ defmodule Liquid.NimbleTranslator do
     Raw,
     Continue,
     Break,
-    Case
+    Case,
+    Custom
   }
 
   @doc """
@@ -82,6 +83,7 @@ defmodule Liquid.NimbleTranslator do
         :break -> Break.translate(markup)
         :continue -> Continue.translate(markup)
         :case -> Case.translate(markup)
+        :custom -> Custom.translate(markup)
         _ -> markup
       end
 
