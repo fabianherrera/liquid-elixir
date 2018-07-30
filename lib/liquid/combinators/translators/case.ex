@@ -69,7 +69,7 @@ defmodule Liquid.Combinators.Translators.Case do
     to_case_block(block)
   end
 
-  defp when_to_nodelist({:when, [statements: [head | tail], value_if_true: values]})
+  defp when_to_nodelist({:when, [conditions: [head | tail], body: values]})
        when is_bitstring(head) do
     tag = %Liquid.Tag{
       name: :when,
@@ -80,10 +80,10 @@ defmodule Liquid.Combinators.Translators.Case do
     [tag, result]
   end
 
-  defp when_to_nodelist({:when, [statements: statements, value_if_true: values]}) do
+  defp when_to_nodelist({:when, [conditions: conditions, body: values]}) do
     tag = %Liquid.Tag{
       name: :when,
-      markup: Enum.join(statements)
+      markup: Enum.join(conditions)
     }
 
     result = Liquid.NimbleTranslator.process_node(values)

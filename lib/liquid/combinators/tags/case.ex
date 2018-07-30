@@ -26,7 +26,7 @@ defmodule Liquid.Combinators.Tags.Case do
   @type t :: [
           case: [
             variable: LexicalToken.value(),
-            clauses: [String.t() | [when: [statements: [value_if_true: Liquid.t()]]]]
+            clauses: [String.t() | [when: [conditions: [body: Liquid.t()]]]]
           ]
         ]
 
@@ -41,8 +41,8 @@ defmodule Liquid.Combinators.Tags.Case do
   defp when_tag do
     "when"
     |> Tag.open_tag(&General.conditions/1)
-    |> tag(:statements)
-    |> concat(tag(optional(parsec(:__parse__)), :value_if_true))
+    |> tag(:conditions)
+    |> concat(tag(optional(parsec(:__parse__)), :body))
     |> tag(:when)
   end
 

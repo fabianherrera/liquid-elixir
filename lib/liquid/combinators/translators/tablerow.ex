@@ -1,29 +1,23 @@
 defmodule Liquid.Combinators.Translators.Tablerow do
-  alias Liquid.Block
-  alias Liquid.NimbleTranslator
+  @moduledoc false
+  alias Liquid.{Block, NimbleTranslator, TableRow}
 
   def translate(
-        tablerow_statements: [variable: variable, value: value, tablerow_params: tablerow_params],
-        tablerow_body: tablerow_body
+        statements: [variable: variable, value: value, params: params],
+        body: body
       ) do
-    variable_markup = Enum.join(variable)
-    tablerow_params_markup = Enum.join(tablerow_params)
-    markup = "#{variable_markup} in #{value} #{tablerow_params_markup}"
+    markup = "#{Enum.join(variable)} in #{value} #{Enum.join(params)}"
 
     %Liquid.Block{
-      iterator: process_iterator(%Block{markup: markup}),
+      iterator: TableRow.parse_iterator(%Block{markup: markup}),
       markup: markup,
       name: :tablerow,
-      nodelist: fixer_tablerow_types_only_list(NimbleTranslator.process_node(tablerow_body))
+      nodelist: fixer_tablerow_types_only_list(NimbleTranslator.process_node(body))
     }
   end
 
   # fix current parser tablerow tag bug and compatibility
   defp fixer_tablerow_types_only_list(element) do
     if is_list(element), do: element, else: [element]
-  end
-
-  defp process_iterator(%Block{markup: markup}) do
-    Liquid.TableRow.parse_iterator(%Block{markup: markup})
   end
 end

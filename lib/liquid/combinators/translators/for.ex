@@ -4,23 +4,23 @@ defmodule Liquid.Combinators.Translators.For do
   alias Liquid.NimbleTranslator
 
   def translate(
-        for_statements: [variable: variable, value: value, for_params: for_params],
-        for_body: for_body,
+        statements: [variable: variable, value: value, params: params],
+        body: body,
         else: else_body
       ) do
-    create_block_for(variable, value, for_params, for_body, else_body)
+    create_block_for(variable, value, params, body, else_body)
   end
 
   def translate(
-        for_statements: [variable: variable, value: value, for_params: for_params],
-        for_body: for_body
+        statements: [variable: variable, value: value, params: params],
+        body: body
       ) do
-    create_block_for(variable, value, for_params, for_body, [])
+    create_block_for(variable, value, params, body, [])
   end
 
-  defp create_block_for(variable, value, for_params, for_body, else_body) do
+  defp create_block_for(variable, value, params, body, else_body) do
     variable_markup = Enum.join(variable)
-    for_params_markup = Enum.join(for_params)
+    for_params_markup = Enum.join(params)
     markup = "#{variable_markup} in #{value} #{for_params_markup}"
 
     %Liquid.Block{
@@ -28,7 +28,7 @@ defmodule Liquid.Combinators.Translators.For do
       iterator: process_iterator(%Block{markup: markup}),
       markup: markup,
       name: :for,
-      nodelist: General.types_only_list(NimbleTranslator.process_node(for_body))
+      nodelist: General.types_only_list(NimbleTranslator.process_node(body))
     }
   end
 

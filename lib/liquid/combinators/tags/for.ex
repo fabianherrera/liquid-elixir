@@ -53,14 +53,14 @@ defmodule Liquid.Combinators.Tags.For do
 
   @type t :: [
           for: [
-            for_statements: [
+            statements: [
               variable: String.t(),
               value: LexicalToken.value(),
-              for_params: [
+              params: [
                 [offset: Integer.t() | String.t()]
                 | [limit: Integer.t() | String.t()]
               ],
-              for_body:
+              body:
                 Liquid.t()
                 | Generic.else_tag()
             ]
@@ -75,7 +75,7 @@ defmodule Liquid.Combinators.Tags.For do
     |> tag(:reversed)
   end
 
-  defp for_params do
+  defp params do
     empty()
     |> optional(
       times(
@@ -83,36 +83,36 @@ defmodule Liquid.Combinators.Tags.For do
         min: 1
       )
     )
-    |> tag(:for_params)
+    |> tag(:params)
   end
 
-  defp for_body do
+  defp body do
     empty()
     |> optional(parsec(:__parse__))
-    |> tag(:for_body)
+    |> tag(:body)
   end
 
   def continue_tag, do: Tag.define_open("continue")
 
   def break_tag, do: Tag.define_open("break")
 
-  def tag, do: Tag.define_closed("for", &for_statements/1, &body/1)
+  def tag, do: Tag.define_closed("for", &statements/1, &body/1)
 
   defp body(combinator) do
     combinator
-    |> concat(for_body())
+    |> concat(body())
     |> optional(Generic.else_tag())
   end
 
-  defp for_statements(combinator) do
+  defp statements(combinator) do
     combinator
     |> parsec(:variable_value)
     |> parsec(:ignore_whitespaces)
     |> ignore(string("in"))
     |> parsec(:ignore_whitespaces)
     |> parsec(:value)
-    |> optional(for_params())
+    |> optional(params())
     |> parsec(:ignore_whitespaces)
-    |> tag(:for_statements)
+    |> tag(:statements)
   end
 end

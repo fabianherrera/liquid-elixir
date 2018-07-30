@@ -35,7 +35,7 @@ defmodule Liquid.Combinators.Tags.Cycle do
   import NimbleParsec
   alias Liquid.Combinators.{Tag, General}
 
-  @type t :: [cycle: [cycle_group: String.t(), cycle_values: [LexicalToken.value()]]]
+  @type t :: [cycle: [group: String.t(), values: [LexicalToken.value()]]]
 
   def cycle_group do
     parsec(:ignore_whitespaces)
@@ -47,12 +47,12 @@ defmodule Liquid.Combinators.Tags.Cycle do
     )
     |> ignore(utf8_char([?:]))
     |> reduce({List, :to_string, []})
-    |> tag(:cycle_group)
+    |> tag(:group)
   end
 
   def cycle_body do
     parsec(:cycle_values)
-    |> tag(:cycle_values)
+    |> tag(:values)
   end
 
   def cycle_values do

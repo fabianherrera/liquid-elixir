@@ -11,8 +11,8 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       case: [
         variable: [parts: [part: "condition"]],
         clauses: [
-          when: [statements: [1], value_if_true: [" its 1 "]],
-          when: [statements: [2], value_if_true: [" its 2 "]]
+          when: [conditions: [1], body: [" its 1 "]],
+          when: [conditions: [2], body: [" its 2 "]]
         ]
       ]
     )
@@ -25,7 +25,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       case: [
         variable: [parts: [part: "condition"]],
         clauses: [
-          when: [statements: ["string here"], value_if_true: [" hit "]]
+          when: [conditions: ["string here"], body: [" hit "]]
         ]
       ]
     )
@@ -38,8 +38,8 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       case: [
         variable: [parts: [part: "a", part: "size"]],
         clauses: [
-          when: [statements: [1], value_if_true: ["1"]],
-          when: [statements: [2], value_if_true: ["2"]]
+          when: [conditions: [1], body: ["1"]],
+          when: [conditions: [2], body: ["2"]]
         ]
       ]
     )
@@ -51,7 +51,7 @@ defmodule Liquid.Combinators.Tags.CaseTest do
       &Parser.case/1,
       case: [
         variable: [parts: [part: "condition"]],
-        clauses: [when: [statements: [5], value_if_true: [" hit "]]],
+        clauses: [when: [conditions: [5], body: [" hit "]]],
         else: [" else "]
       ]
     )
@@ -65,10 +65,10 @@ defmodule Liquid.Combinators.Tags.CaseTest do
         variable: [parts: [part: "condition"]],
         clauses: [
           when: [
-            statements: [1, {:logical, [:or, 2]}, {:logical, [:or, 3]}],
-            value_if_true: [" its 1 or 2 or 3 "]
+            conditions: [1, {:logical, [:or, 2]}, {:logical, [:or, 3]}],
+            body: [" its 1 or 2 or 3 "]
           ],
-          when: [statements: [4], value_if_true: [" its 4 "]]
+          when: [conditions: [4], body: [" its 4 "]]
         ]
       ]
     )
@@ -82,10 +82,10 @@ defmodule Liquid.Combinators.Tags.CaseTest do
         variable: [parts: [part: "condition"]],
         clauses: [
           when: [
-            statements: [1, {:logical, [:or, 2]}, {:logical, [:or, 3]}],
-            value_if_true: [" its 1 or 2 or 3 "]
+            conditions: [1, {:logical, [:or, 2]}, {:logical, [:or, 3]}],
+            body: [" its 1 or 2 or 3 "]
           ],
-          when: [statements: [4], value_if_true: [" its 4 "]]
+          when: [conditions: [4], body: [" its 4 "]]
         ]
       ]
     )
@@ -99,14 +99,14 @@ defmodule Liquid.Combinators.Tags.CaseTest do
         variable: [parts: [part: "condition"]],
         clauses: [
           when: [
-            statements: [
+            conditions: [
               1,
               {:logical, [:or, "string"]},
               {:logical, [:or, nil]}
             ],
-            value_if_true: [" its 1 or 2 or 3 "]
+            body: [" its 1 or 2 or 3 "]
           ],
-          when: [statements: [4], value_if_true: [" its 4 "]]
+          when: [conditions: [4], body: [" its 4 "]]
         ]
       ]
     )
@@ -120,21 +120,19 @@ defmodule Liquid.Combinators.Tags.CaseTest do
         variable: [parts: [part: "collection", part: "handle"]],
         clauses: [
           when: [
-            statements: ["menswear-jackets"],
-            value_if_true: [
+            conditions: ["menswear-jackets"],
+            body: [
               assign: [
                 variable_name: "ptitle",
-               
                 value: "menswear"
               ]
             ]
           ],
           when: [
-            statements: ["menswear-t-shirts"],
-            value_if_true: [
+            conditions: ["menswear-t-shirts"],
+            body: [
               assign: [
                 variable_name: "ptitle",
-               
                 value: "menswear"
               ]
             ]
@@ -143,7 +141,6 @@ defmodule Liquid.Combinators.Tags.CaseTest do
         else: [
           assign: [
             variable_name: "ptitle",
-           
             value: "womenswear"
           ]
         ]
