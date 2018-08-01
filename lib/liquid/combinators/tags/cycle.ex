@@ -37,7 +37,7 @@ defmodule Liquid.Combinators.Tags.Cycle do
 
   @type t :: [cycle: [group: String.t(), values: [LexicalToken.value()]]]
 
-  def cycle_group do
+  defp group do
     parsec(:ignore_whitespaces)
     |> concat(
       choice([
@@ -50,7 +50,7 @@ defmodule Liquid.Combinators.Tags.Cycle do
     |> tag(:group)
   end
 
-  def cycle_body do
+  defp body do
     parsec(:cycle_values)
     |> tag(:values)
   end
@@ -65,9 +65,9 @@ defmodule Liquid.Combinators.Tags.Cycle do
   def tag do
     Tag.define_open("cycle", fn combinator ->
       combinator
-      |> optional(parsec(:cycle_group))
+      |> optional(group())
       |> parsec(:ignore_whitespaces)
-      |> parsec(:cycle_body)
+      |> concat(body())
     end)
   end
 end
