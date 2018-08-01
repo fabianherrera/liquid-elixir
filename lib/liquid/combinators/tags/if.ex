@@ -29,9 +29,9 @@ defmodule Liquid.Combinators.Tags.If do
             General.condition()
             | [logical: [or: General.condition()]]
             | [logical: [and: General.condition()]],
-          body: Liquid.t(),
+          body: Liquid.NimbleParser.t(),
           elsif: conditional_body(),
-          else: Liquid.t()
+          else: Liquid.NimbleParser.t()
         ]
 
   def elsif_tag do

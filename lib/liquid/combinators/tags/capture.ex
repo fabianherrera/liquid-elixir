@@ -16,7 +16,7 @@ defmodule Liquid.Combinators.Tags.Capture do
   @type t :: [
           capture: [
             variable_name: String.t(),
-            parts: Liquid.t()
+            parts: Liquid.NimbleParser.t()
           ]
         ]
 
