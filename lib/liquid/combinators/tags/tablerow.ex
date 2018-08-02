@@ -47,24 +47,22 @@ defmodule Liquid.Combinators.Tags.Tablerow do
               value: Liquid.Combinators.LexicalToken.value()
             ],
             params: [limit: [LexicalToken.value()], cols: [LexicalToken.value()]],
-            body: Liquid.t()
+            body: Liquid.NimbleParser.t()
           ]
         ]
 
   def tag do
-    Tag.define_closed(
-      "tablerow",
-      &statements/1,
-      fn combinator -> optional(combinator, parsec(:__parse__) |> tag(:body)) end
-    )
+    Tag.define_closed("tablerow", &statements/1, fn combinator ->
+      optional(combinator, parsec(:__parse__) |> tag(:body))
+    end)
   end
 
   defp params do
     empty()
     |> times(
-        choice([General.tag_param("offset"), General.tag_param("cols"), General.tag_param("limit")]),
-        min: 1
-      )
+      choice([General.tag_param("offset"), General.tag_param("cols"), General.tag_param("limit")]),
+      min: 1
+    )
     |> optional()
     |> tag(:params)
   end

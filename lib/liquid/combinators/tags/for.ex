@@ -61,7 +61,7 @@ defmodule Liquid.Combinators.Tags.For do
                 | [limit: Integer.t() | String.t()]
               ],
               body:
-                Liquid.t()
+                Liquid.NimbleParser.t()
                 | Generic.else_tag()
             ]
           ]

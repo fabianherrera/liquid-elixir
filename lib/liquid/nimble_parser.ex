@@ -23,6 +23,26 @@ defmodule Liquid.NimbleParser do
     Custom
   }
 
+  @type t :: [
+          Assign.t()
+          | Capture.t()
+          | Increment.t()
+          | Decrement.t()
+          | Include.t()
+          | Cycle.t()
+          | Raw.t()
+          | Comment.t()
+          | For.t()
+          | If.t()
+          | Unless.t()
+          | Tablerow.t()
+          | Case.t()
+          | Ifchanged.t()
+          | Custom.t()
+          | General.liquid_variable()
+          | String.t()
+        ]
+
   defparsec(:liquid_variable, General.liquid_variable())
   defparsec(:variable_definition, General.variable_definition())
   defparsec(:variable_name, General.variable_name())
