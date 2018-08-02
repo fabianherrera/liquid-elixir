@@ -20,18 +20,14 @@ defmodule Liquid.Combinators.Tags.If do
   alias Liquid.Combinators.{Tag, General}
   alias Liquid.Combinators.Tags.Generic
 
-  @type t :: [
-          if: conditional_body()
-        ]
+  @type t :: [if: conditional_body()]
   @type unless_tag :: [unless: conditional_body()]
   @type conditional_body :: [
-          conditions:
-            General.condition()
-            | [logical: [or: General.condition()]]
-            | [logical: [and: General.condition()]],
-          body: Liquid.NimbleParser.t(),
-          elsif: conditional_body(),
-          else: Liquid.NimbleParser.t()
+          conditions: General.conditions(),
+          body: [Liquid.NimbleParser.t() |
+                 [elsif: conditional_body()] |
+                 [else: Liquid.NimbleParser.t()]
+                ]
         ]
 
   def elsif_tag do

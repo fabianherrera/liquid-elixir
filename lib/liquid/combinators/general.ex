@@ -6,8 +6,10 @@ defmodule Liquid.Combinators.General do
   alias Liquid.Combinators.LexicalToken
 
   @type comparison_operators :: :== | :!= | :> | :< | :>= | :<= | :contains
-  @type condition :: [
+  @type conditions :: [
           condition: {LexicalToken.value(), comparison_operators(), LexicalToken.value()}
+          | [logical: [and: General.condition()]]
+          | [logical: [or: General.condition()]]
         ]
   @type liquid_variable :: [liquid_variable: LexicalToken.variable_value(), filters: [filter()]]
   @type filter :: [filter: String.t(), params: [value: LexicalToken.value()]]
