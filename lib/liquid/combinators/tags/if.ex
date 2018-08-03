@@ -42,7 +42,7 @@ defmodule Liquid.Combinators.Tags.If do
 
   def tag, do: do_tag("if")
 
-  def body do
+  defp body do
     empty()
     |> optional(parsec(:__parse__))
     |> optional(times(parsec(:elsif_tag), min: 1))
@@ -62,7 +62,7 @@ defmodule Liquid.Combinators.Tags.If do
   end
 
   defp do_tag(name) do
-    Tag.define_closed(name, &predicate/1, fn combinator -> parsec(combinator, :body_if) end)
+    Tag.define_closed(name, &predicate/1, fn combinator -> concat(combinator, body()) end)
   end
 
   defp predicate(combinator) do
