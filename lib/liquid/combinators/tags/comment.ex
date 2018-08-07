@@ -15,7 +15,7 @@ defmodule Liquid.Combinators.Tags.Comment do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.{General, Tag}
+  alias Liquid.Combinators.{General, Tag, Markup}
 
   @type t :: [comment: [String.t() | Comment.t() | Raw.t()]]
 
@@ -35,7 +35,7 @@ defmodule Liquid.Combinators.Tags.Comment do
     Tag.define_closed("comment", & &1, fn combinator ->
       combinator
       |> optional(parsec(:comment_content))
-      |> reduce({Enum, :join, []})
+      |> reduce({Markup, :literal, []})
     end)
   end
 
