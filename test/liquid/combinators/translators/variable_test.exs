@@ -18,7 +18,7 @@ defmodule Liquid.Combinators.Translators.VariableTest do
       {"{{ variable | capitalize | divided_by: 0}}", %{}},
       {"{{ variable.value | capitalize | divided_by: 0}}", %{}},
       {"{{ variable.value[0] | capitalize | divided_by: 0}}", %{}},
-      {"{{ variable.value[index] | capitalize | divided_by: 0}}", %{}},
+      {"{{ variable.value[index] | capitalize | divided_by: 0}}", %{}}
     ]
     |> Enum.each(fn {tag, params} ->
       test_ast_translation(tag, params)

@@ -204,7 +204,6 @@ defmodule Liquid.Combinators.Tags.ForTest do
       &Parser.for/1
     )
 
-    
     test_combinator_error(
       "{% for i in (my_var..) %}{{ i }}{% else %}{% endfor %}",
       &Parser.for/1

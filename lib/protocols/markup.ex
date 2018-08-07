@@ -44,7 +44,7 @@ defimpl String.Chars, for: Tuple do
 
   defp to_markup({_, value}), do: "#{value}"
 
-  # This is to manage the strings and nulls to string 
+  # This is to manage the strings and nulls to string
   defp normalize_value(value) when is_nil(value), do: {:null, nil}
   defp normalize_value(value) when is_bitstring(value), do: "\"#{value}\""
   defp normalize_value(value), do: value

@@ -9,7 +9,7 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
       "{% include 'snippet', my_variable: 'apples', my_other_variable: 'oranges' %}",
       &Parser.include/1,
       include: [
-        variable_name:  "snippet",
+        variable_name: "snippet",
         params: [
           assignment: [variable_name: "my_variable", value: "apples"],
           assignment: [variable_name: "my_other_variable", value: "oranges"]

@@ -7,9 +7,10 @@ defmodule Liquid.Combinators.General do
 
   @type comparison_operators :: :== | :!= | :> | :< | :>= | :<= | :contains
   @type conditions :: [
-          condition: {LexicalToken.value(), comparison_operators(), LexicalToken.value()}
-          | [logical: [and: General.condition()]]
-          | [logical: [or: General.condition()]]
+          condition:
+            {LexicalToken.value(), comparison_operators(), LexicalToken.value()}
+            | [logical: [and: General.condition()]]
+            | [logical: [or: General.condition()]]
         ]
   @type liquid_variable :: [liquid_variable: LexicalToken.variable_value(), filters: [filter()]]
   @type filter :: [filter: String.t(), params: [value: LexicalToken.value()]]
@@ -336,7 +337,10 @@ defmodule Liquid.Combinators.General do
     parsec(:ignore_whitespaces)
     |> ignore(string(@start_filter))
     |> parsec(:ignore_whitespaces)
-    |> utf8_string([not: @colon, not: @vertical_line, not: @rigth_curly_bracket, not: @space], min: 1)
+    |> utf8_string(
+      [not: @colon, not: @vertical_line, not: @rigth_curly_bracket, not: @space],
+      min: 1
+    )
     |> parsec(:ignore_whitespaces)
     |> reduce({List, :to_string, []})
     |> optional(parsec(:filter_param))

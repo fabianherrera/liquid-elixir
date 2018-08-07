@@ -24,10 +24,11 @@ defmodule Liquid.Combinators.Tags.If do
   @type unless_tag :: [unless: conditional_body()]
   @type conditional_body :: [
           conditions: General.conditions(),
-          body: [Liquid.NimbleParser.t() |
-                 [elsif: conditional_body()] |
-                 [else: Liquid.NimbleParser.t()]
-                ]
+          body: [
+            Liquid.NimbleParser.t()
+            | [elsif: conditional_body()]
+            | [else: Liquid.NimbleParser.t()]
+          ]
         ]
 
   def elsif_tag do
