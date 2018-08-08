@@ -16,7 +16,6 @@ defmodule Liquid.NimbleTranslator do
     Tablerow,
     Ifchanged,
     Raw,
-    Continue,
     Custom
   }
 
@@ -26,6 +25,7 @@ defmodule Liquid.NimbleTranslator do
     Capture,
     Case,
     Comment,
+    Continue,
   }
 
   @doc """
