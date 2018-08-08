@@ -5,7 +5,6 @@ defmodule Liquid.NimbleTranslator do
   alias Liquid.Template
 
   alias Liquid.Combinators.Translators.{
-    LiquidVariable,
     Unless,
     Tablerow,
     Raw,
@@ -26,6 +25,7 @@ defmodule Liquid.NimbleTranslator do
     Ifchanged,
     Include,
     Increment,
+    LiquidVariable,
   }
 
   @doc """

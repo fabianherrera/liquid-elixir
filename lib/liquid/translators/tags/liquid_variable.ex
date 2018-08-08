@@ -1,33 +1,34 @@
-defmodule Liquid.Combinators.Translators.LiquidVariable do
+defmodule Liquid.Translators.Tags.LiquidVariable do
   alias Liquid.Translators.General
+  alias Liquid.Translators.Markup
 
   def translate(variable: [parts: variable_list]) do
     parts = General.variable_in_parts(variable_list)
-    variable_name = Enum.join(parts: variable_list)
+    variable_name = Markup.literal(parts: variable_list)
     %Liquid.Variable{name: variable_name, parts: parts}
   end
 
   def translate(variable: [parts: variable_list, filters: filters]) do
     parts = General.variable_in_parts(variable_list)
-    variable_name = Enum.join(parts: variable_list)
+    variable_name = Markup.literal(parts: variable_list)
     filters_markup = transform_filters(filters)
     %Liquid.Variable{name: variable_name, parts: parts, filters: filters_markup}
   end
 
   def translate([value, filters: filters]) when is_bitstring(value) do
     filters_markup = transform_filters(filters)
-    %Liquid.Variable{name: "'#{value}'", filters: filters_markup, literal: "#{value}"}
+    %Liquid.Variable{name: "'#{Markup.literal(value)}'", filters: filters_markup, literal: Markup.literal(value)}
   end
 
   def translate([value, filters: filters]) do
     filters_markup = transform_filters(filters)
-    %Liquid.Variable{name: "#{value}", filters: filters_markup, literal: value}
+    %Liquid.Variable{name: Markup.literal(value), filters: filters_markup, literal: value}
   end
 
   def translate([value]) when is_bitstring(value),
-    do: %Liquid.Variable{name: "'#{value}'", literal: "#{value}"}
+    do: %Liquid.Variable{name: "'#{Markup.literal(value)}'", literal: Markup.literal(value)}
 
-  def translate([value]), do: %Liquid.Variable{name: "#{value}", literal: value}
+  def translate([value]), do: %Liquid.Variable{name: Markup.literal(value), literal: value}
 
   defp transform_filters(filters_list) do
     Keyword.get_values(filters_list, :filter)
