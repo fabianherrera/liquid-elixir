@@ -1,7 +1,8 @@
-defmodule Liquid.Combinators.Translators.For do
+defmodule Liquid.Translators.Tags.For do
   alias Liquid.Block
   alias Liquid.Combinators.Translators.General
   alias Liquid.NimbleTranslator
+  alias Liquid.Translators.Markup
 
   def translate(
         statements: [variable: variable, value: value, params: params],
@@ -19,9 +20,9 @@ defmodule Liquid.Combinators.Translators.For do
   end
 
   defp create_block_for(variable, value, params, body, else_body) do
-    variable_markup = Enum.join(variable)
-    for_params_markup = Enum.join(params)
-    markup = "#{variable_markup} in #{value} #{for_params_markup}"
+    variable_markup = Markup.literal(variable)
+    for_params_markup = Markup.literal(params)
+    markup = "#{variable_markup} in #{Markup.literal(value)} #{for_params_markup}"
 
     %Liquid.Block{
       elselist: General.types_no_list(NimbleTranslator.process_node(else_body)),
