@@ -107,7 +107,7 @@ defmodule Liquid.Combinators.Tags.CommentTest do
     test_combinator(
       "{% comment %}{% raw %}any {% endraw %}{% if true %}{% endif %}{% for item in products %}{% endfor %}{% endcomment %}",
       &Parser.comment/1,
-      comment: ["any trueitemproducts"]
+      comment: ["any trueitemproducts: "]
     )
 
     test_combinator(
