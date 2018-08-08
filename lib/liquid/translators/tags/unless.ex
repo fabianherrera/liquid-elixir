@@ -1,4 +1,4 @@
-defmodule Liquid.Combinators.Translators.Unless do
+defmodule Liquid.Translators.Tags.Unless do
   alias Liquid.Translators.General
 
   def translate(conditions: [value], body: body) when is_bitstring(value) do

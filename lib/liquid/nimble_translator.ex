@@ -4,11 +4,6 @@ defmodule Liquid.NimbleTranslator do
   """
   alias Liquid.Template
 
-  alias Liquid.Combinators.Translators.{
-    Unless,
-    Custom
-  }
-
   alias Liquid.Translators.Tags.{
     Assign,
     Break,
@@ -26,6 +21,7 @@ defmodule Liquid.NimbleTranslator do
     LiquidVariable,
     Raw,
     Tablerow,
+    Unless,
   }
 
   @doc """
@@ -86,8 +82,6 @@ defmodule Liquid.NimbleTranslator do
         :break -> Break.translate(markup)
         :continue -> Continue.translate(markup)
         :case -> Case.translate(markup)
-        :custom -> Custom.translate(markup)
-        _ -> markup
       end
 
     check_blank(translated)
