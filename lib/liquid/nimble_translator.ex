@@ -19,12 +19,14 @@ defmodule Liquid.NimbleTranslator do
     Ifchanged,
     Raw,
     Continue,
-    Break,
     Case,
     Custom
   }
 
-  alias Liquid.Translators.Tags.Assign
+  alias Liquid.Translators.Tags.{
+    Assign,
+    Break
+  }
 
   @doc """
   Converts passed Nimble AST into old AST to use old render
