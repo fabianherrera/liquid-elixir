@@ -1,5 +1,6 @@
-defmodule Liquid.Combinators.Translators.Case do
+defmodule Liquid.Translators.Tags.Case do
   alias Liquid.Combinators.Translators.General
+  alias Liquid.Translators.Markup
 
   def translate([nil]) do
     block = %Liquid.Block{name: :case, markup: "null"}
@@ -36,36 +37,36 @@ defmodule Liquid.Combinators.Translators.Case do
   end
 
   def translate([value]) do
-    block = %Liquid.Block{name: :case, markup: "#{value}"}
+    block = %Liquid.Block{name: :case, markup: Markup.literal(value)}
     to_case_block(block)
   end
 
   def translate([value, {:clauses, clauses}]) do
-    create_block_for_case("#{value}", clauses)
+    create_block_for_case(Markup.literal(value), clauses)
   end
 
   def translate([value, {:clauses, clauses}, {:else, else_tag_values}]) do
-    create_block_for_case("#{value}", clauses, else_tag_values)
+    create_block_for_case(Markup.literal(value), clauses, else_tag_values)
   end
 
   def translate([value, {:else, else_tag_values}]) do
-    create_block_for_case_else("#{value}", else_tag_values)
+    create_block_for_case_else(Markup.literal(value), else_tag_values)
   end
 
   def translate([value, badbody, {:clauses, clauses}]) do
-    create_block_for_case("#{value}", badbody, clauses)
+    create_block_for_case(Markup.literal(value), badbody, clauses)
   end
 
   def translate([value, badbody, {:clauses, clauses}, {:else, else_tag_values}]) do
-    create_block_for_case("#{value}", badbody, clauses, else_tag_values)
+    create_block_for_case(Markup.literal(value), badbody, clauses, else_tag_values)
   end
 
   def translate([value, badbody, {:else, else_tag_values}]) do
-    create_block_for_case_else("#{value}", badbody, else_tag_values)
+    create_block_for_case_else(Markup.literal(value), badbody, else_tag_values)
   end
 
   def translate([value, badbody]) do
-    block = %Liquid.Block{name: :case, markup: "#{value}", nodelist: [badbody]}
+    block = %Liquid.Block{name: :case, markup: Markup.literal(value), nodelist: [badbody]}
     to_case_block(block)
   end
 
@@ -73,7 +74,7 @@ defmodule Liquid.Combinators.Translators.Case do
        when is_bitstring(head) do
     tag = %Liquid.Tag{
       name: :when,
-      markup: "\"#{head}\"" <> Enum.join(tail)
+      markup: "\"#{Markup.literal(head)}\"" <> Markup.literal(tail)
     }
 
     result = Liquid.NimbleTranslator.process_node(values)

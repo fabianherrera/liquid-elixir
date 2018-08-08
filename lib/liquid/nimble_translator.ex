@@ -18,7 +18,6 @@ defmodule Liquid.NimbleTranslator do
     Ifchanged,
     Raw,
     Continue,
-    Case,
     Custom
   }
 
@@ -26,6 +25,7 @@ defmodule Liquid.NimbleTranslator do
     Assign,
     Break,
     Capture,
+    Case,
   }
 
   @doc """
