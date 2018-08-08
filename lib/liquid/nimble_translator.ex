@@ -6,7 +6,6 @@ defmodule Liquid.NimbleTranslator do
 
   alias Liquid.Combinators.Translators.{
     LiquidVariable,
-    Capture,
     Comment,
     Cycle,
     Decrement,
@@ -25,7 +24,8 @@ defmodule Liquid.NimbleTranslator do
 
   alias Liquid.Translators.Tags.{
     Assign,
-    Break
+    Break,
+    Capture,
   }
 
   @doc """
