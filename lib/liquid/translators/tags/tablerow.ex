@@ -1,12 +1,13 @@
-defmodule Liquid.Combinators.Translators.Tablerow do
+defmodule Liquid.Translators.Tags.Tablerow do
   @moduledoc false
   alias Liquid.{Block, NimbleTranslator, TableRow}
+  alias Liquid.Translators.Markup
 
   def translate(
         statements: [variable: variable, value: value, params: params],
         body: body
       ) do
-    markup = "#{Enum.join(variable)} in #{value} #{Enum.join(params)}"
+    markup = "#{Markup.literal(variable)} in #{Markup.literal(value)} #{Markup.literal(params)}"
 
     %Liquid.Block{
       iterator: TableRow.parse_iterator(%Block{markup: markup}),

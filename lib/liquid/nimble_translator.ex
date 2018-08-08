@@ -6,7 +6,6 @@ defmodule Liquid.NimbleTranslator do
 
   alias Liquid.Combinators.Translators.{
     Unless,
-    Tablerow,
     Custom
   }
 
@@ -26,6 +25,7 @@ defmodule Liquid.NimbleTranslator do
     Increment,
     LiquidVariable,
     Raw,
+    Tablerow,
   }
 
   @doc """
