@@ -1,5 +1,5 @@
 defmodule Liquid.Combinators.Translators.LiquidVariable do
-  alias Liquid.Combinators.Translators.General
+  alias Liquid.Translators.General
 
   def translate(variable: [parts: variable_list]) do
     parts = General.variable_in_parts(variable_list)

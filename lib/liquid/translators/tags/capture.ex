@@ -1,6 +1,5 @@
 defmodule Liquid.Translators.Tags.Capture do
-  alias Liquid.Combinators.Translators.General
-  alias Liquid.Translators.Markup
+  alias Liquid.Translators.{General, Markup}
 
   def translate([variable, parts: parts]) do
     nodelist =

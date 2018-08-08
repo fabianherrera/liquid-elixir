@@ -1,8 +1,7 @@
 defmodule Liquid.Translators.Tags.For do
   alias Liquid.Block
-  alias Liquid.Combinators.Translators.General
+  alias Liquid.Translators.{General, Markup}
   alias Liquid.NimbleTranslator
-  alias Liquid.Translators.Markup
 
   def translate(
         statements: [variable: variable, value: value, params: params],

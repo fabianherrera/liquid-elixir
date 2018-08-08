@@ -1,6 +1,5 @@
 defmodule Liquid.Translators.Tags.Case do
-  alias Liquid.Combinators.Translators.General
-  alias Liquid.Translators.Markup
+  alias Liquid.Translators.{General, Markup}
 
   def translate([nil]) do
     block = %Liquid.Block{name: :case, markup: "null"}

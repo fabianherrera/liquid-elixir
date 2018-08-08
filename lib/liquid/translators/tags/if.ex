@@ -1,6 +1,5 @@
 defmodule Liquid.Translators.Tags.If do
-  alias Liquid.Combinators.Translators.General
-  alias Liquid.Translators.Markup
+  alias Liquid.Translators.{General, Markup}
 
   def translate(conditions: [value], body: body) when is_bitstring(value) do
     nodelist = Enum.filter(body, &General.not_open_if(&1))

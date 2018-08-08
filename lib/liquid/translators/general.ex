@@ -1,4 +1,4 @@
-defmodule Liquid.Combinators.Translators.General do
+defmodule Liquid.Translators.General do
   @moduledoc false
 
   @doc """
