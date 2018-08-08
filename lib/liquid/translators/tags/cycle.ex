@@ -1,15 +1,15 @@
-defmodule Liquid.Combinators.Translators.Cycle do
-  alias Liquid.Combinators.Translators.General
+defmodule Liquid.Translators.Tags.Cycle do
+  alias Liquid.Translators.Markup
 
   def translate(values: values) do
     parts = Enum.map(values, &cycle_to_string/1)
-    markup = Enum.join(parts, ", ")
+    markup = Markup.literal(parts, ", ")
     %Liquid.Tag{name: :cycle, markup: markup, parts: [markup | parts]}
   end
 
   def translate(group: [cycle_group_value], values: cycle_values) do
     cycle_value_in_parts = Enum.map(cycle_values, &cycle_to_string/1)
-    markup = cycle_group_value <> ": " <> Enum.join(cycle_value_in_parts, ", ")
+    markup = cycle_group_value <> ": " <> Markup.literal(cycle_value_in_parts, ", ")
     parts = [cycle_group_value | cycle_value_in_parts]
 
     %Liquid.Tag{name: :cycle, markup: markup, parts: parts}
@@ -17,5 +17,5 @@ defmodule Liquid.Combinators.Translators.Cycle do
 
   defp cycle_to_string(value) when is_bitstring(value), do: "'#{value}'"
   defp cycle_to_string(nil), do: "null"
-  defp cycle_to_string(value), do: "#{value}"
+  defp cycle_to_string(value), do: "#{Markup.literal(value)}"
 end

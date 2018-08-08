@@ -6,7 +6,6 @@ defmodule Liquid.NimbleTranslator do
 
   alias Liquid.Combinators.Translators.{
     LiquidVariable,
-    Cycle,
     Decrement,
     For,
     If,
@@ -26,6 +25,7 @@ defmodule Liquid.NimbleTranslator do
     Case,
     Comment,
     Continue,
+    Cycle,
   }
 
   @doc """
