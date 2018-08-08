@@ -15,7 +15,8 @@ defmodule Liquid.Combinators.Tags.Comment do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.{General, Tag, Markup}
+  alias Liquid.Combinators.{General, Tag}
+  alias Liquid.Translators.Markup
 
   @type t :: [comment: [String.t() | Comment.t() | Raw.t()]]
 
