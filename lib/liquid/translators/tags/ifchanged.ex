@@ -1,4 +1,4 @@
-defmodule Liquid.Combinators.Translators.Ifchanged do
+defmodule Liquid.Translators.Tags.Ifchanged do
   alias Liquid.NimbleTranslator
 
   def translate(markup) do
