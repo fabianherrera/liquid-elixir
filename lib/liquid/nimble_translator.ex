@@ -6,7 +6,6 @@ defmodule Liquid.NimbleTranslator do
 
   alias Liquid.Combinators.Translators.{
     LiquidVariable,
-    Assign,
     Capture,
     Comment,
     Cycle,
@@ -24,6 +23,8 @@ defmodule Liquid.NimbleTranslator do
     Case,
     Custom
   }
+
+  alias Liquid.Translators.Tags.Assign
 
   @doc """
   Converts passed Nimble AST into old AST to use old render
