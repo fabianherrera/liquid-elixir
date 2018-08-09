@@ -52,18 +52,20 @@ defmodule Liquid.Combinators.Tags.For do
   alias Liquid.Combinators.Tags.Generic
 
   @type t :: [
-          for: [
-            statements: [
-              variable: String.t(),
-              value: LexicalToken.value(),
-              params: [
-                [offset: Integer.t() | String.t()]
-                | [limit: Integer.t() | String.t()]
-              ],
-              body:
-                Liquid.NimbleParser.t()
-                | Generic.else_tag()
-            ]
+          for: For.markup()
+        ]
+
+  @type markup :: [
+          statements: [
+            variable: String.t(),
+            value: LexicalToken.value(),
+            params: [
+              [offset: Integer.t() | String.t()]
+              | [limit: Integer.t() | String.t()]
+            ],
+            body:
+              Liquid.NimbleParser.t()
+              | Generic.else_tag()
           ]
         ]
 

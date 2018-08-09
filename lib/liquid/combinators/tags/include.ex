@@ -6,10 +6,12 @@ defmodule Liquid.Combinators.Tags.Include do
   alias Liquid.Combinators.{Tag, General}
 
   @type t :: [
-          include: [
-            variable_name: String.t(),
-            params: [assignment: [variable_name: String.t(), value: LexicalToken.value()]]
-          ]
+          include: Include.markup()
+        ]
+
+  @type markup :: [
+          variable_name: String.t(),
+          params: [assignment: [variable_name: String.t(), value: LexicalToken.value()]]
         ]
 
   def tag, do: Tag.define_open("include", &head/1)

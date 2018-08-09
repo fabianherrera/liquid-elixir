@@ -18,7 +18,9 @@ defmodule Liquid.Combinators.Tags.Comment do
   alias Liquid.Combinators.{General, Tag}
   alias Liquid.Translators.Markup
 
-  @type t :: [comment: [String.t() | Comment.t() | Raw.t()]]
+  @type t :: [comment: Comment.markup()]
+
+  @type markup :: [String.t() | Comment.t() | Raw.t()]
 
   def comment_content do
     General.literal_until_tag()

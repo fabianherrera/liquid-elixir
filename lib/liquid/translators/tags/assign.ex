@@ -3,6 +3,10 @@ defmodule Liquid.Translators.Tags.Assign do
   Translate new AST to old AST for Assign tag
   """
   alias Liquid.Translators.Markup
+  alias Liquid.Combinators.Tags.Assign
+  alias Liquid.Tag
+
+  @spec translate(Assign.markup()) :: Tag.t()
 
   def translate([h | t]) do
     markup = [h | ["=" | t]]

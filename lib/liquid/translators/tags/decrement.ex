@@ -1,9 +1,13 @@
 defmodule Liquid.Translators.Tags.Decrement do
-  alias Liquid.Translators.Markup
-
   @moduledoc """
   Translate new AST to old AST for the decrement tag 
   """
+
+  alias Liquid.Translators.Markup
+  alias Liquid.Combinators.Tags.Decrement
+  alias Liquid.Tag
+
+  @spec translate(Decrement.markup()) :: Tag.t()
 
   def translate(markup) do
     variable_name = Keyword.get(markup, :variable_name)

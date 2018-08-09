@@ -1,9 +1,13 @@
 defmodule Liquid.Translators.Tags.Unless do
-  alias Liquid.Translators.General
-
   @moduledoc """
   Translate new AST to old AST for the unless tag 
   """
+
+  alias Liquid.Translators.General
+  alias Liquid.Combinators.Tags.If
+  alias Liquid.Block
+
+  @spec translate(If.conditional_body()) :: Block.t()
 
   def translate(conditions: [value], body: body) when is_bitstring(value) do
     nodelist = Enum.filter(body, &General.not_open_if(&1))

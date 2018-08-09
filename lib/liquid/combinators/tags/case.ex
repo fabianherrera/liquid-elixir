@@ -24,17 +24,19 @@ defmodule Liquid.Combinators.Tags.Case do
   alias Liquid.Combinators.Tags.Generic
 
   @type t :: [
-          case: [
-            variable: LexicalToken.value(),
-            clauses: [
-              String.t()
-              | [
-                  when: [
-                    conditions: [LexicalToken.value() | {:logical, [or: LexicalToken.value()]}],
-                    body: Liquid.NimbleParser.t()
-                  ]
+          case: Case.markup()
+        ]
+
+  @type markup :: [
+          variable: LexicalToken.value(),
+          clauses: [
+            String.t()
+            | [
+                when: [
+                  conditions: [LexicalToken.value() | {:logical, [or: LexicalToken.value()]}],
+                  body: Liquid.NimbleParser.t()
                 ]
-            ]
+              ]
           ]
         ]
 

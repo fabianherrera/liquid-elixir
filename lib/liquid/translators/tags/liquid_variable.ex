@@ -1,10 +1,10 @@
 defmodule Liquid.Translators.Tags.LiquidVariable do
-  alias Liquid.Translators.General
-  alias Liquid.Translators.Markup
-
   @moduledoc """
   Translate new AST to old AST for liquid's  variables  
   """
+
+  alias Liquid.Translators.General
+  alias Liquid.Translators.Markup
 
   def translate(variable: [parts: variable_list]) do
     parts = General.variable_in_parts(variable_list)

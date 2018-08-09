@@ -1,10 +1,13 @@
 defmodule Liquid.Translators.Tags.Include do
-  alias Liquid.{Tag, Include}
-  alias Liquid.Translators.Markup
-
   @moduledoc """
   Translate new AST to old AST for the include tag 
   """
+
+  alias Liquid.{Tag, Include}
+  alias Liquid.Translators.Markup
+  alias Liquid.Combinators.Tags.Include, as: IncludeCombinator
+
+  @spec translate(IncludeCombinator.markup()) :: Tag.t()
 
   def translate([snippet]), do: parse("'#{Markup.literal(snippet)}'")
 
