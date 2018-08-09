@@ -3,6 +3,10 @@ defmodule Liquid.Translators.Tags.Tablerow do
   alias Liquid.{Block, NimbleTranslator, TableRow}
   alias Liquid.Translators.Markup
 
+  @moduledoc """
+  Translate new AST to old AST for the Tablerow tag 
+  """
+
   def translate(
         statements: [variable: variable, value: value, params: params],
         body: body

@@ -3,6 +3,10 @@ defmodule Liquid.Translators.Tags.For do
   alias Liquid.Translators.{General, Markup}
   alias Liquid.NimbleTranslator
 
+  @moduledoc """
+  Translate new AST to old AST for the "for" tag 
+  """
+
   def translate(
         statements: [variable: variable, value: value, params: params],
         body: body,

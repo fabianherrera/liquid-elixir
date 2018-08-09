@@ -1,6 +1,10 @@
 defmodule Liquid.Translators.Tags.Cycle do
   alias Liquid.Translators.Markup
 
+  @moduledoc """
+  Translate new AST to old AST for the cycle tag 
+  """
+
   def translate(values: values) do
     parts = Enum.map(values, &cycle_to_string/1)
     markup = Markup.literal(parts, ", ")
