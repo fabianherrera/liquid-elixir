@@ -13,15 +13,15 @@ defmodule Liquid.Block do
   alias Liquid.Block, as: Block
 
   @type t :: %Liquid.Block{
-          name: nil,
-          markup: nil,
-          condition: nil,
-          parts: [],
-          iterator: [],
-          nodelist: [],
-          elselist: [],
-          blank: false,
-          strict: true
+          name: String.t() | nil,
+          markup: String.t() | nil,
+          condition: String.t() | nil,
+          parts: List.t(),
+          iterator: List.t(),
+          nodelist: List.t(),
+          elselist: List.t(),
+          blank: Boolean.t(),
+          strict: Boolean.t()
         }
 
   def create(markup) do

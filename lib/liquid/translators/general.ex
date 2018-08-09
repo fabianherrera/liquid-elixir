@@ -16,6 +16,7 @@ defmodule Liquid.Translators.General do
 
   """
 
+  @spec variable_in_parts(Liquid.Combinators.LexicalToke.variable_value()) :: String.t()
   def variable_in_parts(variable) do
     Enum.map(variable, fn {key, value} ->
       case key do
@@ -26,6 +27,11 @@ defmodule Liquid.Translators.General do
     end)
   end
 
+  @doc """
+  Liquid use the  `?` symbol for variables as  a instructions, the new parser takes the symbol as a part of the name of the variable, in order to render the variable is needed  to take  out the symbol of the name , this fuction does that.
+  """
+
+  @spec string_have_question(String.t()) :: String.t()
   def string_have_question(value) when is_bitstring(value) do
     if String.contains?(value, "?") do
       String.replace(value, "?", "")
@@ -34,15 +40,27 @@ defmodule Liquid.Translators.General do
     end
   end
 
+  @doc """
+  This is a helper function to identify if a tuple is and Else/Elseif tag
+  """
+  @spec is_else(Tuple.t()) :: Boolean.t()
   def is_else({:else, _}), do: true
   def is_else({:elsif, _}), do: true
   def is_else(_), do: false
 
+  @doc """
+  This is a helper function to identify if a tuple is a If tag
+  """
+  @spec not_open_if(Tuple.t()) :: Boolean.t()
   def not_open_if({:evaluation, _}), do: false
   def not_open_if({:else, _}), do: false
   def not_open_if({:elsif, _}), do: false
   def not_open_if(_), do: true
 
+  @doc """
+  This is a helper function that if the value is a list extract only the first element of a list ,if not create a list with that element
+  """
+  @spec types_no_list(List.t()) :: String.t() | Number.t()
   def types_no_list([]), do: []
 
   def types_no_list(element) do

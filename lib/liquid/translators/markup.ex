@@ -3,6 +3,11 @@ defmodule Liquid.Translators.Markup do
   Transform AST to String
   """
 
+  @doc """
+  Takes the New (NimbleParser)AST and creates a String,it use it as a markup for the old AST.
+  """
+  @spec literal(List.t() | Tuple.t()) :: String.t()
+
   def literal(elem, join_with) when is_list(elem) do
     elem
     |> Enum.map(&literal/1)
@@ -20,10 +25,13 @@ defmodule Liquid.Translators.Markup do
   def literal({:filters, value}), do: " | " <> literal(value, " | ")
   def literal({:params, value}), do: ": " <> literal(value, ", ")
   def literal({:assignment, [name | value]}), do: "#{name}: #{literal(value)}"
+
   def literal({:condition, {left, op, right}}),
     do: "#{normalize_value(left)} #{op} #{normalize_value(right)}"
+
   def literal({:conditions, [nil]}), do: "null"
   def literal({:conditions, [value]}) when is_bitstring(value), do: "\"#{literal(value)}\""
+
   def literal({predicate, value}) when predicate in [:for, :with],
     do: "#{predicate} #{literal(value)}"
 

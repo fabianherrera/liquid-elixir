@@ -7,8 +7,11 @@ defmodule Liquid.Translators.Tags.Raw do
 
   alias Liquid.Block
 
-  @spec translate(String.t()) :: Block.t()
+  @doc """
+  This function takes the markup of the new AST and creates a `Liquid.Block` struct (the structure needed for the old AST) and fill the keys needed to render a Raw tag.
+  """
 
+  @spec translate(String.t()) :: Block.t()
   def translate([markup]) do
     %Liquid.Block{name: :raw, strict: false, nodelist: ["#{Markup.literal(markup)}"]}
   end
