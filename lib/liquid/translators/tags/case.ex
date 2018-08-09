@@ -6,11 +6,13 @@ defmodule Liquid.Translators.Tags.Case do
   alias Liquid.Combinators.Tags.Case
   alias Liquid.Block
 
-  @spec translate(Case.markup()) :: Block.t()
+  @doc """
+  This function takes the markup of the new AST and creates a `Liquid.Block` struct (the structure needed for the old AST) and fill the keys needed to render a Case tag.
+  """
 
+  @spec translate(Case.markup()) :: Block.t()
   def translate([nil]) do
-    block = %Liquid.Block{name: :case, markup: "null"}
-    to_case_block(block)
+    to_case_block("null", [])
   end
 
   def translate([nil, {:clauses, clauses}]) do
@@ -38,13 +40,12 @@ defmodule Liquid.Translators.Tags.Case do
   end
 
   def translate([nil, badbody]) do
-    block = %Liquid.Block{name: :case, markup: "null", nodelist: [badbody]}
-    to_case_block(block)
+    to_case_block("null", [badbody])
   end
 
   def translate([value]) do
-    block = %Liquid.Block{name: :case, markup: Markup.literal(value)}
-    to_case_block(block)
+    markup = Markup.literal(value)
+    to_case_block(markup, [])
   end
 
   def translate([value, {:clauses, clauses}]) do
@@ -72,8 +73,9 @@ defmodule Liquid.Translators.Tags.Case do
   end
 
   def translate([value, badbody]) do
-    block = %Liquid.Block{name: :case, markup: Markup.literal(value), nodelist: [badbody]}
-    to_case_block(block)
+    markup = Markup.literal(value)
+    nodelist = [badbody]
+    to_case_block(markup, nodelist)
   end
 
   defp when_to_nodelist({:when, [conditions: [head | tail], body: values]})
@@ -116,48 +118,42 @@ defmodule Liquid.Translators.Tags.Case do
   end
 
   defp create_block_for_case(markup, when_alone) do
-    nodelist = Enum.map(when_alone, &when_to_nodelist/1) |> List.flatten()
-    block = %Liquid.Block{name: :case, markup: markup, nodelist: nodelist}
-    to_case_block(block)
+    nodelist = Enum.flat_map(when_alone, &when_to_nodelist/1)
+    to_case_block(markup, nodelist)
   end
 
   defp create_block_for_case(markup, when_tag, else_tag_values) when is_list(when_tag) do
-    nodelist = Enum.map(when_tag, &when_to_nodelist/1) |> List.flatten()
+    nodelist = Enum.flat_map(when_tag, &when_to_nodelist/1)
     nodelist_plus_else = [nodelist | else_tag(else_tag_values)] |> List.flatten()
-    block = %Liquid.Block{name: :case, markup: markup, nodelist: nodelist_plus_else}
-    to_case_block(block)
+    to_case_block(markup, nodelist_plus_else)
   end
 
   defp create_block_for_case(markup, badbody, when_tag) do
-    nodelist_when = Enum.map(when_tag, &when_to_nodelist/1) |> List.flatten()
+    nodelist_when = Enum.flat_map(when_tag, &when_to_nodelist/1)
     full_list = [badbody | nodelist_when] |> List.flatten()
-    block = %Liquid.Block{name: :case, markup: markup, nodelist: full_list}
-    to_case_block(block)
+    to_case_block(markup, full_list)
   end
 
   defp create_block_for_case(markup, badbody, when_tag, else_tag_values) do
-    nodelist_when = Enum.map(when_tag, &when_to_nodelist/1) |> List.flatten()
+    nodelist_when = Enum.flat_map(when_tag, &when_to_nodelist/1)
     nodelist_plus_else = [nodelist_when | else_tag(else_tag_values)]
     full_list = [badbody | nodelist_plus_else] |> List.flatten()
-    block = %Liquid.Block{name: :case, markup: markup, nodelist: full_list}
-    to_case_block(block)
+    to_case_block(markup, full_list)
   end
 
   defp create_block_for_case_else(markup, else_tag_values) do
     nodelist = else_tag(else_tag_values)
-    block = %Liquid.Block{name: :case, markup: markup, nodelist: nodelist}
-    to_case_block(block)
+    to_case_block(markup, nodelist)
   end
 
   defp create_block_for_case_else(markup, badbody, else_tag_values) do
     nodelist_plus_else = else_tag(else_tag_values)
     full_list = [badbody | nodelist_plus_else] |> List.flatten()
-    block = %Liquid.Block{name: :case, markup: markup, nodelist: full_list}
-    to_case_block(block)
+    to_case_block(markup, full_list)
   end
 
-  defp to_case_block(%Liquid.Block{markup: markup} = b) do
+  defp to_case_block(markup, nodelist) do
     [[_, name]] = Liquid.Case.syntax() |> Regex.scan(markup)
-    Liquid.Case.split(name |> Liquid.Variable.create(), b.nodelist)
+    Liquid.Case.split(name |> Liquid.Variable.create(), nodelist)
   end
 end
