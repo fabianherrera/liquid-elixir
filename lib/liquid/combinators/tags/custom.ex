@@ -1,6 +1,6 @@
 defmodule Liquid.Combinators.Tags.Custom do
   import NimbleParsec
-  alias Liquid.Combinators.{General, Tag, LexicalToken}
+  alias Liquid.Combinators.General
 
   def tag do
     empty()

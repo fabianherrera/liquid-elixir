@@ -1,4 +1,4 @@
-defmodule Liquid.Combinators.Translators.IncludeTest do
+defmodule Liquid.Translators.Tags.IncludeTest do
   use ExUnit.Case
   import Liquid.Helpers
   alias Liquid.FileSystem

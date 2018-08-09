@@ -1,4 +1,4 @@
-defmodule Liquid.Combinators.Translators.IncrementDecrementTest do
+defmodule Liquid.Translators.Tags.IncrementDecrementTest do
   use ExUnit.Case
   import Liquid.Helpers
 

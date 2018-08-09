@@ -1,4 +1,4 @@
-defmodule Liquid.Combinators.Translators.CaseTest do
+defmodule Liquid.Translators.Tags.CaseTest do
   use ExUnit.Case
 
   import Liquid.Helpers
