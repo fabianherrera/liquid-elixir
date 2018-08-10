@@ -1,6 +1,14 @@
 defmodule Liquid.Translators.Tags.LiquidVariable do
+  @moduledoc """
+  Translate new AST to old AST for liquid's  variables  
+  """
+
   alias Liquid.Translators.General
   alias Liquid.Translators.Markup
+
+  @doc """
+  Takes the markup of the new AST and creates a `Liquid.Variable` struct (old AST) and fill the keys needed to render a variable and filters.
+  """
 
   def translate(variable: [parts: variable_list]) do
     parts = General.variable_in_parts(variable_list)
@@ -17,7 +25,12 @@ defmodule Liquid.Translators.Tags.LiquidVariable do
 
   def translate([value, filters: filters]) when is_bitstring(value) do
     filters_markup = transform_filters(filters)
-    %Liquid.Variable{name: "'#{Markup.literal(value)}'", filters: filters_markup, literal: Markup.literal(value)}
+
+    %Liquid.Variable{
+      name: "'#{Markup.literal(value)}'",
+      filters: filters_markup,
+      literal: Markup.literal(value)
+    }
   end
 
   def translate([value, filters: filters]) do

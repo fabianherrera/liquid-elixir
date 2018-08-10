@@ -1,8 +1,18 @@
 defmodule Liquid.Translators.Tags.For do
+  @moduledoc """
+  Translate new AST to old AST for the "for" tag 
+  """
+
   alias Liquid.Block
   alias Liquid.Translators.{General, Markup}
   alias Liquid.NimbleTranslator
+  alias Liquid.Combinators.Tags.For
 
+  @doc """
+  Takes the markup of the new AST and creates a `Liquid.Block` struct (old AST) and fill the keys needed to render a For tag.
+  """
+
+  @spec translate(For.markup()) :: Block.t()
   def translate(
         statements: [variable: variable, value: value, params: params],
         body: body,

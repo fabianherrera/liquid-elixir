@@ -1,6 +1,16 @@
 defmodule Liquid.Translators.Tags.If do
+  @moduledoc """
+  Translate new AST to old AST for the if tag 
+  """
   alias Liquid.Translators.{General, Markup}
+  alias Liquid.Combinators.Tags.If
+  alias Liquid.Block
 
+  @doc """
+  Takes the markup of the new AST and creates a `Liquid.Block` struct (old AST) and fill the keys needed to render a If tag.
+  """
+
+  @spec translate(If.conditional_body()) :: Block.t()
   def translate(conditions: [value], body: body) when is_bitstring(value) do
     nodelist = Enum.filter(body, &General.not_open_if(&1))
     else_list = Enum.filter(body, &General.is_else/1)
@@ -10,7 +20,7 @@ defmodule Liquid.Translators.Tags.If do
   def translate(conditions: conditions, body: body) do
     nodelist = Enum.filter(body, &General.not_open_if(&1))
     else_list = Enum.filter(body, &General.is_else/1)
-    #TODO: Check Enum.join(conditions)
+    # TODO: Check Enum.join(conditions)
     create_block_if(Enum.join(conditions), nodelist, else_list)
   end
 

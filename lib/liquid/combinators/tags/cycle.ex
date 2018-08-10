@@ -35,7 +35,8 @@ defmodule Liquid.Combinators.Tags.Cycle do
   import NimbleParsec
   alias Liquid.Combinators.{Tag, General}
 
-  @type t :: [cycle: [group: String.t(), values: [LexicalToken.value()]]]
+  @type t :: [cycle: Cycle.markup()]
+  @type markup :: [group: String.t(), values: [LexicalToken.value()]]
 
   defp group do
     parsec(:ignore_whitespaces)

@@ -41,14 +41,16 @@ defmodule Liquid.Combinators.Tags.Tablerow do
   alias Liquid.Combinators.{General, Tag}
 
   @type t :: [
-          tablerow: [
-            statements: [
-              variable: Liquid.Combinators.LexicalToken.variable_value(),
-              value: Liquid.Combinators.LexicalToken.value()
-            ],
-            params: [limit: [LexicalToken.value()], cols: [LexicalToken.value()]],
-            body: Liquid.NimbleParser.t()
-          ]
+          tablerow: Tablerow.markup()
+        ]
+
+  @type markup :: [
+          statements: [
+            variable: Liquid.Combinators.LexicalToken.variable_value(),
+            value: Liquid.Combinators.LexicalToken.value()
+          ],
+          params: [limit: [LexicalToken.value()], cols: [LexicalToken.value()]],
+          body: Liquid.NimbleParser.t()
         ]
 
   def tag do
