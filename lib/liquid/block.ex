@@ -16,12 +16,12 @@ defmodule Liquid.Block do
           name: String.t() | nil,
           markup: String.t() | nil,
           condition: String.t() | nil,
-          parts: List.t(),
-          iterator: List.t(),
-          nodelist: List.t(),
-          elselist: List.t(),
-          blank: Boolean.t(),
-          strict: Boolean.t()
+          parts: [],
+          iterator: [],
+          nodelist: [],
+          elselist: [],
+          blank: boolean(),
+          strict: boolean()
         }
 
   def create(markup) do
