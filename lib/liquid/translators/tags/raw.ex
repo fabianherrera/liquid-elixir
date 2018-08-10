@@ -8,7 +8,7 @@ defmodule Liquid.Translators.Tags.Raw do
   alias Liquid.Block
 
   @doc """
-  This function takes the markup of the new AST and creates a `Liquid.Block` struct (the structure needed for the old AST) and fill the keys needed to render a Raw tag.
+  Takes the markup of the new AST and creates a `Liquid.Block` struct (old AST) and fill the keys needed to render a Raw tag.
   """
 
   @spec translate(String.t()) :: Block.t()

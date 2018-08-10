@@ -7,7 +7,7 @@ defmodule Liquid.Translators.Tags.Comment do
   alias Liquid.Block
 
   @doc """
-  This function takes the markup of the new AST and creates a `Liquid.Block` struct (the structure needed for the old AST) and fill the keys needed to render a Comment tag.
+  Takes the markup of the new AST and creates a `Liquid.Block` struct (old AST) and fill the keys needed to render a Comment tag.
   """
 
   @spec translate(Comment.markup()) :: Block.t()

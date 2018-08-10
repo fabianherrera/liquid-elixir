@@ -9,7 +9,7 @@ defmodule Liquid.Translators.Tags.Tablerow do
   alias Liquid.Combinators.Tags.Tablerow, as: TablerowMarkup
 
   @doc """
-  This function takes the markup of the new AST and creates a `Liquid.Block` struct (the structure needed for the old AST) and fill the keys needed to render a Tablerow tag.
+  Takes the markup of the new AST and creates a `Liquid.Block` struct (old AST) and fill the keys needed to render a Tablerow tag.
   """
 
   @spec translate(TablerowMarkup.markup()) :: Block.t()

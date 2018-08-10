@@ -8,7 +8,7 @@ defmodule Liquid.Translators.Tags.Cycle do
   alias Liquid.Tag
 
   @doc """
-  This function takes the markup of the new AST and creates a `Liquid.Tag` struct (the structure needed for the old AST) and fill the keys needed to render a Cycle tag.
+  Takes the markup of the new AST and creates a `Liquid.Tag` struct (old AST) and fill the keys needed to render a Cycle tag.
   """
 
   @spec translate(Cycle.markup()) :: Tag.t()

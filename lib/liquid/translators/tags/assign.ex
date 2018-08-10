@@ -7,7 +7,7 @@ defmodule Liquid.Translators.Tags.Assign do
   alias Liquid.Tag
 
   @doc """
-  This function takes the markup of the new AST and creates a `Liquid.Tag` struct (the structure needed for the old AST) and fill the keys needed to render a Assign tag.
+  Takes the markup of the new AST and creates a `Liquid.Tag` struct (old AST) and fill the keys needed to render a Assign tag.
   """
 
   @spec translate(Assign.markup()) :: Tag.t()

@@ -28,8 +28,7 @@ defmodule Liquid.Translators.General do
   end
 
   @doc """
-  Liquid use the `?` symbol for variables as instructions, the new parser takes the symbol as a part of the name
-  of the variable, in order to render the variable is needed  to take  out the symbol of the name, this fuction does that.
+  Take  out the symbol `?` of the variable name string.
   """
 
   @spec string_have_question(String.t()) :: String.t()

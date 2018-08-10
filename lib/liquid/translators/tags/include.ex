@@ -8,7 +8,7 @@ defmodule Liquid.Translators.Tags.Include do
   alias Liquid.Combinators.Tags.Include, as: IncludeCombinator
 
   @doc """
-  This function takes the markup of the new AST and creates a `Liquid.Tag` struct (the structure needed for the old AST) and fill the keys needed to render a Include tag.
+  Takes the markup of the new AST and creates a `Liquid.Tag` struct (old AST) and fill the keys needed to render a Include tag.
   """
 
   @spec translate(IncludeCombinator.markup()) :: Tag.t()

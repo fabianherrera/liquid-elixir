@@ -4,7 +4,7 @@ defmodule Liquid.Translators.Tags.Break do
   """
 
   @doc """
-  This function takes the markup of the new AST and creates a `Liquid.Tag` struct (the structure needed for the old AST) and fill the keys needed, this is used recursively by the for tag.
+  Takes the markup of the new AST and creates a `Liquid.Tag` struct (old AST) and fill the keys needed, this is used recursively by the For tag.
   """
 
   @spec translate(List.t() | String.t()) :: Tag.t()
