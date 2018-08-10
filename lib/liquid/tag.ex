@@ -4,9 +4,9 @@ defmodule Liquid.Tag do
   @type t :: %Liquid.Tag{
           name: String.t() | nil,
           markup: String.t() | nil,
-          parts: List.t(),
-          attributes: List.t(),
-          blank: Boolean.t()
+          parts: [],
+          attributes: [],
+          blank: boolean()
         }
 
   def create(markup) do
