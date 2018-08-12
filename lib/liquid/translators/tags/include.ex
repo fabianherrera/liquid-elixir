@@ -1,6 +1,6 @@
 defmodule Liquid.Translators.Tags.Include do
   @moduledoc """
-  Translate new AST to old AST for the include tag 
+  Translate new AST to old AST for the Include tag
   """
 
   alias Liquid.{Tag, Include}
@@ -8,7 +8,7 @@ defmodule Liquid.Translators.Tags.Include do
   alias Liquid.Combinators.Tags.Include, as: IncludeCombinator
 
   @doc """
-  Takes the markup of the new AST and creates a `Liquid.Tag` struct (old AST) and fill the keys needed to render a Include tag.
+  Takes the markup of the new AST, creates a `Liquid.Tag` struct (old AST) and fill the keys needed to render a Include tag
   """
 
   @spec translate(IncludeCombinator.markup()) :: Tag.t()

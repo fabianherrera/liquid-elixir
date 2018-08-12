@@ -1,6 +1,6 @@
 defmodule Liquid.Translators.Tags.For do
   @moduledoc """
-  Translate new AST to old AST for the "for" tag 
+  Translate new AST to old AST for the For tag
   """
 
   alias Liquid.Block
@@ -9,7 +9,7 @@ defmodule Liquid.Translators.Tags.For do
   alias Liquid.Combinators.Tags.For
 
   @doc """
-  Takes the markup of the new AST and creates a `Liquid.Block` struct (old AST) and fill the keys needed to render a For tag.
+  Takes the markup of the new AST, creates a `Liquid.Block` struct (old AST) and fill the keys needed to render a For tag
   """
 
   @spec translate(For.markup()) :: Block.t()

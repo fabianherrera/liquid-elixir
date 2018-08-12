@@ -1,13 +1,13 @@
 defmodule Liquid.Translators.Tags.If do
   @moduledoc """
-  Translate new AST to old AST for the if tag 
+  Translate new AST to old AST for the If tag
   """
   alias Liquid.Translators.{General, Markup}
   alias Liquid.Combinators.Tags.If
   alias Liquid.Block
 
   @doc """
-  Takes the markup of the new AST and creates a `Liquid.Block` struct (old AST) and fill the keys needed to render a If tag.
+  Takes the markup of the new AST, creates a `Liquid.Block` struct (old AST) and fill the keys needed to render a If tag
   """
 
   @spec translate(If.conditional_body()) :: Block.t()
