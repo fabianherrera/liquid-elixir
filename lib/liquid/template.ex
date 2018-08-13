@@ -79,6 +79,7 @@ defmodule Liquid.Template do
     Liquid.Parse.parse("", %Template{presets: presets})
   end
 
+  # TODO: delete this when new parser is finished
   @doc """
   OLD_PARSER for TEST ONLY Function to parse markup with given presets (if any)
   """

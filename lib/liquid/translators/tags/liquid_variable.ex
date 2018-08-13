@@ -1,13 +1,13 @@
 defmodule Liquid.Translators.Tags.LiquidVariable do
   @moduledoc """
-  Translate new AST to old AST for liquid's  variables  
+  Translate new AST to old AST for liquid variables
   """
 
   alias Liquid.Translators.General
   alias Liquid.Translators.Markup
 
   @doc """
-  Takes the markup of the new AST and creates a `Liquid.Variable` struct (old AST) and fill the keys needed to render a variable and filters.
+  Takes the markup of the new AST, creates a `Liquid.Variable` struct (old AST) and fill the keys needed to render a variable and filters
   """
 
   def translate(variable: [parts: variable_list]) do

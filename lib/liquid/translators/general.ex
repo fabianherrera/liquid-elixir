@@ -28,9 +28,8 @@ defmodule Liquid.Translators.General do
   end
 
   @doc """
-  Take  out the symbol `?` of the variable name string.
+  Remove the `?` symbol from the variable name string
   """
-
   @spec string_have_question(String.t()) :: String.t()
   def string_have_question(value) when is_bitstring(value) do
     if String.contains?(value, "?") do
