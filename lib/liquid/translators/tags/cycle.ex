@@ -10,7 +10,6 @@ defmodule Liquid.Translators.Tags.Cycle do
   @doc """
   Takes the markup of the new AST, creates a `Liquid.Tag` struct (old AST) and fill the keys needed to render a Cycle tag
   """
-
   @spec translate(Cycle.markup()) :: Tag.t()
   def translate(values: values) do
     parts = Enum.map(values, &cycle_to_string/1)

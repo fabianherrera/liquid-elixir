@@ -10,7 +10,6 @@ defmodule Liquid.Translators.Tags.Raw do
   @doc """
   Takes the markup of the new AST, creates a `Liquid.Block` struct (old AST) and fill the keys needed to render a Raw tag
   """
-
   @spec translate(String.t()) :: Block.t()
   def translate([markup]) do
     %Liquid.Block{name: :raw, strict: false, nodelist: ["#{Markup.literal(markup)}"]}

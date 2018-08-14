@@ -9,7 +9,6 @@ defmodule Liquid.Translators.Tags.Assign do
   @doc """
   Takes the markup of the new AST creates a `Liquid.Tag` struct (old AST) and fill the keys needed to render an Assign tag.
   """
-
   @spec translate(Assign.markup()) :: Tag.t()
   def translate([h | t]) do
     markup = [h | ["=" | t]]

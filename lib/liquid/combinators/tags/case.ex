@@ -23,9 +23,7 @@ defmodule Liquid.Combinators.Tags.Case do
   alias Liquid.Combinators.{Tag, General}
   alias Liquid.Combinators.Tags.Generic
 
-  @type t :: [
-          case: Case.markup()
-        ]
+  @type t :: [case: Case.markup()]
 
   @type markup :: [
           variable: LexicalToken.value(),

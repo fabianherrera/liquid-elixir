@@ -40,9 +40,7 @@ defmodule Liquid.Combinators.Tags.Tablerow do
   import NimbleParsec
   alias Liquid.Combinators.{General, Tag}
 
-  @type t :: [
-          tablerow: Tablerow.markup()
-        ]
+  @type t :: [tablerow: Tablerow.markup()]
 
   @type markup :: [
           statements: [

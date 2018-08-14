@@ -1,6 +1,4 @@
 defmodule Liquid.Translators.Tags.Tablerow do
-  @moduledoc false
-
   @moduledoc """
   Translate new AST to old AST for the Tablerow tag
   """
@@ -11,7 +9,6 @@ defmodule Liquid.Translators.Tags.Tablerow do
   @doc """
   Takes the markup of the new AST, creates a `Liquid.Block` struct (old AST) and fill the keys needed to render a Tablerow tag
   """
-
   @spec translate(TablerowMarkup.markup()) :: Block.t()
   def translate(
         statements: [variable: variable, value: value, params: params],

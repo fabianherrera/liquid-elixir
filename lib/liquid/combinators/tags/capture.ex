@@ -13,9 +13,7 @@ defmodule Liquid.Combinators.Tags.Capture do
   import NimbleParsec
   alias Liquid.Combinators.Tag
 
-  @type t :: [
-          capture: Capture.markup()
-        ]
+  @type t :: [capture: Capture.markup()]
 
   @type markup :: [
           variable_name: String.t(),

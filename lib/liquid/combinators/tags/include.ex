@@ -6,9 +6,7 @@ defmodule Liquid.Combinators.Tags.Include do
   import NimbleParsec
   alias Liquid.Combinators.{Tag, General}
 
-  @type t :: [
-          include: Include.markup()
-        ]
+  @type t :: [include: Include.markup()]
 
   @type markup :: [
           variable_name: String.t(),

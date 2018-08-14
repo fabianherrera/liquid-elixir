@@ -10,7 +10,6 @@ defmodule Liquid.Translators.Tags.Increment do
   @doc """
   Takes the markup of the new AST, creates a `Liquid.Tag` struct (old AST) and fill the keys needed to render a Increment tag
   """
-
   @spec translate(Increment.markup()) :: Tag.t()
   def translate(markup) do
     variable_name = Keyword.get(markup, :variable_name)

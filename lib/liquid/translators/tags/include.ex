@@ -10,7 +10,6 @@ defmodule Liquid.Translators.Tags.Include do
   @doc """
   Takes the markup of the new AST, creates a `Liquid.Tag` struct (old AST) and fill the keys needed to render a Include tag
   """
-
   @spec translate(IncludeCombinator.markup()) :: Tag.t()
   def translate([snippet]), do: parse("'#{Markup.literal(snippet)}'")
 

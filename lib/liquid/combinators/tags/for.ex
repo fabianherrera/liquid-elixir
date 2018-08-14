@@ -51,10 +51,7 @@ defmodule Liquid.Combinators.Tags.For do
   alias Liquid.Combinators.{General, Tag}
   alias Liquid.Combinators.Tags.Generic
 
-  @type t :: [
-          for: For.markup()
-        ]
-
+  @type t :: [for: For.markup()] 
   @type markup :: [
           statements: [
             variable: String.t(),

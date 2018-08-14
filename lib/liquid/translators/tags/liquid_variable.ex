@@ -9,7 +9,6 @@ defmodule Liquid.Translators.Tags.LiquidVariable do
   @doc """
   Takes the markup of the new AST, creates a `Liquid.Variable` struct (old AST) and fill the keys needed to render a variable and filters
   """
-
   def translate(variable: [parts: variable_list]) do
     parts = General.variable_in_parts(variable_list)
     variable_name = Markup.literal(parts: variable_list)
