@@ -21,7 +21,7 @@ defmodule Liquid.NimbleTranslator do
     LiquidVariable,
     Raw,
     Tablerow,
-    Unless,
+    Unless
   }
 
   @doc """
@@ -36,20 +36,8 @@ defmodule Liquid.NimbleTranslator do
   end
 
   def translate({:ok, nodelist}) when is_list(nodelist) do
-    list = multiprocess_node(nodelist, self())
+    list = process_node(nodelist)
     %Template{root: %Liquid.Block{name: :document, nodelist: list}}
-  end
-
-  defp multiprocess_node(nodelist, external_process) do
-    nodelist
-    |> Enum.map(fn elem ->
-      spawn_link(fn -> send(external_process, {self(), process_node(elem)}) end)
-    end)
-    |> Enum.map(fn pid ->
-      receive do
-        {^pid, result} -> result
-      end
-    end)
   end
 
   def process_node(elem) when is_bitstring(elem), do: elem
@@ -57,7 +45,7 @@ defmodule Liquid.NimbleTranslator do
   def process_node([elem]) when is_bitstring(elem), do: elem
 
   def process_node(nodelist) when is_list(nodelist) do
-    multiprocess_node(nodelist, self())
+    Enum.map(nodelist, &process_node/1)
   end
 
   def process_node({tag, markup}) do
