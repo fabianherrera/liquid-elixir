@@ -1,5 +1,7 @@
 defmodule Liquid.Translators.General do
-  @moduledoc false
+  @moduledoc """
+  General purpose functions used by multiple translators
+  """
   alias Liquid.Translators.Markup
 
   @doc """

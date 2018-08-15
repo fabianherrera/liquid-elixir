@@ -61,17 +61,16 @@ defmodule Liquid.Template do
   def parse(value, presets \\ %{})
 
   def parse(<<markup::binary>>, presets) do
-    # Liquid.Parse.parse(markup, %Template{presets: presets})
     result = Liquid.NimbleParser.parse(markup)
 
-    t =
+    template =
       case result do
         {:ok, _value} -> Liquid.NimbleTranslator.translate(result)
         {:error, value} -> raise value
         _ -> ""
       end
 
-    %{t | presets: presets}
+    %{template | presets: presets}
   end
 
   @spec parse(nil, map) :: Liquid.Template
@@ -88,7 +87,6 @@ defmodule Liquid.Template do
 
   def old_parse(<<markup::binary>>, presets) do
     Liquid.Parse.parse(markup, %Template{presets: presets})
-    # Liquid.NimbleParser.parse(markup) |> Liquid.NimbleTranslator.translate()
   end
 
   @spec old_parse(nil, map) :: Liquid.Template
