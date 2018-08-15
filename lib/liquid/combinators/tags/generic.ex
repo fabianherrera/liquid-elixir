@@ -9,5 +9,8 @@ defmodule Liquid.Combinators.Tags.Generic do
 
   @type else_tag :: [else: Liquid.NimbleParser.t()]
 
+  @doc """
+  Parse a `Liquid` Else tag.
+  """
   def else_tag, do: Tag.define_inverse_open("else")
 end

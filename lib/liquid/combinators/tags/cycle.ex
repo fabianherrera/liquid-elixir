@@ -56,6 +56,9 @@ defmodule Liquid.Combinators.Tags.Cycle do
     |> tag(:values)
   end
 
+  @doc """
+  Combinator to group the values of the cycle.
+  """
   def cycle_values do
     empty()
     |> times(parsec(:value_definition), min: 1)
@@ -63,6 +66,9 @@ defmodule Liquid.Combinators.Tags.Cycle do
     |> optional(parsec(:cycle_values))
   end
 
+  @doc """
+  Parse a `Liquid` Cycle tag.
+  """
   def tag do
     Tag.define_open("cycle", fn combinator ->
       combinator

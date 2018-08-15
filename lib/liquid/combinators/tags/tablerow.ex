@@ -51,6 +51,9 @@ defmodule Liquid.Combinators.Tags.Tablerow do
           body: Liquid.NimbleParser.t()
         ]
 
+  @doc """
+  Parse a `Liquid` Tablerow tag.
+  """
   def tag do
     Tag.define_closed("tablerow", &statements/1, fn combinator ->
       optional(combinator, parsec(:__parse__) |> tag(:body))

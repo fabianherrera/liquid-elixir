@@ -13,6 +13,9 @@ defmodule Liquid.Combinators.Tags.Include do
           params: [assignment: [variable_name: String.t(), value: LexicalToken.value()]]
         ]
 
+  @doc """
+  Parse a `Liquid` Include tag.
+  """
   def tag, do: Tag.define_open("include", &head/1)
 
   defp params do

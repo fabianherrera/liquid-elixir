@@ -17,9 +17,9 @@ defmodule Liquid.Block do
           markup: String.t() | nil,
           condition: String.t() | nil,
           parts: [],
-          iterator: [],
-          nodelist: [],
-          elselist: [],
+          iterator: [...] | [],
+          nodelist: [...] | [],
+          elselist: [...] | [],
           blank: boolean(),
           strict: boolean()
         }

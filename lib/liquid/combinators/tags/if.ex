@@ -31,6 +31,9 @@ defmodule Liquid.Combinators.Tags.If do
           ]
         ]
 
+  @doc """
+  Parse a `Liquid` Elsif tag.
+  """
   def elsif_tag do
     "elsif"
     |> Tag.open_tag(&predicate/1)
@@ -39,8 +42,14 @@ defmodule Liquid.Combinators.Tags.If do
     |> optional(parsec(:__parse__))
   end
 
+  @doc """
+  Parse a `Liquid` Unless tag.
+  """
   def unless_tag, do: do_tag("unless")
 
+  @doc """
+  Parse a `Liquid` If tag.
+  """
   def tag, do: do_tag("if")
 
   defp body do
@@ -51,6 +60,9 @@ defmodule Liquid.Combinators.Tags.If do
     |> tag(:body)
   end
 
+  @doc """
+  Combinator for the Elsif body.
+  """
   def body_elsif do
     empty()
     |> choice([

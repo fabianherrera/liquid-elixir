@@ -51,7 +51,7 @@ defmodule Liquid.Combinators.Tags.For do
   alias Liquid.Combinators.{General, Tag}
   alias Liquid.Combinators.Tags.Generic
 
-  @type t :: [for: For.markup()] 
+  @type t :: [for: For.markup()]
   @type markup :: [
           statements: [
             variable: String.t(),
@@ -91,10 +91,19 @@ defmodule Liquid.Combinators.Tags.For do
     |> tag(:body)
   end
 
+  @doc """
+  Parse a `Liquid` Continue tag.
+  """
   def continue_tag, do: Tag.define_open("continue")
 
+  @doc """
+  Parse a `Liquid` Break tag.
+  """
   def break_tag, do: Tag.define_open("break")
 
+  @doc """
+  Parse a `Liquid` For tag.
+  """
   def tag, do: Tag.define_closed("for", &statements/1, &body/1)
 
   defp body(combinator) do

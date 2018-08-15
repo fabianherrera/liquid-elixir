@@ -16,6 +16,9 @@ defmodule Liquid.Combinators.Tags.Assign do
 
   @type markup :: [variable_name: String.t(), value: LexicalToken.value()]
 
+  @doc """
+  Parse a `Liquid` Assign tag.
+  """
   def tag do
     Tag.define_open("assign", fn combinator ->
       combinator
