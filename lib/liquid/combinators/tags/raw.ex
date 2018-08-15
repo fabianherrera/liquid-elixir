@@ -20,12 +20,18 @@ defmodule Liquid.Combinators.Tags.Raw do
 
   @type t :: [raw: [String.t()]]
 
+  @doc """
+  Combinator for the content inside of the Raw tag.
+  """
   def raw_content do
     General.literal_until_tag()
     |> choice([Tag.close_tag(@name), any_tag()])
     |> reduce({List, :to_string, []})
   end
 
+  @doc """
+  Parse a `Liquid` Raw tag.
+  """
   def tag do
     @name
     |> Tag.open_tag()
