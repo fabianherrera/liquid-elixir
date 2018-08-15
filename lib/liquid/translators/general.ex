@@ -9,8 +9,8 @@ defmodule Liquid.Translators.General do
 
   Simple Value Type:
   {variable: [parts: [part: "i"]]} -> "i"
-  {variable: [parts: [part: "products", part: "tittle"]]} -> "product.tittle"
-  {variable: [parts: [part: "product", part: "tittle", index: 0]]} -> "product.tittle[0]"
+  {variable: [parts: [part: "products", part: "title"]]} -> "product.title"
+  {variable: [parts: [part: "product", part: "title", index: 0]]} -> "product.title[0]"
    "string_value" -> "'string_value'"
     2 -> "2"
 
