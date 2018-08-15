@@ -25,7 +25,7 @@ defmodule Liquid.Translators.Markup do
   def literal({:params, value}), do: ": " <> literal(value, ", ")
   def literal({:assignment, [name | value]}), do: "#{name}: #{literal(value)}"
 
-  def literal({:logical, [logical_op, value]}), do: " #{logical_op} #{literal(value)}"
+  def literal({:logical, [operator, value]}), do: " #{operator} #{literal(value)}"
 
   def literal({:condition, {left, op, right}}),
     do: "#{normalize_value(left)} #{op} #{normalize_value(right)}"
