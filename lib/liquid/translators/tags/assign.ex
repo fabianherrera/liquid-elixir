@@ -1,6 +1,6 @@
 defmodule Liquid.Translators.Tags.Assign do
   @moduledoc """
-  Translate new AST to old AST for Assign tag
+  Translate new AST to old AST for Assign tag.
   """
   alias Liquid.Translators.Markup
   alias Liquid.Combinators.Tags.Assign

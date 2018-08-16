@@ -4,7 +4,7 @@ defmodule Liquid.Translators.Markup do
   """
 
   @doc """
-  Takes the New (NimbleParser) AST and creates a String and use it as a markup for the old AST
+  Takes the New (NimbleParser) AST and creates a String and use it as a markup for the old AST.
   """
   @spec literal(list() | tuple()) :: String.t()
   def literal(elem, join_with) when is_list(elem) do

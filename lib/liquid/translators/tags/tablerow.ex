@@ -1,13 +1,13 @@
 defmodule Liquid.Translators.Tags.Tablerow do
   @moduledoc """
-  Translate new AST to old AST for the Tablerow tag
+  Translate new AST to old AST for the Tablerow tag.
   """
   alias Liquid.{Block, NimbleTranslator, TableRow}
   alias Liquid.Translators.Markup
   alias Liquid.Combinators.Tags.Tablerow, as: TablerowMarkup
 
   @doc """
-  Takes the markup of the new AST, creates a `Liquid.Block` struct (old AST) and fill the keys needed to render a Tablerow tag
+  Takes the markup of the new AST, creates a `Liquid.Block` struct (old AST) and fill the keys needed to render a Tablerow tag.
   """
   @spec translate(TablerowMarkup.markup()) :: Block.t()
   def translate(

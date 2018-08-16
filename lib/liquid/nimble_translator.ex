@@ -1,6 +1,6 @@
 defmodule Liquid.NimbleTranslator do
   @moduledoc """
-  Translate NimbleParser AST to old AST
+  Translate NimbleParser AST to old AST.
   """
   alias Liquid.Template
 
@@ -25,7 +25,7 @@ defmodule Liquid.NimbleTranslator do
   }
 
   @doc """
-  Converts Nimble AST into old AST in order to use old render
+  Converts Nimble AST into old AST in order to use old render.
   """
   def translate({:ok, [""]}) do
     %Template{root: %Liquid.Block{name: :document}}
@@ -41,7 +41,7 @@ defmodule Liquid.NimbleTranslator do
   end
 
   @doc """
-  Takes the new parsed tag and match it with his translator, then return the old parser struct
+  Takes the new parsed tag and match it with his translator, then return the old parser struct.
   """
   @spec process_node(Liquid.NimbleParser.t()) :: Liquid.Tag.t() | Liquid.Block.t()
   def process_node(elem) when is_bitstring(elem), do: elem
@@ -80,7 +80,7 @@ defmodule Liquid.NimbleTranslator do
   end
 
   @doc """
-  Emulates the `Liquid` behavior for blanks blocks. Checks all the blocks and determine if it is blank or not
+  Emulates the `Liquid` behavior for blanks blocks. Checks all the blocks and determine if it is blank or not.
   """
   @spec check_blank(Liquid.Tag.t() | Liquid.Block.t()) :: Liquid.Tag.t() | Liquid.Block.t()
   def check_blank(%Liquid.Block{name: :if, nodelist: nodelist, elselist: elselist} = translated)

@@ -1,6 +1,6 @@
 defmodule Liquid.Translators.General do
   @moduledoc """
-  General purpose functions used by multiple translators
+  General purpose functions used by multiple translators.
   """
   alias Liquid.Translators.Markup
 
@@ -28,14 +28,15 @@ defmodule Liquid.Translators.General do
   end
 
   @doc """
-  Returns true when a tuple is an Else/Elseif tag
+  Returns true when a tuple is an Else/Elseif tag.
   """
   @spec else?(tuple()) :: boolean()
   def else?({key, _}) when key in [:else, :elsif], do: true
   def else?(_), do: false
 
   @doc """
-  Returns true when a tag is an conditional statement (evaluation, else, elsif)
+  Returns true when a tag is an conditional statement (evaluation, else, elsif).
+  `if` statement is excluded because it only process tags inside `if`.
   """
   @spec conditional_statement?(tuple()) :: boolean()
   def conditional_statement?({key, _}) when key in [:evaluation, :else, :elsif], do: true
