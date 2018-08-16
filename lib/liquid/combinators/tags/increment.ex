@@ -24,7 +24,7 @@ defmodule Liquid.Combinators.Tags.Increment do
   @type markup :: [variable_name: String.t()]
 
   @doc """
-  Parse a `Liquid` Increment tag
+  Parse a `Liquid` Increment tag.
   """
   def tag do
     Tag.define_open("increment", fn combinator ->

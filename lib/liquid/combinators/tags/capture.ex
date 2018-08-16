@@ -8,7 +8,7 @@ defmodule Liquid.Combinators.Tags.Capture do
     ...
     <h1>{{ heading }}</h1> <!-- then you can use the `heading` variable -->
   ```
-  Capture is useful for saving content for use later in your template, such as in a sidebar or footer
+  Capture is useful for saving content for use later in your template, such as in a sidebar or footer.
   """
   import NimbleParsec
   alias Liquid.Combinators.Tag
@@ -21,7 +21,7 @@ defmodule Liquid.Combinators.Tags.Capture do
         ]
 
   @doc """
-  Parse a `Liquid` Capture tag
+  Parse a `Liquid` Capture tag.
   """
   def tag do
     Tag.define_closed(

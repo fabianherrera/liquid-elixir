@@ -15,7 +15,7 @@ defmodule Liquid.Combinators.Tags.Ifchanged do
   alias Liquid.Combinators.Tag
 
   @doc """
-  Parse a `Liquid` IfChanged tag
+  Parse a `Liquid` IfChanged tag.
   """
   def tag do
     Tag.define_closed("ifchanged", & &1, fn combinator ->

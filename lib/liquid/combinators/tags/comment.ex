@@ -2,7 +2,7 @@ defmodule Liquid.Combinators.Tags.Comment do
   @moduledoc """
   Allows you to leave un-rendered code inside a Liquid template.
   Any text within the opening and closing comment blocks will not be output,
-  and any Liquid code within will not be executed
+  and any Liquid code within will not be executed.
   Input:
   ```
     Anything you put between {% comment %} and {% endcomment %} tags
@@ -23,7 +23,7 @@ defmodule Liquid.Combinators.Tags.Comment do
   @type markup :: [String.t() | Comment.t() | Raw.t()]
 
   @doc """
-  Parse Comment tag content
+  Parse Comment tag content.
   """
   def comment_content do
     General.literal_until_tag()
@@ -38,7 +38,7 @@ defmodule Liquid.Combinators.Tags.Comment do
   end
 
   @doc """
-  Parse a `Liquid` Comment tag
+  Parse a `Liquid` Comment tag.
   """
   def tag do
     Tag.define_closed("comment", & &1, fn combinator ->
