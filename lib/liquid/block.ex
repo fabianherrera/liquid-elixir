@@ -16,10 +16,10 @@ defmodule Liquid.Block do
           name: String.t() | nil,
           markup: String.t() | nil,
           condition: String.t() | nil,
-          parts: [],
-          iterator: [...] | [],
-          nodelist: [...] | [],
-          elselist: [...] | [],
+          parts: [...],
+          iterator: [...],
+          nodelist: [...],
+          elselist: [...],
           blank: boolean(),
           strict: boolean()
         }

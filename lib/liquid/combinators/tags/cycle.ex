@@ -57,7 +57,7 @@ defmodule Liquid.Combinators.Tags.Cycle do
   end
 
   @doc """
-  Combinator to group the values of the cycle.
+  Combinator to group the values of the cycle
   """
   def cycle_values do
     empty()
@@ -67,7 +67,7 @@ defmodule Liquid.Combinators.Tags.Cycle do
   end
 
   @doc """
-  Parse a `Liquid` Cycle tag.
+  Parse a `Liquid` Cycle tag
   """
   def tag do
     Tag.define_open("cycle", fn combinator ->

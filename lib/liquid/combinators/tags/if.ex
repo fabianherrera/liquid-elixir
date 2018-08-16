@@ -32,7 +32,7 @@ defmodule Liquid.Combinators.Tags.If do
         ]
 
   @doc """
-  Parse a `Liquid` Elsif tag.
+  Parse a `Liquid` Elsif tag
   """
   def elsif_tag do
     "elsif"
@@ -43,12 +43,12 @@ defmodule Liquid.Combinators.Tags.If do
   end
 
   @doc """
-  Parse a `Liquid` Unless tag.
+  Parse a `Liquid` Unless tag
   """
   def unless_tag, do: do_tag("unless")
 
   @doc """
-  Parse a `Liquid` If tag.
+  Parse a `Liquid` If tag
   """
   def tag, do: do_tag("if")
 
@@ -61,7 +61,7 @@ defmodule Liquid.Combinators.Tags.If do
   end
 
   @doc """
-  Combinator for the Elsif body.
+  Parse Elsif body
   """
   def body_elsif do
     empty()

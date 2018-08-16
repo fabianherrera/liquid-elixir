@@ -39,12 +39,12 @@ defmodule Liquid.Combinators.Tags.Case do
         ]
 
   @doc """
-  Parse a `Liquid` Case tag.
+  Parse a `Liquid` Case tag
   """
   def tag, do: Tag.define_closed("case", &General.conditions/1, &body/1)
 
   @doc """
-  Creates a clauses combinator to group the collections of when's tag.
+  Parse When tag clauses
   """
   def clauses do
     empty()

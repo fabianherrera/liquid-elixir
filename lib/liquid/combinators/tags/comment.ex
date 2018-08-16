@@ -23,7 +23,7 @@ defmodule Liquid.Combinators.Tags.Comment do
   @type markup :: [String.t() | Comment.t() | Raw.t()]
 
   @doc """
-  Creates a comment body combinator to group his parts.
+  Parse Comment tag content
   """
   def comment_content do
     General.literal_until_tag()
@@ -38,7 +38,7 @@ defmodule Liquid.Combinators.Tags.Comment do
   end
 
   @doc """
-  Parse a `Liquid` Comment tag.
+  Parse a `Liquid` Comment tag
   """
   def tag do
     Tag.define_closed("comment", & &1, fn combinator ->
