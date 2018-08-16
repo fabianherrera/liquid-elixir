@@ -15,7 +15,7 @@ defmodule Liquid.Include do
   """
   @spec parse(%Tag{}, %Template{}) :: {%Tag{}, %Template{}}
   def parse(%Tag{markup: markup} = tag, %Template{} = template) do
-    [parts | _] = syntax() |> Regex.scan(markup)
+    [parts | _] = Regex.scan(syntax(), markup)
     tag = parse_tag(tag, parts)
     attributes = parse_attributes(markup)
     {%{tag | attributes: attributes}, template}
