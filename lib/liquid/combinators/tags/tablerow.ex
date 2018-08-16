@@ -52,7 +52,7 @@ defmodule Liquid.Combinators.Tags.Tablerow do
         ]
 
   @doc """
-  Parse a `Liquid` Tablerow tag
+  Parse a `Liquid` Tablerow tag.
   """
   def tag do
     Tag.define_closed("tablerow", &statements/1, fn combinator ->

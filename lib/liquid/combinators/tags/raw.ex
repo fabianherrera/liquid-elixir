@@ -21,7 +21,7 @@ defmodule Liquid.Combinators.Tags.Raw do
   @type t :: [raw: [String.t()]]
 
   @doc """
-  Parse Raw tag content
+  Parse Raw tag content.
   """
   def raw_content do
     General.literal_until_tag()
@@ -30,7 +30,7 @@ defmodule Liquid.Combinators.Tags.Raw do
   end
 
   @doc """
-  Parse a `Liquid` Raw tag
+  Parse a `Liquid` Raw tag.
   """
   def tag do
     @name

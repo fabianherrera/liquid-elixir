@@ -28,7 +28,7 @@ defmodule Liquid.Combinators.Tags.Decrement do
   @type markup :: [variable_name: String.t()]
 
   @doc """
-  Parse a `Liquid` Decrement tag
+  Parse a `Liquid` Decrement tag.
   """
   def tag do
     Tag.define_open("decrement", fn combinator ->
