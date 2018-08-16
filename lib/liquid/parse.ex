@@ -1,19 +1,26 @@
 defmodule Liquid.Parse do
-  alias Liquid.Template
-  alias Liquid.Variable
-  alias Liquid.Registers
-  alias Liquid.Block
+  @moduledoc """
+  This is the Template parser and constructs the structure for the Template render
+  """
+  alias Liquid.{Block, Registers, Template, Variable}
 
-  def tokenize(<<markup::binary>>) do
+  @doc """
+  Takes a template ("string") cleans it and divides in valid tags, valid variables and other expressions
+  """
+  @spec tokenize(String.t()) :: list()
+  def tokenize(<<string::binary>>) do
     Liquid.template_parser()
-    |> Regex.split(markup, on: :all_but_first, trim: true)
+    |> Regex.split(string, on: :all_but_first, trim: true)
     |> List.flatten()
     |> Enum.filter(&(&1 != ""))
   end
 
-  @spec parse(markup :: binary(), %Template{}) :: %Template{}
+  @doc """
+  Parses the string, verify if has the correct syntax for liquid and creates a struct
+  which is composed of blocks, variables, template and documents to be rendered
+  """
   def parse("", %Template{} = template) do
-    %{template | root: %Liquid.Block{name: :document}}
+    %{template | root: %Block{name: :document}}
   end
 
   @spec parse(markup :: binary(), %Template{}) :: %Template{}
@@ -92,7 +99,7 @@ defmodule Liquid.Parse do
 
   defp parse_tokens(<<string::binary>>, tag_name) do
     case Registers.lookup(tag_name) do
-      {mod, Liquid.Block} ->
+      {mod, Block} ->
         try do
           mod.tokenize(string)
         rescue

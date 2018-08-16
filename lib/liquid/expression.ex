@@ -1,6 +1,8 @@
 defmodule Liquid.Expression do
-  alias Liquid.Variable
-  alias Liquid.RangeLookup
+  @moduledoc """
+  This module transform strings to expressions
+  """
+  alias Liquid.{RangeLookup, Variable}
 
   @literal_list [nil, "nil", "null", "", "true", "false", "blank", "empty"]
   @literals %{
@@ -14,6 +16,18 @@ defmodule Liquid.Expression do
     "empty" => :empty?
   }
 
+  @doc """
+  Takes a markup `(string)`, if the string is in the expression list transforms it in a valid expression,
+  if not it creates a variable struct `Liquid.Variable.create(markup)`
+
+  ## Example:
+      iex> Liquid.Expression.parse("true")
+      true
+
+      iex> Liquid.Expression.parse("hello")
+      %Liquid.Variable{filters: [], literal: nil, name: "hello", parts: ["hello"]}
+  """
+  @spec parse(String.t()) :: String.t() | %Variable{}
   def parse(markup) when markup in @literal_list, do: @literals[markup]
 
   def parse(markup) do

@@ -1,4 +1,6 @@
 defmodule Liquid.Block do
+  @moduledoc "A module to define Block struct of tags, variables used by parse"
+
   defstruct name: nil,
             markup: nil,
             condition: nil,
@@ -29,6 +31,7 @@ defmodule Liquid.Block do
     %Block{name: name |> String.to_atom(), markup: rest}
   end
 
+  @doc "Splits a standard Block structure from a markup"
   def split(nodes), do: split(nodes, [:else])
   def split(%Block{nodelist: nodelist}, namelist), do: split(nodelist, namelist)
 

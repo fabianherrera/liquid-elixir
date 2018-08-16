@@ -478,6 +478,7 @@ defmodule Liquid.Filters do
   @doc """
   Recursively pass through all of the input filters applying them
   """
+  @spec filter(list(), String.t()) :: String.t() | list()
   def filter([], value), do: value
 
   def filter([filter | rest], value) do
@@ -485,7 +486,7 @@ defmodule Liquid.Filters do
 
     args =
       for arg <- args do
-        Liquid.quote_matcher() |> Regex.replace(arg, "")
+        Regex.replace(Liquid.quote_matcher(), arg, "")
       end
 
     functions = Functions.__info__(:functions)
@@ -523,7 +524,7 @@ defmodule Liquid.Filters do
 
   @doc """
   Fetches the current custom filters and extends with the functions from passed module
-  NB: you can't override the standard filters though
+  You can override the standard filters with custom filters
   """
   def add_filters(module) do
     custom_filters = Application.get_env(:liquid, :custom_filters) || %{}

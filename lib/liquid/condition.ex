@@ -1,36 +1,38 @@
 defmodule Liquid.Condition do
+  @moduledoc """
+  Handles liquid conditional operators and its variables (left and right side of conditionals)
+  """
+
   defstruct left: nil, operator: nil, right: nil, child_operator: nil, child_condition: nil
 
-  alias Liquid.Context, as: Context
-  alias Liquid.Variable, as: Variable
-  alias Liquid.Condition, as: Cond
-  alias Liquid.Variable, as: Vars
+  alias Liquid.{Condition, Context, Variable}
 
+  @doc "Creates a list of conditional and vars including positioning of each element"
   def create([h | t]) do
     head = create(h)
     create(head, t)
   end
 
   def create(<<left::binary>>) do
-    left = Vars.create(left)
-    %Cond{left: left}
+    left = Variable.create(left)
+    %Condition{left: left}
   end
 
   def create({<<left::binary>>, operator, <<right::binary>>}) do
-    create({left |> Vars.create(), operator, right |> Vars.create()})
+    create({Variable.create(left), operator, Variable.create(right)})
   end
 
   def create({%Variable{} = left, operator, <<right::binary>>}) do
-    create({left, operator, right |> Vars.create()})
+    create({left, operator, Variable.create(right)})
   end
 
   def create({<<left::binary>>, operator, %Variable{} = right}) do
-    create({left |> Vars.create(), operator, right})
+    create({Variable.create(left), operator, right})
   end
 
   def create({%Variable{} = left, operator, %Variable{} = right}) do
     operator = String.to_atom(operator)
-    %Cond{left: left, operator: operator, right: right}
+    %Condition{left: left, operator: operator, right: right}
   end
 
   def create(condition, []), do: condition
@@ -41,21 +43,22 @@ defmodule Liquid.Condition do
     join(join, condition, right)
   end
 
-  def join(operator, condition, {_, _, _} = right), do: join(operator, condition, right |> create)
+  def join(operator, condition, {_, _, _} = right), do: join(operator, condition, create(right))
 
-  def join(operator, condition, %Cond{} = right) do
+  def join(operator, condition, %Condition{} = right) do
     %{right | child_condition: condition, child_operator: operator}
   end
 
-  def evaluate(%Cond{} = condition), do: evaluate(condition, %Context{})
+  @doc "Evaluates conditions due a given context"
+  def evaluate(%Condition{} = condition), do: evaluate(condition, %Context{})
 
-  def evaluate(%Cond{left: left, right: nil} = condition, %Context{} = context) do
-    {current, context} = Vars.lookup(left, context)
+  def evaluate(%Condition{left: left, right: nil} = condition, %Context{} = context) do
+    {current, context} = Variable.lookup(left, context)
     eval_child(!!current, condition.child_operator, condition.child_condition, context)
   end
 
   def evaluate(
-        %Cond{left: left, right: right, operator: operator} = condition,
+        %Condition{left: left, right: right, operator: operator} = condition,
         %Context{} = context
       ) do
     {left, _} = Variable.lookup(left, context)
@@ -119,13 +122,13 @@ defmodule Liquid.Condition do
   defp contains(_, nil), do: false
 
   defp contains(<<left::binary>>, <<right::binary>>),
-    do: contains(left |> to_charlist, right |> to_charlist)
+    do: contains(to_charlist(left), to_charlist(right))
 
   defp contains(left, <<right::binary>>) when is_list(left),
-    do: contains(left, right |> to_charlist)
+    do: contains(left, to_charlist(right))
 
   defp contains(<<left::binary>>, right) when is_list(right),
-    do: contains(left |> to_charlist, right)
+    do: contains(to_charlist(left), right)
 
   defp contains(left, right) when is_list(left) and not is_list(right),
     do: contains(left, [right])
