@@ -31,13 +31,13 @@ defmodule Liquid.Include do
   defp parse_tag(%Tag{} = tag, parts) do
     case parts do
       [_, name] ->
-        %{tag | parts: [name: name |> Variable.create()]}
+        %{tag | parts: [name: Variable.create(name)]}
 
       [_, name, " with " <> _, v] ->
-        %{tag | parts: [name: name |> Variable.create(), variable: v |> Variable.create()]}
+        %{tag | parts: [name: Variable.create(name), variable: Variable.create(v)]}
 
       [_, name, " for " <> _, v] ->
-        %{tag | parts: [name: name |> Variable.create(), foreach: v |> Variable.create()]}
+        %{tag | parts: [name: Variable.create(name), foreach: Variable.create(v)]}
     end
   end
 

@@ -4,19 +4,16 @@ defmodule Liquid.Template do
   """
 
   defstruct root: nil, presets: %{}, blocks: [], errors: []
-  alias Liquid.{Template, Render, Context}
+  alias Liquid.{Context, Render, Template}
 
   @doc """
   Function that renders passed template and context to string
   """
-  @file "render.ex"
-  @spec render(Liquid.Template, map) :: String.t()
+  @spec render(%Template{}, %Context{}) :: {atom(), String.t(), %Context{}}
   def render(t, c \\ %{})
 
   def render(%Template{} = t, %Context{} = c) do
-    c = %{c | blocks: t.blocks}
-    c = %{c | presets: t.presets}
-    c = %{c | template: t}
+    c = %{c | blocks: t.blocks, presets: t.presets, template: t}
     Render.render(t, c)
   end
 
@@ -57,7 +54,7 @@ defmodule Liquid.Template do
   @doc """
   Function to parse markup with given presets (if any)
   """
-  @spec parse(String.t(), map) :: Liquid.Template
+  @spec parse(String.t(), %{}) :: %Template{}
   def parse(value, presets \\ %{})
 
   def parse(<<markup::binary>>, presets) do

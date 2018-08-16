@@ -18,14 +18,14 @@ defmodule Liquid.Appointer do
 
   @doc "Assigns context for Variable and filters"
   def assign(%Variable{literal: literal, parts: [], filters: filters}, context) do
-    {literal, filters |> assign_context(context.assigns)}
+    {literal, assign_context(filters, context.assigns)}
   end
 
   def assign(
         %Variable{literal: nil, parts: parts, filters: filters},
         %{assigns: assigns} = context
       ) do
-    {match(context, parts), filters |> assign_context(assigns)}
+    {match(context, parts), assign_context(filters, assigns)}
   end
 
   @doc "Verifies matches between Variable and filters, data types and parts"

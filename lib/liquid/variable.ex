@@ -10,10 +10,10 @@ defmodule Liquid.Variable do
     resolves data from `Liquid.Variable.parse/1` and creates a variable struct
   """
   def create(markup) when is_binary(markup) do
-    [name | filters] = markup |> parse
+    [name | filters] = parse(markup)
     name = String.trim(name)
     variable = %Liquid.Variable{name: name, filters: filters}
-    parsed = Liquid.Appointer.parse_name(name)
+    parsed = Appointer.parse_name(name)
 
     if String.contains?(name, "%") do
       raise Liquid.SyntaxError, message: "Invalid variable name"

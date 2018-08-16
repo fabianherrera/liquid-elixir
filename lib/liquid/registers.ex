@@ -38,7 +38,7 @@ defmodule Liquid.Registers do
   """
   @spec lookup(String.t() | atom(), %{}) :: %{}
   def lookup(name) when is_binary(name) do
-    name |> String.to_atom() |> lookup
+    String.to_atom(name) |> lookup
   end
 
   def lookup(name) when is_atom(name) do
@@ -59,7 +59,7 @@ defmodule Liquid.Registers do
   def lookup(_), do: nil
 
   def lookup(name, context) when is_binary(name) do
-    name |> String.to_atom() |> lookup(context)
+    String.to_atom(name) |> lookup(context)
   end
 
   def lookup(name, %{extra_tags: extra_tags}) do
@@ -80,8 +80,6 @@ defmodule Liquid.Registers do
   """
   @spec register(String.t(), String.t(), String.t()) :: %{}
   def register(name, module, type) do
-    custom_tags = Application.get_env(:liquid, :extra_tags) || %{}
-
     custom_tags =
       Map.merge(Application.get_env(:liquid, :extra_tags, %{}), %{
         String.to_atom(name) => {module, type}

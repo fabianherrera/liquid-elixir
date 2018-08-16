@@ -68,8 +68,8 @@ defmodule Liquid.RangeLookup do
   end
 
   defp build_range(left, right) do
-    left = left |> to_string |> String.to_integer()
-    right = right |> to_string |> String.to_integer()
+    left = to_string(left) |> String.to_integer()
+    right = to_string(right) |> String.to_integer()
 
     Enum.to_list(left..right)
   end
