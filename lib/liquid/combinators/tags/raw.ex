@@ -23,6 +23,7 @@ defmodule Liquid.Combinators.Tags.Raw do
   @doc """
   Creates a list of string, this is to emulate the behaviuor of the `Liquid` raw tag
   """
+  @spec raw_content() :: NimbleParsec.t()
   def raw_content do
     General.literal_until_tag()
     |> choice([Tag.close_tag(@name), any_tag()])
@@ -31,8 +32,9 @@ defmodule Liquid.Combinators.Tags.Raw do
 
   @doc """
   Parse a `Liquid` Raw tag, create a Keyword list where the key is the name of the tag 
-  (raw in this case) and the value is  the result of the `Liquid.Combinators.Tags.Raw.raw_content` combinator.
+  (raw in this case) and the value is  the result of the `raw_content()` combinator.
   """
+  @spec tag() :: NimbleParsec.t()
   def tag do
     @name
     |> Tag.open_tag()

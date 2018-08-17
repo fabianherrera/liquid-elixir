@@ -14,5 +14,6 @@ defmodule Liquid.Combinators.Tags.Generic do
   (else in this case) and the value is another keyword list, that represent the internal 
   structure of the tag.
   """
+  @spec else_tag() :: NimbleParsec.t()
   def else_tag, do: Tag.define_inverse_open("else")
 end

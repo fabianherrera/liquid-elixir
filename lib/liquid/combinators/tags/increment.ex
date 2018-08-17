@@ -28,6 +28,7 @@ defmodule Liquid.Combinators.Tags.Increment do
   (increment in this case) and the value is another keyword list, that represent the internal 
   structure of the tag.
   """
+  @spec tag() :: NimbleParsec.t()
   def tag do
     Tag.define_open("increment", fn combinator ->
       parsec(combinator, :variable_name)

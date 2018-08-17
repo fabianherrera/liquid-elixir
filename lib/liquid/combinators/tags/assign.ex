@@ -21,6 +21,7 @@ defmodule Liquid.Combinators.Tags.Assign do
   (assign in this case) and the value is another keyword list, that represent the internal 
   structure of the tag.
   """
+  @spec tag() :: NimbleParsec.t()
   def tag do
     Tag.define_open("assign", fn combinator ->
       combinator

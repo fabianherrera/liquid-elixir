@@ -32,8 +32,10 @@ defmodule Liquid.Combinators.Tags.If do
         ]
 
   @doc """
-  Parse a `Liquid` Elsif tag.
+  Parse a `Liquid` Elsif tag, create a Keyword list where the key is the name of the tag 
+  (elsif in this case) and the value is the result of the `body_elsif()` combinator .
   """
+  @spec elsif_tag() :: NimbleParsec.t()
   def elsif_tag do
     "elsif"
     |> Tag.open_tag(&predicate/1)
@@ -45,8 +47,9 @@ defmodule Liquid.Combinators.Tags.If do
   @doc """
   Parse a `Liquid` Unless tag, create a Keyword list where the key is the name of the tag 
   (unless in this case) and the value is another keyword list, that represent the internal 
-  structure of the tag..
+  structure of the tag.
   """
+  @spec unless_tag() :: NimbleParsec.t()
   def unless_tag, do: do_tag("unless")
 
   @doc """
@@ -54,6 +57,7 @@ defmodule Liquid.Combinators.Tags.If do
   (if in this case) and the value is another keyword list, that represent the internal 
   structure of the tag.
   """
+  @spec tag() :: NimbleParsec.t()
   def tag, do: do_tag("if")
 
   defp body do
@@ -65,8 +69,9 @@ defmodule Liquid.Combinators.Tags.If do
   end
 
   @doc """
-  Parse a Elsif body, create a Keyword list with key `body:` and the value is another keyword list, that behaves like a `if` body.
+  Parse a Elsif body, create a Keyword list with key `body:` and the value is another keyword list, that behaves like a if body.
   """
+  @spec body_elsif() :: NimbleParsec.t()
   def body_elsif do
     empty()
     |> choice([

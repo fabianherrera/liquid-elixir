@@ -56,6 +56,7 @@ defmodule Liquid.Combinators.Tags.Tablerow do
   (tablerow in this case) and the value is another keyword list, that represent the internal 
   structure of the tag.
   """
+  @spec tag() :: NimbleParsec.t()
   def tag do
     Tag.define_closed("tablerow", &statements/1, fn combinator ->
       optional(combinator, parsec(:__parse__) |> tag(:body))

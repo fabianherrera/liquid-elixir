@@ -32,6 +32,7 @@ defmodule Liquid.Combinators.Tags.Decrement do
   (decrement in this case) and the value is another keyword list, that represent the internal 
   structure of the tag.
   """
+  @spec tag() :: NimbleParsec.t()
   def tag do
     Tag.define_open("decrement", fn combinator ->
       parsec(combinator, :variable_name)

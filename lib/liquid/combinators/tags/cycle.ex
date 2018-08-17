@@ -60,6 +60,7 @@ defmodule Liquid.Combinators.Tags.Cycle do
   Combinator to group the values of the cycle, this creates a regular list contaning the results 
   of the `Liquid.Combinators.LexicalToken.value_definition()` 's combinators.
   """
+  @spec cycle_values() :: NimbleParsec.t()
   def cycle_values do
     empty()
     |> times(parsec(:value_definition), min: 1)
@@ -72,6 +73,7 @@ defmodule Liquid.Combinators.Tags.Cycle do
   (cycle in this case) and the value is another keyword list, that represent the internal 
   structure of the tag.
   """
+  @spec tag() :: NimbleParsec.t()
   def tag do
     Tag.define_open("cycle", fn combinator ->
       combinator
