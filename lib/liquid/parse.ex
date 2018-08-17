@@ -1,11 +1,11 @@
 defmodule Liquid.Parse do
   @moduledoc """
-  This is the Template parser and constructs the structure for the Template render
+  This is the Template parser and constructs the structure for the Template render.
   """
   alias Liquid.{Block, Registers, Template, Variable}
 
   @doc """
-  Takes a template ("string") cleans it and divides in valid tags, valid variables and other expressions
+  Takes a template ("string") cleans it and divides in valid tags, valid variables and other expressions.
   """
   @spec tokenize(String.t()) :: list()
   def tokenize(<<string::binary>>) do
@@ -17,7 +17,7 @@ defmodule Liquid.Parse do
 
   @doc """
   Parses the string, verify if has the correct syntax for liquid and creates a struct
-  which is composed of blocks, variables, template and documents to be rendered
+  which is composed of blocks, variables, template and documents to be rendered.
   """
   def parse("", %Template{} = template) do
     %{template | root: %Block{name: :document}}

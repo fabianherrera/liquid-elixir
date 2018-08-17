@@ -59,7 +59,7 @@ defmodule Liquid.TableRow do
   def syntax, do: ~r/(\w+)\s+in\s+(#{Liquid.quoted_fragment()}+)/
 
   @doc """
-  Implementation of 'TableRaw' parse operations. Parses and organises markup to set up iterator
+  Implementation of 'TableRaw' parse operations. Parses and organises markup to set up iterator.
   """
   @spec parse(%Block{}, %Template{}) :: {%Block{}, %Template{}}
   def parse(%Block{nodelist: nodelist} = block, %Liquid.Template{} = t) do
@@ -107,7 +107,7 @@ defmodule Liquid.TableRow do
 
   @doc """
   Implementation of 'TableRaw' render operations. Iterates through pre-set data and appends it to rendered output list
-  Adds the HTML table rows and cols depending on the initial `cols` parameter
+  Adds the HTML table rows and cols depending on the initial `cols` parameter.
   """
   @spec render(list(), %Block{}, %Context{}) :: {list(), %Context{}}
   def render(output, %Block{iterator: it} = block, %Context{} = context) do

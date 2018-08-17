@@ -23,7 +23,7 @@ defmodule Liquid.Decrement do
   alias Liquid.{Tag, Template, Context, Variable}
 
   @doc """
-  Identity function. Implementation of Decrement parse operations
+  Identity function. Implementation of Decrement parse operations.
   """
   @spec parse(%Tag{}, %Template{}) :: {%Tag{}, %Template{}}
   def parse(%Tag{} = tag, %Template{} = template) do
@@ -31,7 +31,7 @@ defmodule Liquid.Decrement do
   end
 
   @doc """
-  Implementation of Decrement render operations
+  Implementation of Decrement render operations.
   """
   @spec render(list(), %Tag{}, %Context{}) :: {list(), %Context{}}
   def render(output, %Tag{markup: markup}, %Context{} = context) do

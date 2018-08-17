@@ -34,7 +34,7 @@ defmodule Liquid.Raw do
   end
 
   @doc """
-  Implementation of 'Raw' render operations
+  Implementation of 'Raw' render operations.
   """
   @spec render(list(), %Block{}, %Context{}) :: {list(), %Context{}}
   def render(output, %Block{} = block, context) do

@@ -1,7 +1,7 @@
 defmodule Liquid.Registers do
   @moduledoc """
   Provides a register of tags, returns tags by name.
-  Also allows add custom tags
+  Also allows add custom tags.
   """
   @default_tags %{
     continue: {Liquid.Continue, Liquid.Tag},
@@ -76,7 +76,7 @@ defmodule Liquid.Registers do
   def lookup(_, _), do: nil
 
   @doc """
-  Add tag to Registers
+  Add tag to Registers.
   """
   @spec register(String.t(), String.t(), String.t()) :: %{}
   def register(name, module, type) do

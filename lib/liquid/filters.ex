@@ -1,6 +1,6 @@
 defmodule Liquid.Filters do
   @moduledoc """
-  Applies a chain of filters passed from Liquid.Variable
+  Applies a chain of filters passed from Liquid.Variable.
   """
   import Kernel, except: [round: 1, abs: 1]
   import Liquid.Utils, only: [to_number: 1]
@@ -514,7 +514,7 @@ defmodule Liquid.Filters do
   end
 
   @doc """
-  Add filter modules mentioned in extra_filter_modules env variable
+  Add filter modules mentioned in extra_filter_modules env variable.
   """
   def add_filter_modules do
     for filter_module <- Application.get_env(:liquid, :extra_filter_modules) || [] do
@@ -524,7 +524,7 @@ defmodule Liquid.Filters do
 
   @doc """
   Fetches the current custom filters and extends with the functions from passed module
-  You can override the standard filters with custom filters
+  You can override the standard filters with custom filters.
   """
   def add_filters(module) do
     custom_filters = Application.get_env(:liquid, :custom_filters) || %{}

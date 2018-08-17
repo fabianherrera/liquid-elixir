@@ -1,5 +1,5 @@
 defprotocol Blank do
-  @doc "Returns true when blank"
+  @doc "Returns true when blank."
   def blank?(data)
 end
 

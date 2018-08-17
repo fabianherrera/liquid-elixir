@@ -13,7 +13,7 @@ defmodule Liquid.Unless do
   alias Liquid.{Block, Condition, Context, IfElse, Render, Tag, Template}
 
   @doc """
-  Implementation of 'Unless' parse operations
+  Implementation of 'Unless' parse operations.
   """
   @spec parse(%Block{}, %Template{}) :: {%Block{}, %Template{}}
   def parse(%Block{} = block, %Template{} = t) do
@@ -21,7 +21,7 @@ defmodule Liquid.Unless do
   end
 
   @doc """
-  Implementation of 'Unless' render operations
+  Implementation of 'Unless' render operations.
   """
   @spec render(list(), %Tag{}, %Context{}) :: {list(), %Context{}}
   def render(output, %Tag{}, context) do

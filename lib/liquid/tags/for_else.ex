@@ -51,7 +51,7 @@ defmodule Liquid.ForElse do
 
   defmodule Iterator do
     @moduledoc """
-    Defines Iterator struct used by 'For' in order to iterates over an list or collection
+    Defines Iterator struct used by 'For' in order to iterates over an list or collection.
     """
     defstruct name: nil,
               collection: nil,
@@ -63,12 +63,12 @@ defmodule Liquid.ForElse do
   end
 
   @doc """
-  Returns a regex for tag For expressions syntax validation
+  Returns a regex for tag For expressions syntax validation.
   """
   def syntax, do: ~r/(\w+)\s+in\s+(#{Liquid.quoted_fragment()}+)\s*(reversed)?/
 
   @doc """
-  Implmements 'For' parse operations
+  Implmements 'For' parse operations.
   """
   @spec parse(%Block{}, %Template{}) :: {%Block{}, %Template{}}
   def parse(%Block{nodelist: nodelist} = block, %Template{} = t) do
@@ -114,7 +114,7 @@ defmodule Liquid.ForElse do
   end
 
   @doc """
-  Implements 'For' render operations
+  Implements 'For' render operations.
   """
   @spec render(list(), %Block{}, %Context{}) :: {list(), %Block{}, %Context{}}
   def render(output, %Block{iterator: it} = block, %Context{} = context) do
@@ -282,13 +282,13 @@ defmodule Liquid.Break do
   alias Liquid.{Context, Tag, Template}
 
   @doc """
-  Implementation of 'Break' parse operations
+  Implementation of 'Break' parse operations.
   """
   @spec parse(%Tag{}, %Template{}) :: {%Tag{}, %Template{}}
   def parse(%Tag{} = tag, %Template{} = template), do: {tag, template}
 
   @doc """
-  Implementation of 'Break' render operations
+  Implementation of 'Break' render operations.
   """
   @spec render(list(), %Tag{}, %Context{}) :: {list(), %Context{}}
   def render(output, %Tag{}, %Context{} = context) do
@@ -317,13 +317,13 @@ defmodule Liquid.Continue do
   alias Liquid.{Context, Tag, Template}
 
   @doc """
-  Implementation of 'Continue' parse operations
+  Implementation of 'Continue' parse operations.
   """
   @spec parse(%Tag{}, %Template{}) :: {%Tag{}, %Template{}}
   def parse(%Tag{} = tag, template), do: {tag, template}
 
   @doc """
-  Implementation of 'Continue' render operations
+  Implementation of 'Continue' render operations.
   """
   @spec render(list(), %Tag{}, %Context{}) :: {list(), %Context{}}
   def render(output, %Tag{}, %Context{} = context) do
@@ -333,7 +333,7 @@ end
 
 defmodule Liquid.IfChanged do
   @moduledoc """
-  Helper module to verifies whether Context.registers has changed before render or parse operations
+  Helper module to verifies whether Context.registers has changed before render or parse operations.
   """
   alias Liquid.{Template, Block, Context}
 
@@ -344,7 +344,7 @@ defmodule Liquid.IfChanged do
   def parse(%Block{} = block, %Template{} = t), do: {block, t}
 
   @doc """
-  Implementation of 'IFChanged' render operations. Updates registers before render If Changed
+  Implementation of 'IFChanged' render operations. Updates registers before render If Changed.
   """
   @spec render(list(), %Block{}, %Context{}) ::
           {list(), %Context{}} | {list(), %Block{}, %Context{}}

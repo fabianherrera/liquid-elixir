@@ -22,18 +22,18 @@ defmodule Liquid.Case do
   alias Liquid.{Block, Condition, Tag, Template, Variable}
 
   @doc """
-  Returns a regex for Case expressions syntax validation
+  Returns a regex for Case expressions syntax validation.
   """
   def syntax, do: ~r/(#{Liquid.quoted_fragment()})/
 
   @doc """
-  Returns a regex for When expressions syntax validation
+  Returns a regex for When expressions syntax validation.
   """
   def when_syntax,
     do: ~r/(#{Liquid.quoted_fragment()})(?:(?:\s+or\s+|\s*\,\s*)(#{Liquid.quoted_fragment()}.*))?/
 
   @doc """
-  Implementation of Capture parse operations
+  Implementation of Capture parse operations.
   """
   @spec parse(%Block{}, %Template{}) :: {%Block{}, %Template{}}
   def parse(%Block{markup: markup} = b, %Template{} = t) do
@@ -80,7 +80,7 @@ defmodule Liquid.When do
   alias Liquid.{Tag, Template}
 
   @doc """
-  Identity function. Implementation of When (sub-component of Case) parse operations
+  Identity function. Implementation of When (sub-component of Case) parse operations.
   """
   @spec parse(%Tag{}, %Template{}) :: {%Tag{}, %Template{}}
   def parse(%Tag{} = tag, %Template{} = t), do: {tag, t}

@@ -33,7 +33,7 @@ defmodule Liquid.HTML do
   @escape_regex ~r/["><']|&(?!([a-zA-Z]+|(#\d+));)/
 
   @doc """
-  Escapes the given HTML just once
+  Escapes the given HTML just once.
   """
   @spec html_escape_once(String.t()) :: String.t()
   def html_escape_once(data) when is_binary(data) do
@@ -49,11 +49,11 @@ end
 
 defmodule Liquid.Utils do
   @moduledoc """
-  A number of useful utils for liquid parser/filters
+  A number of useful utils for liquid parser/filters.
   """
 
   @doc """
-  Converts various input to number for further processing
+  Converts various input to number for further processing.
   """
   @spec to_number(String.t() | number()) :: number()
   def to_number(nil), do: 0

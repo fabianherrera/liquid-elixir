@@ -1,6 +1,6 @@
 defmodule Liquid.Include do
   @moduledoc """
-  Include allows templates to relate with other templates
+  Include allows templates to relate with other templates.
   """
   alias Liquid.{Context, FileSystem, Tag, Template, Variable}
 

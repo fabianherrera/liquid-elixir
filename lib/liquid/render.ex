@@ -1,12 +1,12 @@
 defmodule Liquid.Render do
   @moduledoc """
   Cleans, prepares assign,context and calls the render function
-  inside tags/blocks
+  inside tags/blocks.
   """
   alias Liquid.{Block, Context, Registers, Tag, Template, Variable}
 
   @doc """
-  Takes the template structure with all his parts that comes from the parser (context, variable, tags and blocks) and creates an output to render
+  Takes the template structure with all his parts that comes from the parser (context, variable, tags and blocks) and creates an output to render.
   """
   @spec render(%Template{}, %Context{}) :: {:ok, String.t(), %Context{}}
   def render(%Template{root: root}, %Context{} = context) do
@@ -49,7 +49,7 @@ defmodule Liquid.Render do
   end
 
   @doc """
-  Takes a list transforms it and outputs a text from that list
+  Takes a list transforms it and outputs a text from that list.
   """
   def to_text(list), do: list |> List.flatten() |> Enum.reverse() |> Enum.join()
 

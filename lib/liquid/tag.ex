@@ -1,12 +1,12 @@
 defmodule Liquid.Tag do
   @moduledoc """
-  Defines and create the tag structures 
+  Defines and create the tag structures .
   """
   defstruct name: nil, markup: nil, parts: [], attributes: [], blank: false
   alias Liquid.Tag
 
   @doc """
-  Create a new tag struct
+  Create a new tag struct.
   """
   @spec create(String.t()) :: %Tag{}
   def create(markup) do

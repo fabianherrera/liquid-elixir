@@ -38,7 +38,7 @@ defmodule Liquid.Cycle do
   #  @except_colon_parser ~r/(?:[^:"']|"[^"]*"|'[^']*')+/
 
   @doc """
-    Implementation of Cycle parse operations. Sets up the cycle name and variables to cycle through
+    Implementation of Cycle parse operations. Sets up the cycle name and variables to cycle through.
   """
   @spec parse(%Tag{}, %Template{}) :: {%Tag{}, %Template{}}
   def parse(%Tag{markup: markup} = tag, %Template{} = template) do
@@ -48,7 +48,7 @@ defmodule Liquid.Cycle do
   end
 
   @doc """
-  Implementation of Cycle render operations. Returns a corresponding cycle value and increments the cycle counter
+  Implementation of Cycle render operations. Returns a corresponding cycle value and increments the cycle counter.
   """
   @spec render(list(), %Tag{}, %Context{}) :: {list(), %Context{}}
   def render(output, %Tag{parts: [name | values]}, %Context{} = context) do

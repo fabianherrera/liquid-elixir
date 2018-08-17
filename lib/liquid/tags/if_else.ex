@@ -18,7 +18,7 @@ defmodule Liquid.ElseIf do
   ```
   """
   @doc """
-  Implementation of 'ElseIf' parse operations
+  Implementation of 'ElseIf' parse operations.
   """
   alias Liquid.{Context, Tag, Template}
 
@@ -26,14 +26,14 @@ defmodule Liquid.ElseIf do
   def parse(%Tag{} = tag, %Template{} = t), do: {tag, t}
 
   @doc """
-  Implementation of 'ElseIf' render operations
+  Implementation of 'ElseIf' render operations.
   """
   def render(_, _, _, _), do: raise("should never get here")
 end
 
 defmodule Liquid.Else do
   @moduledoc """
-  Executes a block of code only if a certain condition is true. If this condition is false executes else block of code
+  Executes a block of code only if a certain condition is true. If this condition is false executes else block of code.
   Input:
   ```
     {% if product.title == 'Awesome Shoes' %}
@@ -49,7 +49,7 @@ defmodule Liquid.Else do
   """
 
   @doc """
-  Identity function. Implementation of 'Else' parse operations
+  Identity function. Implementation of 'Else' parse operations.
   """
   alias Liquid.{Context, Tag, Template}
 
@@ -57,7 +57,7 @@ defmodule Liquid.Else do
   def parse(%Tag{} = tag, %Template{} = t), do: {tag, t}
 
   @doc """
-  Implementation of 'ElseIf' render operations
+  Implementation of 'ElseIf' render operations.
   """
   def render(_, _, _, _), do: raise("should never get here")
 end
@@ -77,13 +77,13 @@ defmodule Liquid.IfElse do
   alias Liquid.{Block, Condition, Context, Render, Tag, Template}
 
   @doc """
-  Returns a regex for IF/Else expressions syntax validation
+  Returns a regex for IF/Else expressions syntax validation.
   """
   def syntax,
     do: ~r/(#{Liquid.quoted_fragment()})\s*([=!<>a-z_]+)?\s*(#{Liquid.quoted_fragment()})?/
 
   @doc """
-  Returns a regex for IF/Else expressions and operators validation
+  Returns a regex for IF/Else expressions and operators validation.
   """
   def expressions_and_operators do
     ~r/(?:\b(?:\s?and\s?|\s?or\s?)\b|(?:\s*(?!\b(?:\s?and\s?|\s?or\s?)\b)(?:#{
@@ -92,7 +92,7 @@ defmodule Liquid.IfElse do
   end
 
   @doc """
-  Implementation of 'If/Else' parse operations
+  Implementation of 'If/Else' parse operations.
   """
   @spec parse(%Block{}, %Template{}) :: {%Block{}, %Template{}}
   def parse(%Block{} = block, %Template{} = t) do

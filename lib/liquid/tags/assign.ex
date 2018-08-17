@@ -4,7 +4,7 @@ defmodule Liquid.Assign do
   ```
     {% assign foo = 'monkey' %}
   ```
-  User can then use the variables later in the page
+  User can then use the variables later in the page.
   ```
     {{ foo }}
   ```
@@ -14,13 +14,13 @@ defmodule Liquid.Assign do
   def syntax, do: ~r/([\w\-]+)\s*=\s*(.*)\s*/
 
   @doc """
-  Implementation of `assign` parse operations
+  Implementation of `assign` parse operations.
   """
   @spec parse(%Tag{}, %Template{}) :: {%Tag{}, %Template{}}
   def parse(%Tag{} = tag, %Template{} = template), do: {%{tag | blank: true}, template}
 
   @doc """
-  Implementation of `assign` render operations
+  Implementation of `assign` render operations.
   """
   @spec render(list(), %Tag{}, %Context{}) :: {list(), %Context{}}
   def render(output, %Tag{markup: markup}, %Context{} = context) do

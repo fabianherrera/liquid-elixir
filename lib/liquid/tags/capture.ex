@@ -13,7 +13,7 @@ defmodule Liquid.Capture do
   alias Liquid.{Block, Template, Context}
 
   @doc """
-  Implementation of Capture parse operations
+  Implementation of Capture parse operations.
   """
   @spec parse(%Block{}, %Template{}) :: {%Block{}, %Template{}}
   def parse(%Block{} = block, %Template{} = template) do
@@ -21,7 +21,7 @@ defmodule Liquid.Capture do
   end
 
   @doc """
-  Implementation of Capture render operations
+  Implementation of Capture render operations.
   """
   @spec render(list(), %Block{}, %Context{}) ::
           {list(), %Context{}} | {list(), %Block{}, %Context{}}

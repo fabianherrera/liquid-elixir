@@ -19,7 +19,7 @@ defmodule Liquid.Increment do
   alias Liquid.{Context, Variable, Tag, Template}
 
   @doc """
-  Implementation of 'Increment' parse operations
+  Implementation of 'Increment' parse operations.
   """
   @spec parse(%Tag{}, %Template{}) :: {%Tag{}, %Template{}}
   def parse(%Tag{} = tag, %Template{} = template) do
@@ -27,7 +27,7 @@ defmodule Liquid.Increment do
   end
 
   @doc """
-  Implementation of 'Increment' render operations
+  Implementation of 'Increment' render operations.
   """
   @spec render(list(), %Tag{}, %Context{}) :: {list(), %Context{}}
   def render(output, %Tag{markup: markup}, %Context{} = context) do
