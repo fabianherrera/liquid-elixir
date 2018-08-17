@@ -17,7 +17,9 @@ defmodule Liquid.Combinators.Tags.Assign do
   @type markup :: [variable_name: String.t(), value: LexicalToken.value()]
 
   @doc """
-  Parse a `Liquid` Assign tag.
+  Parse a `Liquid` Assign tag, create a Keyword list where the key is the name of the tag 
+  (assign in this case) and the value is another keyword list, that represent the internal 
+  structure of the tag.
   """
   def tag do
     Tag.define_open("assign", fn combinator ->

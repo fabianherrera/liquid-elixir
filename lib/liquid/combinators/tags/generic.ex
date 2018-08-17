@@ -10,7 +10,9 @@ defmodule Liquid.Combinators.Tags.Generic do
   @type else_tag :: [else: Liquid.NimbleParser.t()]
 
   @doc """
-  Parse a `Liquid` Else tag.
+  Parse a `Liquid` Else tag, create a Keyword list where the key is the name of the tag 
+  (else in this case) and the value is another keyword list, that represent the internal 
+  structure of the tag.
   """
   def else_tag, do: Tag.define_inverse_open("else")
 end

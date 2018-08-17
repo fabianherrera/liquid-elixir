@@ -21,7 +21,9 @@ defmodule Liquid.Combinators.Tags.Capture do
         ]
 
   @doc """
-  Parse a `Liquid` Capture tag.
+  Parse a `Liquid` Capture tag,create a Keyword list where the key is the name of the tag 
+  (capture in this case) and the value is another keyword list, that represent the internal 
+  structure of the tag.
   """
   def tag do
     Tag.define_closed(

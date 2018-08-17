@@ -28,7 +28,9 @@ defmodule Liquid.Combinators.Tags.Decrement do
   @type markup :: [variable_name: String.t()]
 
   @doc """
-  Parse a `Liquid` Decrement tag.
+  Parse a `Liquid` Decrement tag, create a Keyword list where the key is the name of the tag 
+  (decrement in this case) and the value is another keyword list, that represent the internal 
+  structure of the tag.
   """
   def tag do
     Tag.define_open("decrement", fn combinator ->

@@ -52,7 +52,9 @@ defmodule Liquid.Combinators.Tags.Tablerow do
         ]
 
   @doc """
-  Parse a `Liquid` Tablerow tag.
+  Parse a `Liquid` Tablerow tag ,create a Keyword list where the key is the name of the tag 
+  (tablerow in this case) and the value is another keyword list, that represent the internal 
+  structure of the tag.
   """
   def tag do
     Tag.define_closed("tablerow", &statements/1, fn combinator ->

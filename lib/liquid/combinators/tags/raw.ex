@@ -21,7 +21,7 @@ defmodule Liquid.Combinators.Tags.Raw do
   @type t :: [raw: [String.t()]]
 
   @doc """
-  Parse Raw tag content.
+  Creates a list of string, this is to emulate the behaviuor of the `Liquid` raw tag
   """
   def raw_content do
     General.literal_until_tag()
@@ -30,7 +30,8 @@ defmodule Liquid.Combinators.Tags.Raw do
   end
 
   @doc """
-  Parse a `Liquid` Raw tag.
+  Parse a `Liquid` Raw tag, create a Keyword list where the key is the name of the tag 
+  (raw in this case) and the value is  the result of the `Liquid.Combinators.Tags.Raw.raw_content` combinator.
   """
   def tag do
     @name

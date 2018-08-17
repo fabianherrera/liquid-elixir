@@ -92,17 +92,19 @@ defmodule Liquid.Combinators.Tags.For do
   end
 
   @doc """
-  Parse a `Liquid` Continue tag.
+  Parse a `Liquid` Continue tag, this is used for a internal behavior of the `for` tag.
   """
   def continue_tag, do: Tag.define_open("continue")
 
   @doc """
-  Parse a `Liquid` Break tag.
+  Parse a `Liquid` Break tag, this is used for a internal behavior of the `for` tag.
   """
   def break_tag, do: Tag.define_open("break")
 
   @doc """
-  Parse a `Liquid` For tag.
+  Parse a `Liquid` For tag, create a Keyword list where the key is the name of the tag 
+  (for in this case) and the value is another keyword list, that represent the internal 
+  structure of the tag.
   """
   def tag, do: Tag.define_closed("for", &statements/1, &body/1)
 

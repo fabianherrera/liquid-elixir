@@ -23,7 +23,7 @@ defmodule Liquid.Combinators.Tags.Comment do
   @type markup :: [String.t() | Comment.t() | Raw.t()]
 
   @doc """
-  Parse Comment tag content.
+  Parse Comment content, creating a keyword list, the value of this list is the internal behaviour of the comment tag.
   """
   def comment_content do
     General.literal_until_tag()
@@ -38,7 +38,9 @@ defmodule Liquid.Combinators.Tags.Comment do
   end
 
   @doc """
-  Parse a `Liquid` Comment tag.
+  Parse a `Liquid` Comment tag ,create a Keyword list where the key is the name of the tag 
+  (comment in this case) and the value is another keyword list, that represent the internal 
+  structure of the tag.
   """
   def tag do
     Tag.define_closed("comment", & &1, fn combinator ->
