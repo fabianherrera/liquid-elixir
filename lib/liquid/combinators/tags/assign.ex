@@ -1,10 +1,10 @@
 defmodule Liquid.Combinators.Tags.Assign do
   @moduledoc """
-  Sets variables in a template.
+  Sets variables in a template
   ```
     {% assign foo = 'monkey' %}
   ```
-  User can then use the variables later in the page.
+  User can then use the variables later in the page
   ```
     {{ foo }}
   ```
@@ -16,9 +16,6 @@ defmodule Liquid.Combinators.Tags.Assign do
 
   @type markup :: [variable_name: String.t(), value: LexicalToken.value()]
 
-  @doc """
-  Parse a `Liquid` Assign tag.
-  """
   def tag do
     Tag.define_open("assign", fn combinator ->
       combinator
