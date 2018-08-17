@@ -20,9 +20,6 @@ defmodule Liquid.Combinators.Tags.Capture do
           parts: Liquid.NimbleParser.t()
         ]
 
-  @doc """
-  Parse a `Liquid` Capture tag.
-  """
   def tag do
     Tag.define_closed(
       "capture",
