@@ -2,7 +2,7 @@ defmodule Liquid.Combinators.Tags.Comment do
   @moduledoc """
   Allows you to leave un-rendered code inside a Liquid template.
   Any text within the opening and closing comment blocks will not be output,
-  and any Liquid code within will not be executed.
+  and any Liquid code within will not be executed
   Input:
   ```
     Anything you put between {% comment %} and {% endcomment %} tags
