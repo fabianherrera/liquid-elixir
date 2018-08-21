@@ -51,6 +51,21 @@ defmodule Liquid.Combinators.Tags.For do
   alias Liquid.Combinators.{General, Tag}
   alias Liquid.Combinators.Tags.Generic
 
+  @type t :: [for: For.markup()]
+  @type markup :: [
+          statements: [
+            variable: String.t(),
+            value: LexicalToken.value(),
+            params: [
+              [offset: Integer.t() | String.t()]
+              | [limit: Integer.t() | String.t()]
+            ],
+            body:
+              Liquid.NimbleParser.t()
+              | Generic.else_tag()
+          ]
+        ]
+
   defp reversed_param do
     empty()
     |> parsec(:ignore_whitespaces)
@@ -59,7 +74,7 @@ defmodule Liquid.Combinators.Tags.For do
     |> tag(:reversed)
   end
 
-  defp for_params do
+  defp params do
     empty()
     |> optional(
       times(
@@ -67,36 +82,45 @@ defmodule Liquid.Combinators.Tags.For do
         min: 1
       )
     )
-    |> tag(:for_params)
+    |> tag(:params)
   end
 
-  defp for_body do
+  defp body do
     empty()
     |> optional(parsec(:__parse__))
-    |> tag(:for_body)
+    |> tag(:body)
   end
 
+  @doc """
+  Parse a `Liquid` Continue tag.
+  """
   def continue_tag, do: Tag.define_open("continue")
 
+  @doc """
+  Parse a `Liquid` Break tag.
+  """
   def break_tag, do: Tag.define_open("break")
 
-  def tag, do: Tag.define_closed("for", &for_statements/1, &body/1)
+  @doc """
+  Parse a `Liquid` For tag.
+  """
+  def tag, do: Tag.define_closed("for", &statements/1, &body/1)
 
   defp body(combinator) do
     combinator
-    |> concat(for_body())
+    |> concat(body())
     |> optional(Generic.else_tag())
   end
 
-  defp for_statements(combinator) do
+  defp statements(combinator) do
     combinator
     |> parsec(:variable_value)
     |> parsec(:ignore_whitespaces)
     |> ignore(string("in"))
     |> parsec(:ignore_whitespaces)
     |> parsec(:value)
-    |> optional(for_params())
+    |> optional(params())
     |> parsec(:ignore_whitespaces)
-    |> tag(:for_statements)
+    |> tag(:statements)
   end
 end

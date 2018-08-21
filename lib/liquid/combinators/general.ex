@@ -3,6 +3,17 @@ defmodule Liquid.Combinators.General do
   General purpose combinators used by almost every other combinator
   """
   import NimbleParsec
+  alias Liquid.Combinators.LexicalToken
+
+  @type comparison_operators :: :== | :!= | :> | :< | :>= | :<= | :contains
+  @type conditions :: [
+          condition:
+            {LexicalToken.value(), comparison_operators(), LexicalToken.value()}
+            | [logical: [and: General.condition()]]
+            | [logical: [or: General.condition()]]
+        ]
+  @type liquid_variable :: [liquid_variable: LexicalToken.variable_value(), filters: [filter()]]
+  @type filter :: [filter: String.t(), params: [value: LexicalToken.value()]]
 
   # Codepoints
   @horizontal_tab 0x0009
@@ -18,6 +29,8 @@ defmodule Liquid.Combinators.General do
   @underscore 0x005F
   @dash 0x002D
   @equal 0x003D
+  @vertical_line 0x007C
+  @rigth_curly_bracket 0x007D
   @start_tag "{%"
   @end_tag "%}"
   @start_variable "{{"
@@ -43,6 +56,8 @@ defmodule Liquid.Combinators.General do
       newline: @newline,
       comma: @comma,
       equal: @equal,
+      vertical_line: @vertical_line,
+      right_curly_bracket: @rigth_curly_bracket,
       quote: @double_quote,
       single_quote: @single_quote,
       question_mark: @question_mark,
@@ -212,7 +227,7 @@ defmodule Liquid.Combinators.General do
   Valid variable definition represented by:
   start char [A..Z, a..z, _] plus optional n times [A..Z, a..z, 0..9, _, -]
   """
-  def variable_definition_for_assignation do
+  def variable_definition_for_assignment do
     empty()
     |> concat(ignore_whitespaces())
     |> utf8_char([@uppercase_letter, @lowercase_letter, @underscore])
@@ -221,14 +236,14 @@ defmodule Liquid.Combinators.General do
     |> reduce({List, :to_string, []})
   end
 
-  def variable_name_for_assignation do
-    parsec(:variable_definition_for_assignation)
+  def variable_name_for_assignment do
+    parsec(:variable_definition_for_assignment)
     |> tag(:variable_name)
   end
 
   def variable_definition do
     empty()
-    |> parsec(:variable_definition_for_assignation)
+    |> parsec(:variable_definition_for_assignment)
     |> optional(utf8_char([@question_mark]))
     |> concat(ignore_whitespaces())
     |> reduce({List, :to_string, []})
@@ -322,7 +337,10 @@ defmodule Liquid.Combinators.General do
     parsec(:ignore_whitespaces)
     |> ignore(string(@start_filter))
     |> parsec(:ignore_whitespaces)
-    |> utf8_string([not: 58, not: 124..125, not: 32], min: 1)
+    |> utf8_string(
+      [not: @colon, not: @vertical_line, not: @rigth_curly_bracket, not: @space],
+      min: 1
+    )
     |> parsec(:ignore_whitespaces)
     |> reduce({List, :to_string, []})
     |> optional(parsec(:filter_param))
@@ -333,6 +351,7 @@ defmodule Liquid.Combinators.General do
   @doc """
   Helper for traverse combinator. Transforms first element in `acc` from string to atom
   """
+  @spec to_atom(binary(), list(), list(), integer(), integer()) :: tuple()
   def to_atom(_rest, [h | t], context, _line, _offset), do: {[String.to_atom(h) | t], context}
 
   @doc """
@@ -366,30 +385,4 @@ defmodule Liquid.Combinators.General do
     ])
     |> optional(times(parsec(:logical_condition), min: 1))
   end
-
-  # defparsec(:conditional, General.conditional())
-  # defparsec(:or_statement, General.or_statement())
-  # defparsec(:and_statement, General.and_statement())
-
-  # def conditional do
-  #   choice([or_statement(), and_statement()])
-  # end
-
-  # def or_statement do
-  #   empty()
-  #   |> choice([parsec(:condition), parsec(:and_statement), parsec(:value)])
-  #   |> ignore(string("or"))
-  #   |> choice([parsec(:condition), parsec(:or_statement), parsec(:and_statement), parsec(:value)])
-  #   |> reduce({List, :to_tuple, []})
-  #   |> unwrap_and_tag(:or)
-  # end
-
-  # def and_statement do
-  #   empty()
-  #   |> choice([parsec(:condition), parsec(:value)])
-  #   |> ignore(string("and"))
-  #   |> choice([parsec(:condition), parsec(:and_statement), parsec(:value)])
-  #   |> reduce({List, :to_tuple, []})
-  #   |> unwrap_and_tag(:and)
-  # end
 end

@@ -1,29 +1,39 @@
 defimpl String.Chars, for: Tuple do
   def to_string(elem), do: to_markup(elem)
 
+  # copied
   defp to_markup({:parts, value}) do
     value |> Enum.join(".") |> String.replace(".[", "[")
   end
 
+  # copied
   defp to_markup({:index, value}) when is_binary(value), do: "[\"#{value}\"]"
 
+  # copied
   defp to_markup({:index, value}), do: "[#{value}]"
 
+  # copied
   defp to_markup({:value, value}) when is_binary(value), do: "\"#{value}\""
 
+  # copied
   defp to_markup({:filters, value}), do: " | " <> Enum.join(value, " | ")
 
+  # copied
   defp to_markup({:params, value}), do: ": " <> Enum.join(value, ", ")
 
   defp to_markup({:logical, [key, value]}), do: " #{key} #{normalize_value(value)} "
 
+  # copied
   defp to_markup({:assignment, [name | value]}), do: "#{name}: #{Enum.join(value)}"
 
+  # copied
   defp to_markup({:condition, {left, op, right}}),
     do: "#{normalize_value(left)} #{op} #{normalize_value(right)}"
 
+  # copied
   defp to_markup({:conditions, [nil]}), do: "null"
 
+  # copied
   defp to_markup({:conditions, [value]}) when is_bitstring(value), do: "\"#{value}\""
 
   defp to_markup({predicate, value}) when predicate in [:for, :with],
@@ -42,9 +52,11 @@ defimpl String.Chars, for: Tuple do
 
   defp to_markup({_, value}) when is_list(value), do: Enum.join(value)
 
+  # copied
   defp to_markup({_, value}), do: "#{value}"
 
-  # This is to manage the strings and nulls to string 
+  # This is to manage the strings and nulls to string
+  # copied
   defp normalize_value(value) when is_nil(value), do: {:null, nil}
   defp normalize_value(value) when is_bitstring(value), do: "\"#{value}\""
   defp normalize_value(value), do: value

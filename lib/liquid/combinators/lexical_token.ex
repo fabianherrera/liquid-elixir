@@ -10,7 +10,8 @@ defmodule Liquid.Combinators.LexicalToken do
   """
   import NimbleParsec
 
-  @type variable_value :: {:variable, [parts: [part: String.t(), index: integer() | variable_value]]}
+  @type variable_value ::
+          {:variable, [parts: [part: String.t(), index: integer() | variable_value]]}
   @type value :: number() | boolean() | nil | String.t() | Range.t() | variable_value()
 
   # NegativeSign :: -

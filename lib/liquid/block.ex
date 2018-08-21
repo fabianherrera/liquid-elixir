@@ -12,6 +12,18 @@ defmodule Liquid.Block do
   alias Liquid.Tag, as: Tag
   alias Liquid.Block, as: Block
 
+  @type t :: %Liquid.Block{
+          name: String.t() | nil,
+          markup: String.t() | nil,
+          condition: String.t() | nil,
+          parts: [...],
+          iterator: [...],
+          nodelist: [...],
+          elselist: [...],
+          blank: boolean(),
+          strict: boolean()
+        }
+
   def create(markup) do
     destructure([name, rest], String.split(markup, " ", parts: 2))
     %Block{name: name |> String.to_atom(), markup: rest}

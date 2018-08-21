@@ -40,33 +40,45 @@ defmodule Liquid.Combinators.Tags.Tablerow do
   import NimbleParsec
   alias Liquid.Combinators.{General, Tag}
 
+  @type t :: [tablerow: Tablerow.markup()]
+
+  @type markup :: [
+          statements: [
+            variable: Liquid.Combinators.LexicalToken.variable_value(),
+            value: Liquid.Combinators.LexicalToken.value()
+          ],
+          params: [limit: [LexicalToken.value()], cols: [LexicalToken.value()]],
+          body: Liquid.NimbleParser.t()
+        ]
+
+  @doc """
+  Parse a `Liquid` Tablerow tag.
+  """
   def tag do
-    Tag.define_closed(
-      "tablerow",
-      &tablerow_statements/1,
-      fn combinator -> optional(combinator, parsec(:__parse__) |> tag(:tablerow_body)) end
-    )
+    Tag.define_closed("tablerow", &statements/1, fn combinator ->
+      optional(combinator, parsec(:__parse__) |> tag(:body))
+    end)
   end
 
-  defp tablerow_params do
+  defp params do
     empty()
     |> times(
-        choice([General.tag_param("offset"), General.tag_param("cols"), General.tag_param("limit")]),
-        min: 1
-      )
+      choice([General.tag_param("offset"), General.tag_param("cols"), General.tag_param("limit")]),
+      min: 1
+    )
     |> optional()
-    |> tag(:tablerow_params)
+    |> tag(:params)
   end
 
-  defp tablerow_statements(combinator) do
+  defp statements(combinator) do
     combinator
     |> parsec(:variable_value)
     |> parsec(:ignore_whitespaces)
     |> ignore(string("in"))
     |> parsec(:ignore_whitespaces)
     |> parsec(:value)
-    |> optional(tablerow_params())
+    |> optional(params())
     |> parsec(:ignore_whitespaces)
-    |> tag(:tablerow_statements)
+    |> tag(:statements)
   end
 end

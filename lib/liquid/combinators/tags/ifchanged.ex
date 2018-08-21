@@ -14,6 +14,9 @@ defmodule Liquid.Combinators.Tags.Ifchanged do
   import NimbleParsec
   alias Liquid.Combinators.Tag
 
+  @doc """
+  Parse a `Liquid` IfChanged tag.
+  """
   def tag do
     Tag.define_closed("ifchanged", & &1, fn combinator ->
       optional(combinator, parsec(:__parse__))

@@ -1,31 +1,31 @@
 defmodule Liquid.NimbleTranslator do
   @moduledoc """
-  Translate NimbleParser's AST to old AST
+  Translate NimbleParser AST to old AST.
   """
   alias Liquid.Template
 
-  alias Liquid.Combinators.Translators.{
-    LiquidVariable,
+  alias Liquid.Translators.Tags.{
     Assign,
+    Break,
     Capture,
+    Case,
     Comment,
+    Continue,
     Cycle,
     Decrement,
     For,
     If,
-    Unless,
+    Ifchanged,
     Include,
     Increment,
-    Tablerow,
-    Ifchanged,
+    LiquidVariable,
     Raw,
-    Continue,
-    Break,
-    Case
+    Tablerow,
+    Unless
   }
 
   @doc """
-  Converts passed Nimble AST into old AST to use old render
+  Converts Nimble AST into old AST in order to use old render.
   """
   def translate({:ok, [""]}) do
     %Template{root: %Liquid.Block{name: :document}}
@@ -36,28 +36,20 @@ defmodule Liquid.NimbleTranslator do
   end
 
   def translate({:ok, nodelist}) when is_list(nodelist) do
-    list = multiprocess_node(nodelist, self())
+    list = process_node(nodelist)
     %Template{root: %Liquid.Block{name: :document, nodelist: list}}
   end
 
-  defp multiprocess_node(nodelist, external_process) do
-    nodelist
-    |> Enum.map(fn elem ->
-      spawn_link(fn -> send(external_process, {self(), process_node(elem)}) end)
-    end)
-    |> Enum.map(fn pid ->
-      receive do
-        {^pid, result} -> result
-      end
-    end)
-  end
-
+  @doc """
+  Takes the new parsed tag and match it with his translator, then return the old parser struct.
+  """
+  @spec process_node(Liquid.NimbleParser.t()) :: Liquid.Tag.t() | Liquid.Block.t()
   def process_node(elem) when is_bitstring(elem), do: elem
 
   def process_node([elem]) when is_bitstring(elem), do: elem
 
   def process_node(nodelist) when is_list(nodelist) do
-    multiprocess_node(nodelist, self())
+    Enum.map(nodelist, &process_node/1)
   end
 
   def process_node({tag, markup}) do
@@ -82,12 +74,15 @@ defmodule Liquid.NimbleTranslator do
         :break -> Break.translate(markup)
         :continue -> Continue.translate(markup)
         :case -> Case.translate(markup)
-        _ -> markup
       end
 
     check_blank(translated)
   end
 
+  @doc """
+  Emulates the `Liquid` behavior for blanks blocks. Checks all the blocks and determine if it is blank or not.
+  """
+  @spec check_blank(Liquid.Tag.t() | Liquid.Block.t()) :: Liquid.Tag.t() | Liquid.Block.t()
   def check_blank(%Liquid.Block{name: :if, nodelist: nodelist, elselist: elselist} = translated)
       when is_list(nodelist) and is_list(elselist) do
     if Blank.blank?(nodelist) and Blank.blank?(elselist) do

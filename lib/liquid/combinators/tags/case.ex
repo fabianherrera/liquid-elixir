@@ -23,8 +23,29 @@ defmodule Liquid.Combinators.Tags.Case do
   alias Liquid.Combinators.{Tag, General}
   alias Liquid.Combinators.Tags.Generic
 
+  @type t :: [case: Case.markup()]
+
+  @type markup :: [
+          variable: LexicalToken.value(),
+          clauses: [
+            String.t()
+            | [
+                when: [
+                  conditions: [LexicalToken.value() | {:logical, [or: LexicalToken.value()]}],
+                  body: Liquid.NimbleParser.t()
+                ]
+              ]
+          ]
+        ]
+
+  @doc """
+  Parse a `Liquid` Case tag.
+  """
   def tag, do: Tag.define_closed("case", &General.conditions/1, &body/1)
 
+  @doc """
+  Parse When tag clauses.
+  """
   def clauses do
     empty()
     |> times(when_tag(), min: 1)
@@ -34,8 +55,8 @@ defmodule Liquid.Combinators.Tags.Case do
   defp when_tag do
     "when"
     |> Tag.open_tag(&General.conditions/1)
-    |> tag(:statements)
-    |> concat(tag(optional(parsec(:__parse__)), :value_if_true))
+    |> tag(:conditions)
+    |> concat(tag(optional(parsec(:__parse__)), :body))
     |> tag(:when)
   end
 

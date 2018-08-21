@@ -1,7 +1,7 @@
 defmodule Liquid.Combinators.Tags.If do
   @moduledoc """
   Executes a block of code only if a certain condition is true.
-  If this condition is false executes `else` block of code
+  If this condition is false executes `else` block of code.
   Input:
   ```
     {% if product.title == 'Awesome Shoes' %}
@@ -20,6 +20,20 @@ defmodule Liquid.Combinators.Tags.If do
   alias Liquid.Combinators.{Tag, General}
   alias Liquid.Combinators.Tags.Generic
 
+  @type t :: [if: conditional_body()]
+  @type unless_tag :: [unless: conditional_body()]
+  @type conditional_body :: [
+          conditions: General.conditions(),
+          body: [
+            Liquid.NimbleParser.t()
+            | [elsif: conditional_body()]
+            | [else: Liquid.NimbleParser.t()]
+          ]
+        ]
+
+  @doc """
+  Parse a `Liquid` Elsif tag.
+  """
   def elsif_tag do
     "elsif"
     |> Tag.open_tag(&predicate/1)
@@ -28,11 +42,17 @@ defmodule Liquid.Combinators.Tags.If do
     |> optional(parsec(:__parse__))
   end
 
+  @doc """
+  Parse a `Liquid` Unless tag.
+  """
   def unless_tag, do: do_tag("unless")
 
+  @doc """
+  Parse a `Liquid` If tag.
+  """
   def tag, do: do_tag("if")
 
-  def body do
+  defp body do
     empty()
     |> optional(parsec(:__parse__))
     |> optional(times(parsec(:elsif_tag), min: 1))
@@ -40,6 +60,9 @@ defmodule Liquid.Combinators.Tags.If do
     |> tag(:body)
   end
 
+  @doc """
+  Parse Elsif body.
+  """
   def body_elsif do
     empty()
     |> choice([
@@ -52,10 +75,7 @@ defmodule Liquid.Combinators.Tags.If do
   end
 
   defp do_tag(name) do
-    Tag.define_closed(name,
-      &predicate/1,
-      fn combinator -> parsec(combinator, :body_if) end
-    )
+    Tag.define_closed(name, &predicate/1, fn combinator -> concat(combinator, body()) end)
   end
 
   defp predicate(combinator) do

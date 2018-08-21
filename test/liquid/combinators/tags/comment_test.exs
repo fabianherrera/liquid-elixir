@@ -38,7 +38,7 @@ defmodule Liquid.Combinators.Tags.CommentTest do
     )
   end
 
- test "comment with any tags and nested comment" do
+  test "comment with any tags and nested comment" do
     test_combinator(
       "{% comment %} {% comment %} {% if true %} {% comment %} {% if true %} {% endcomment %} {% endcomment %} {% endcomment %}",
       &Parser.comment/1,
@@ -107,7 +107,7 @@ defmodule Liquid.Combinators.Tags.CommentTest do
     test_combinator(
       "{% comment %}{% raw %}any {% endraw %}{% if true %}{% endif %}{% for item in products %}{% endfor %}{% endcomment %}",
       &Parser.comment/1,
-      comment: ["any truefor itemproducts"]
+      comment: ["any truefor itemproducts: "]
     )
 
     test_combinator(
@@ -132,7 +132,11 @@ defmodule Liquid.Combinators.Tags.CommentTest do
   end
 
   test "comment must fails with this one" do
-    {result, _, _, _, _, _} = Parser.comment("{% comment %} {% if true %} {% comment %} {% aendcomment %} {% acomment %} {% endcomment %}")
+    {result, _, _, _, _, _} =
+      Parser.comment(
+        "{% comment %} {% if true %} {% comment %} {% aendcomment %} {% acomment %} {% endcomment %}"
+      )
+
     assert result == :error
 
     {result, _, _, _, _, _} = Parser.comment("{% comment %}{%}{% endcomment %}")

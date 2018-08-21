@@ -19,15 +19,36 @@ defmodule Liquid.NimbleParser do
     Tablerow,
     Case,
     Capture,
-    Ifchanged
+    Ifchanged,
+    Custom
   }
+
+  @type t :: [
+          Assign.t()
+          | Capture.t()
+          | Increment.t()
+          | Decrement.t()
+          | Include.t()
+          | Cycle.t()
+          | Raw.t()
+          | Comment.t()
+          | For.t()
+          | If.t()
+          | Unless.t()
+          | Tablerow.t()
+          | Case.t()
+          | Ifchanged.t()
+          | Custom.t()
+          | General.liquid_variable()
+          | String.t()
+        ]
 
   defparsec(:liquid_variable, General.liquid_variable())
   defparsec(:variable_definition, General.variable_definition())
   defparsec(:variable_name, General.variable_name())
   defparsec(:quoted_variable_name, General.quoted_variable_name())
-  defparsec(:variable_definition_for_assignation, General.variable_definition_for_assignation())
-  defparsec(:variable_name_for_assignation, General.variable_name_for_assignation())
+  defparsec(:variable_definition_for_assignment, General.variable_definition_for_assignment())
+  defparsec(:variable_name_for_assignment, General.variable_name_for_assignment())
   defparsec(:start_tag, General.start_tag())
   defparsec(:end_tag, General.end_tag())
   defparsec(:start_variable, General.start_variable())
@@ -67,7 +88,7 @@ defmodule Liquid.NimbleParser do
   defparsec(
     :__parse__,
     General.liquid_literal()
-    |> optional(choice([parsec(:liquid_tag), parsec(:liquid_variable)]))
+    |> optional(choice([parsec(:liquid_tag), parsec(:liquid_variable), parsec(:custom)]))
     |> traverse({:clean_empty_strings, []})
   )
 
@@ -79,8 +100,6 @@ defmodule Liquid.NimbleParser do
   defparsec(:comment_content, Comment.comment_content())
   defparsec(:comment, Comment.tag())
 
-  defparsec(:cycle_group, Cycle.cycle_group())
-  defparsec(:cycle_body, Cycle.cycle_body())
   defparsec(:cycle_values, Cycle.cycle_values())
   defparsec(:cycle, Cycle.tag())
 
@@ -92,7 +111,6 @@ defmodule Liquid.NimbleParser do
   defparsec(:include, Include.tag())
 
   defparsec(:body_elsif, If.body_elsif())
-  defparsec(:body_if, If.body())
   defparsec(:if, If.tag())
   defparsec(:elsif_tag, If.elsif_tag())
   defparsec(:unless, If.unless_tag())
@@ -128,8 +146,10 @@ defmodule Liquid.NimbleParser do
     ])
   )
 
+  defparsec(:custom, Custom.tag())
+
   @doc """
-  Validate and parse liquid markup.
+  Validates and parse liquid markup
   """
   @spec parse(String.t()) :: {:ok | :error, any()}
   def parse(markup) do
