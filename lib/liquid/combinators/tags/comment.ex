@@ -23,7 +23,7 @@ defmodule Liquid.Combinators.Tags.Comment do
   @type markup :: [String.t() | Comment.t() | Raw.t()]
 
   @doc """
-  Parse Comment content, creating a keyword list, the value of this list is the internal behaviour of the comment tag.
+  Parses Comment content, creating a keyword list, the value of this list is the internal behaviour of the comment tag.
   """
   @spec comment_content() :: NimbleParsec.t()
   def comment_content do
@@ -39,8 +39,8 @@ defmodule Liquid.Combinators.Tags.Comment do
   end
 
   @doc """
-  Parse a `Liquid` Comment tag ,create a Keyword list where the key is the name of the tag 
-  (comment in this case) and the value is another keyword list, that represent the internal 
+  Parses a `Liquid` Comment tag, creates a Keyword list where the key is the name of the tag
+  (comment in this case) and the value is another keyword list which represents the internal
   structure of the tag.
   """
   @spec tag() :: NimbleParsec.t()

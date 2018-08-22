@@ -14,8 +14,8 @@ defmodule Liquid.Combinators.Tags.Include do
         ]
 
   @doc """
-  Parse a `Liquid` Include tag, create a Keyword list where the key is the name of the tag 
-  (include in this case) and the value is another keyword list, that represent the internal 
+  Parses a `Liquid` Include tag, creates a Keyword list where the key is the name of the tag
+  (include in this case) and the value is another keyword list which represents the internal
   structure of the tag.
   """
   @spec tag() :: NimbleParsec.t()
