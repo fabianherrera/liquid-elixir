@@ -1,22 +1,19 @@
 defmodule Liquid.Template do
   @moduledoc """
-  Main Liquid module, all further render and parse processing passes through it
+  Main Liquid module, all further render and parse processing passes through it.
   """
 
   defstruct root: nil, presets: %{}, blocks: [], errors: []
-  alias Liquid.{Template, Render, Context}
+  alias Liquid.{Context, Render, Template}
 
   @doc """
-  Function that renders passed template and context to string
+  Function that renders passed template and context to string.
   """
-  @file "render.ex"
-  @spec render(Liquid.Template, map) :: String.t()
+  @spec render(%Template{}, %Context{}) :: {atom(), String.t(), %Context{}}
   def render(t, c \\ %{})
 
   def render(%Template{} = t, %Context{} = c) do
-    c = %{c | blocks: t.blocks}
-    c = %{c | presets: t.presets}
-    c = %{c | template: t}
+    c = %{c | blocks: t.blocks, presets: t.presets, template: t}
     Render.render(t, c)
   end
 
@@ -55,9 +52,9 @@ defmodule Liquid.Template do
   end
 
   @doc """
-  Function to parse markup with given presets (if any)
+  Function to parse markup with given presets (if any).
   """
-  @spec parse(String.t(), map) :: Liquid.Template
+  @spec parse(String.t(), %{}) :: %Template{}
   def parse(value, presets \\ %{})
 
   def parse(<<markup::binary>>, presets) do
@@ -80,7 +77,7 @@ defmodule Liquid.Template do
 
   # TODO: delete this when new parser is finished
   @doc """
-  OLD_PARSER for TEST ONLY Function to parse markup with given presets (if any)
+  OLD_PARSER for TEST ONLY Function to parse markup with given presets (if any).
   """
   @spec old_parse(String.t(), map) :: Liquid.Template
   def old_parse(value, presets \\ %{})

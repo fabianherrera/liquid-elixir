@@ -1,19 +1,19 @@
 defmodule Liquid.Variable do
   @moduledoc """
-    Module to create and lookup for Variables
+    Module to create and lookup for Variables.
 
   """
   defstruct name: nil, literal: nil, filters: [], parts: []
   alias Liquid.{Appointer, Filters, Variable, Context}
 
   @doc """
-    resolves data from `Liquid.Variable.parse/1` and creates a variable struct
+    resolves data from `Liquid.Variable.parse/1` and creates a variable struct.
   """
   def create(markup) when is_binary(markup) do
-    [name | filters] = markup |> parse
+    [name | filters] = parse(markup)
     name = String.trim(name)
     variable = %Liquid.Variable{name: name, filters: filters}
-    parsed = Liquid.Appointer.parse_name(name)
+    parsed = Appointer.parse_name(name)
 
     if String.contains?(name, "%") do
       raise Liquid.SyntaxError, message: "Invalid variable name"
@@ -23,7 +23,7 @@ defmodule Liquid.Variable do
   end
 
   @doc """
-  Assigns context to variable and than applies all filters
+  Assigns context to variable and than applies all filters.
   """
   @spec lookup(%Variable{}, %Context{}) :: {String.t(), %Context{}}
   def lookup(%Variable{} = v, %Context{} = context) do

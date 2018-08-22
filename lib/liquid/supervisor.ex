@@ -1,18 +1,18 @@
 defmodule Liquid.Supervisor do
   @moduledoc """
-  Supervisor for Liquid processes (currently empty)
+  Supervisor for Liquid processes (currently empty).
   """
   use Supervisor
 
   @doc """
-  Starts the liquid supervisor
+  Starts the liquid supervisor.
   """
   def start_link do
     Supervisor.start_link(__MODULE__, :ok)
   end
 
   @doc """
-  Actual supervisor init with no child processes to supervise yet
+  Actual supervisor init with no child processes to supervise yet.
   """
   def init(:ok) do
     children = []

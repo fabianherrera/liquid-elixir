@@ -39,13 +39,17 @@ defmodule Liquid.Combinators.Tags.Case do
         ]
 
   @doc """
-  Parse a `Liquid` Case tag.
+  Parse a `Liquid` Case tag, create a Keyword list where the key is the name of the tag 
+  (case in this function) and the value is another keyword list, that represent the internal 
+  structure of the tag.
   """
+  @spec tag() :: NimbleParsec.t()
   def tag, do: Tag.define_closed("case", &General.conditions/1, &body/1)
 
   @doc """
   Parse When tag clauses.
   """
+  @spec clauses() :: NimbleParsec.t()
   def clauses do
     empty()
     |> times(when_tag(), min: 1)

@@ -24,8 +24,11 @@ defmodule Liquid.Combinators.Tags.Increment do
   @type markup :: [variable_name: String.t()]
 
   @doc """
-  Parse a `Liquid` Increment tag.
+  Parse a `Liquid` Increment tag, create a Keyword list where the key is the name of the tag 
+  (increment in this case) and the value is another keyword list, that represent the internal 
+  structure of the tag.
   """
+  @spec tag() :: NimbleParsec.t()
   def tag do
     Tag.define_open("increment", fn combinator ->
       parsec(combinator, :variable_name)

@@ -1,4 +1,7 @@
 defmodule Liquid.Context do
+  @moduledoc """
+  This module creates a structure `(Structs)` that gives the context for rendering.
+  """
   defstruct assigns: %{},
             offsets: %{},
             registers: %{},
@@ -11,7 +14,8 @@ defmodule Liquid.Context do
             global_filter: nil,
             extra_tags: %{}
 
-  def registers(context, key) do
-    context.registers |> Map.get(key)
-  end
+  @doc """
+  Takes the context struct and get the selected key associated value.
+  """
+  def registers(context, key), do: Map.get(context.registers, key)
 end
