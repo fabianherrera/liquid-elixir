@@ -1,13 +1,19 @@
 defmodule Liquid.Include do
-  alias Liquid.Tag, as: Tag
-  alias Liquid.Context, as: Context
-  alias Liquid.Template, as: Template
-  alias Liquid.Variable, as: Variable
-  alias Liquid.FileSystem, as: FileSystem
+  @moduledoc """
+  Include allows templates to relate with other templates.
+  """
+  alias Liquid.{Context, FileSystem, Tag, Template, Variable}
 
+  @doc """
+  Creates a regular expression pattern to match the syntax of the tag include.
+  """
   def syntax,
     do: ~r/(#{Liquid.quoted_fragment()}+)(\s+(?:with|for)\s+(#{Liquid.quoted_fragment()}+))?/
 
+  @doc """
+  This function is used to parse the include tag.
+  """
+  @spec parse(%Tag{}, %Template{}) :: {%Tag{}, %Template{}}
   def parse(%Tag{markup: markup} = tag, %Template{} = template) do
     [parts | _] = Regex.scan(syntax(), markup)
     tag = parse_tag(tag, parts)
@@ -25,13 +31,13 @@ defmodule Liquid.Include do
   defp parse_tag(%Tag{} = tag, parts) do
     case parts do
       [_, name] ->
-        %{tag | parts: [name: name |> Variable.create()]}
+        %{tag | parts: [name: Variable.create(name)]}
 
       [_, name, " with " <> _, v] ->
-        %{tag | parts: [name: name |> Variable.create(), variable: v |> Variable.create()]}
+        %{tag | parts: [name: Variable.create(name), variable: Variable.create(v)]}
 
       [_, name, " for " <> _, v] ->
-        %{tag | parts: [name: name |> Variable.create(), foreach: v |> Variable.create()]}
+        %{tag | parts: [name: Variable.create(name), foreach: Variable.create(v)]}
     end
   end
 
@@ -43,6 +49,10 @@ defmodule Liquid.Include do
     end)
   end
 
+  @doc """
+  Renders the results of the include tag.
+  """
+  @spec render(String.t(), %Tag{}, %Context{}) :: {String.t(), %Context{}}
   def render(output, %Tag{parts: parts} = tag, %Context{} = context) do
     {file_system, root} = context |> Context.registers(:file_system) || FileSystem.lookup()
     {name, context} = parts[:name] |> Variable.lookup(context)

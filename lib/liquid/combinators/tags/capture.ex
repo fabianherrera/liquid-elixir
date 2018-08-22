@@ -20,6 +20,12 @@ defmodule Liquid.Combinators.Tags.Capture do
           parts: Liquid.NimbleParser.t()
         ]
 
+  @doc """
+  Parses a `Liquid` Capture tag, creates a Keyword list where the key is the name of the tag
+  (capture in this case) and the value is another keyword list which represent the internal
+  structure of the tag.
+  """
+  @spec tag() :: NimbleParsec.t()
   def tag do
     Tag.define_closed(
       "capture",

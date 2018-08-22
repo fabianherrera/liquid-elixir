@@ -1,6 +1,6 @@
 defmodule Liquid.Filters do
   @moduledoc """
-  Applies a chain of filters passed from Liquid.Variable
+  Applies a chain of filters passed from Liquid.Variable.
   """
   import Kernel, except: [round: 1, abs: 1]
   import Liquid.Utils, only: [to_number: 1]
@@ -32,34 +32,34 @@ defmodule Liquid.Filters do
     """
     @spec downcase(any) :: String.t()
     def downcase(input) do
-      input |> to_string |> String.downcase()
+      to_string(input) |> String.downcase()
     end
 
     def upcase(input) do
-      input |> to_string |> String.upcase()
+      to_string(input) |> String.upcase()
     end
 
     def capitalize(input) do
-      input |> to_string |> String.capitalize()
+      to_string(input) |> String.capitalize()
     end
 
-    def first(array) when is_list(array), do: array |> List.first()
+    def first(array) when is_list(array), do: List.first(array)
 
-    def last(array) when is_list(array), do: array |> List.last()
+    def last(array) when is_list(array), do: List.last(array)
 
-    def reverse(array), do: array |> to_iterable |> Enum.reverse()
+    def reverse(array), do: to_iterable(array) |> Enum.reverse()
 
-    def sort(array), do: array |> Enum.sort()
+    def sort(array), do: Enum.sort(array)
 
     def sort(array, key) when is_list(array) and is_map(hd(array)) do
       array |> Enum.sort_by(& &1[key])
     end
 
     def sort(array, _) when is_list(array) do
-      array |> Enum.sort()
+      Enum.sort(array)
     end
 
-    def uniq(array) when is_list(array), do: array |> Enum.uniq()
+    def uniq(array) when is_list(array), do: Enum.uniq(array)
 
     def uniq(_), do: raise("Called `uniq` with non-list parameter.")
 
@@ -68,13 +68,13 @@ defmodule Liquid.Filters do
     end
 
     def uniq(array, _) when is_list(array) do
-      array |> Enum.uniq()
+      Enum.uniq(array)
     end
 
     def uniq(_, _), do: raise("Called `uniq` with non-list parameter.")
 
     def join(array, separator \\ " ") do
-      array |> to_iterable |> Enum.join(separator)
+      to_iterable(array) |> Enum.join(separator)
     end
 
     def map(array, key) when is_list(array) do
@@ -97,7 +97,7 @@ defmodule Liquid.Filters do
     end
 
     def plus(value, operand) do
-      value |> to_number |> plus(to_number(operand))
+      to_number(value) |> plus(to_number(operand))
     end
 
     def minus(value, operand) when is_number(value) and is_number(operand) do
@@ -109,7 +109,7 @@ defmodule Liquid.Filters do
     end
 
     def minus(value, operand) do
-      value |> to_number |> minus(to_number(operand))
+      to_number(value) |> minus(to_number(operand))
     end
 
     def times(value, operand) when is_integer(value) and is_integer(operand) do
@@ -117,8 +117,8 @@ defmodule Liquid.Filters do
     end
 
     def times(value, operand) do
-      {value_int, value_len} = value |> get_int_and_counter
-      {operand_int, operand_len} = operand |> get_int_and_counter
+      {value_int, value_len} = get_int_and_counter(value)
+      {operand_int, operand_len} = get_int_and_counter(operand)
 
       case value_len + operand_len do
         0 ->
@@ -143,53 +143,53 @@ defmodule Liquid.Filters do
     end
 
     def divided_by(input, operand) do
-      input |> to_number |> divided_by(operand)
+      to_number(input) |> divided_by(operand)
     end
 
     def floor(input) when is_integer(input), do: input
 
-    def floor(input) when is_number(input), do: input |> trunc
+    def floor(input) when is_number(input), do: trunc(input)
 
-    def floor(input), do: input |> to_number |> floor
+    def floor(input), do: to_number(input) |> floor
 
     def floor(input, precision) when is_number(precision) do
-      input |> to_number |> Float.floor(precision)
+      to_number(input) |> Float.floor(precision)
     end
 
     def floor(input, precision) do
-      input |> floor(to_number(precision))
+      floor(input, to_number(precision))
     end
 
     def ceil(input) when is_integer(input), do: input
 
     def ceil(input) when is_number(input) do
-      input |> Float.ceil() |> trunc
+      Float.ceil(input) |> trunc
     end
 
-    def ceil(input), do: input |> to_number |> ceil
+    def ceil(input), do: to_number(input) |> ceil
 
     def ceil(input, precision) when is_number(precision) do
-      input |> to_number |> Float.ceil(precision)
+      to_number(input) |> Float.ceil(precision)
     end
 
     def ceil(input, precision) do
-      input |> ceil(to_number(precision))
+      ceil(input, to_number(precision))
     end
 
     def round(input) when is_integer(input), do: input
 
     def round(input) when is_number(input) do
-      input |> Float.round() |> trunc
+      Float.round(input) |> trunc
     end
 
-    def round(input), do: input |> to_number |> round
+    def round(input), do: to_number(input) |> round
 
     def round(input, precision) when is_number(precision) do
-      input |> to_number |> Float.round(precision)
+      to_number(input) |> Float.round(precision)
     end
 
     def round(input, precision) do
-      input |> round(to_number(precision))
+      round(input, to_number(precision))
     end
 
     @doc """
@@ -211,11 +211,11 @@ defmodule Liquid.Filters do
 
     def pluralize(input, _, plural) when is_number(input), do: plural
 
-    def pluralize(input, single, plural), do: input |> to_number |> pluralize(single, plural)
+    def pluralize(input, single, plural), do: to_number(input) |> pluralize(single, plural)
 
     defdelegate pluralise(input, single, plural), to: __MODULE__, as: :pluralize
 
-    def abs(input) when is_binary(input), do: input |> to_number |> abs
+    def abs(input) when is_binary(input), do: to_number(input) |> abs
 
     def abs(input) when input < 0, do: -input
 
@@ -224,13 +224,13 @@ defmodule Liquid.Filters do
     def modulo(0, _), do: 0
 
     def modulo(input, operand) when is_number(input) and is_number(operand) and input > 0,
-      do: input |> rem(operand)
+      do: rem(input, operand)
 
     def modulo(input, operand) when is_number(input) and is_number(operand) and input < 0,
       do: modulo(input + operand, operand)
 
     def modulo(input, operand) do
-      input |> to_number |> modulo(to_number(operand))
+      to_number(input) |> modulo(to_number(operand))
     end
 
     def truncate(input, l \\ 50, truncate_string \\ "...")
@@ -276,42 +276,42 @@ defmodule Liquid.Filters do
     def replace(string, from, to \\ "")
 
     def replace(<<string::binary>>, <<from::binary>>, <<to::binary>>) do
-      string |> String.replace(from, to)
+      String.replace(string, from, to)
     end
 
     def replace(<<string::binary>>, <<from::binary>>, to) do
-      string |> replace(from, to_string(to))
+      replace(string, from, to_string(to))
     end
 
     def replace(<<string::binary>>, from, to) do
-      string |> replace(to_string(from), to)
+      replace(string, to_string(from), to)
     end
 
     def replace(string, from, to) do
-      string |> to_string |> replace(from, to)
+      to_string(string) |> replace(from, to)
     end
 
     def replace_first(string, from, to \\ "")
 
     def replace_first(<<string::binary>>, <<from::binary>>, to) do
-      string |> String.replace(from, to_string(to), global: false)
+      String.replace(string, from, to_string(to), global: false)
     end
 
     def replace_first(string, from, to) do
-      to = to |> to_string
-      string |> to_string |> String.replace(to_string(from), to, global: false)
+      to = to_string(to)
+      to_string(string) |> String.replace(to_string(from), to, global: false)
     end
 
     def remove(<<string::binary>>, <<remove::binary>>) do
-      string |> String.replace(remove, "")
+      String.replace(string, remove, "")
     end
 
     def remove_first(<<string::binary>>, <<remove::binary>>) do
-      string |> String.replace(remove, "", global: false)
+      String.replace(string, remove, "", global: false)
     end
 
     def remove_first(string, operand) do
-      string |> to_string |> remove_first(to_string(operand))
+      to_string(string) |> remove_first(to_string(operand))
     end
 
     def append(<<string::binary>>, <<operand::binary>>) do
@@ -321,7 +321,7 @@ defmodule Liquid.Filters do
     def append(input, nil), do: input
 
     def append(string, operand) do
-      string |> to_string |> append(to_string(operand))
+      to_string(string) |> append(to_string(operand))
     end
 
     def prepend(<<string::binary>>, <<addition::binary>>) do
@@ -331,27 +331,27 @@ defmodule Liquid.Filters do
     def prepend(string, nil), do: string
 
     def prepend(string, addition) do
-      string |> to_string |> append(to_string(addition))
+      to_string(string) |> append(to_string(addition))
     end
 
     def strip(<<string::binary>>) do
-      string |> String.trim()
+      String.trim(string)
     end
 
     def lstrip(<<string::binary>>) do
-      string |> String.trim_leading()
+      String.trim_leading(string)
     end
 
     def rstrip(<<string::binary>>) do
-      string |> String.trim_trailing()
+      String.trim_trailing(string)
     end
 
     def strip_newlines(<<string::binary>>) do
-      string |> String.replace(~r/\r?\n/, "")
+      String.replace(string, ~r/\r?\n/, "")
     end
 
     def newline_to_br(<<string::binary>>) do
-      string |> String.replace("\n", "<br />\n")
+      String.replace(string, "\n", "<br />\n")
     end
 
     def split(<<string::binary>>, <<separator::binary>>) do
@@ -361,17 +361,17 @@ defmodule Liquid.Filters do
     def split(nil, _), do: []
 
     def slice(list, from, to) when is_list(list) do
-      list |> Enum.slice(from, to)
+      Enum.slice(list, from, to)
     end
 
     def slice(<<string::binary>>, from, to) do
-      string |> String.slice(from, to)
+      String.slice(string, from, to)
     end
 
     def slice(list, 0) when is_list(list), do: list
 
     def slice(list, range) when is_list(list) and range > 0 do
-      list |> Enum.slice(range, length(list))
+      Enum.slice(list, range, length(list))
     end
 
     def slice(list, range) when is_list(list) do
@@ -399,7 +399,7 @@ defmodule Liquid.Filters do
     defdelegate h(input), to: __MODULE__, as: :escape
 
     def escape_once(input) when is_binary(input) do
-      input |> HTML.html_escape_once()
+      HTML.html_escape_once(input)
     end
 
     def strip_html(nil), do: ""
@@ -413,7 +413,7 @@ defmodule Liquid.Filters do
     end
 
     def url_encode(input) when is_binary(input) do
-      input |> URI.encode_www_form()
+      URI.encode_www_form(input)
     end
 
     def url_encode(nil), do: nil
@@ -423,7 +423,7 @@ defmodule Liquid.Filters do
     def date(nil, _), do: nil
 
     def date(input, format) when is_nil(format) or format == "" do
-      input |> date
+      date(input)
     end
 
     def date("now", format), do: Timex.now() |> date(format)
@@ -450,7 +450,7 @@ defmodule Liquid.Filters do
       case List.first(input) do
         first when is_nil(first) -> []
         first when is_tuple(first) -> [input]
-        _ -> input |> List.flatten()
+        _ -> List.flatten(input)
       end
     end
 
@@ -463,21 +463,22 @@ defmodule Liquid.Filters do
     defp get_int_and_counter(input) when is_integer(input), do: {input, 0}
 
     defp get_int_and_counter(input) when is_number(input) do
-      {_, remainder} = input |> Float.to_string() |> Integer.parse()
+      {_, remainder} = Float.to_string(input) |> Integer.parse()
       len = String.length(remainder) - 1
       new_value = input * :math.pow(10, len)
-      new_value = new_value |> Float.round() |> trunc
+      new_value = Float.round(new_value) |> trunc
       {new_value, len}
     end
 
     defp get_int_and_counter(input) do
-      input |> to_number |> get_int_and_counter
+      to_number(input) |> get_int_and_counter
     end
   end
 
   @doc """
   Recursively pass through all of the input filters applying them
   """
+  @spec filter(list(), String.t()) :: String.t() | list()
   def filter([], value), do: value
 
   def filter([filter | rest], value) do
@@ -485,7 +486,7 @@ defmodule Liquid.Filters do
 
     args =
       for arg <- args do
-        Liquid.quote_matcher() |> Regex.replace(arg, "")
+        Regex.replace(Liquid.quote_matcher(), arg, "")
       end
 
     functions = Functions.__info__(:functions)
@@ -513,17 +514,17 @@ defmodule Liquid.Filters do
   end
 
   @doc """
-  Add filter modules mentioned in extra_filter_modules env variable
+  Add filter modules mentioned in extra_filter_modules env variable.
   """
   def add_filter_modules do
     for filter_module <- Application.get_env(:liquid, :extra_filter_modules) || [] do
-      filter_module |> add_filters
+      add_filters(filter_module)
     end
   end
 
   @doc """
   Fetches the current custom filters and extends with the functions from passed module
-  NB: you can't override the standard filters though
+  You can override the standard filters with custom filters.
   """
   def add_filters(module) do
     custom_filters = Application.get_env(:liquid, :custom_filters) || %{}

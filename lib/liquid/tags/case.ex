@@ -1,18 +1,44 @@
 defmodule Liquid.Case do
-  alias Liquid.Tag
-  alias Liquid.Block
-  alias Liquid.Template
-  alias Liquid.Variable
-  alias Liquid.Condition
+  @moduledoc """
+   Creates a switch statement to compare a variable with different values.
+   Case initializes the switch statement, and When compares its values.
+  Input:
+    ```
+      {% assign handle = 'cake' %}
+      {% case handle %}
+      {% when 'cake' %}
+        This is a cake
+      {% when 'cookie' %}
+        This is a cookie
+      {% else %}
+        This is not a cake nor a cookie
+      {% endcase %}
+    ```
+  Output:
+    ```
+      This is a cake
+    ```
+  """
+  alias Liquid.{Block, Condition, Tag, Template, Variable}
 
+  @doc """
+  Returns a regex for Case expressions syntax validation.
+  """
   def syntax, do: ~r/(#{Liquid.quoted_fragment()})/
 
+  @doc """
+  Returns a regex for When expressions syntax validation.
+  """
   def when_syntax,
     do: ~r/(#{Liquid.quoted_fragment()})(?:(?:\s+or\s+|\s*\,\s*)(#{Liquid.quoted_fragment()}.*))?/
 
+  @doc """
+  Implementation of Capture parse operations.
+  """
+  @spec parse(%Block{}, %Template{}) :: {%Block{}, %Template{}}
   def parse(%Block{markup: markup} = b, %Template{} = t) do
-    [[_, name]] = syntax() |> Regex.scan(markup)
-    {split(name |> Variable.create(), b.nodelist), t}
+    [[_, name]] = Regex.scan(syntax(), markup)
+    {split(Variable.create(name), b.nodelist), t}
   end
 
   def split(%Variable{}, []), do: []
@@ -38,17 +64,24 @@ defmodule Liquid.Case do
   end
 
   defp parse_when(markup) do
-    [[_, h | t] | m] = when_syntax() |> Regex.scan(markup)
-    m = m |> List.flatten() |> Liquid.List.even_elements()
-    t = [t | m] |> Enum.join(" ")
+    [[_, h | t] | m] = Regex.scan(when_syntax(), markup)
+    m = List.flatten(m) |> Liquid.List.even_elements()
+    t = Enum.join([t | m], " ")
     t = if t == "", do: [], else: [t]
     {h, t}
   end
 end
 
 defmodule Liquid.When do
-  alias Liquid.Tag, as: Tag
-  alias Liquid.Template, as: Template
+  @moduledoc """
+   Defines When implementations (sub-component of Case). Case creates a switch statement to compare a variable with different values.
+   Case initializes the switch statement, and When compares its values.
+  """
+  alias Liquid.{Tag, Template}
 
+  @doc """
+  Identity function. Implementation of When (sub-component of Case) parse operations.
+  """
+  @spec parse(%Tag{}, %Template{}) :: {%Tag{}, %Template{}}
   def parse(%Tag{} = tag, %Template{} = t), do: {tag, t}
 end

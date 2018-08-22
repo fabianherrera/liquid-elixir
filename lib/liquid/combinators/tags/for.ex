@@ -92,18 +92,25 @@ defmodule Liquid.Combinators.Tags.For do
   end
 
   @doc """
-  Parse a `Liquid` Continue tag.
+  Parses a `Liquid` Continue tag, this is used for a internal behavior of the `for` tag,
+  creates a keyword list with a key `continue` and the value is an empty list.
   """
+  @spec continue_tag() :: NimbleParsec.t()
   def continue_tag, do: Tag.define_open("continue")
 
   @doc """
-  Parse a `Liquid` Break tag.
+  Parses a `Liquid` Break tag, this is used for a internal behavior of the `for` tag,
+  creates a keyword list with a key `break` and the value is an empty list.
   """
+  @spec break_tag() :: NimbleParsec.t()
   def break_tag, do: Tag.define_open("break")
 
   @doc """
-  Parse a `Liquid` For tag.
+  Parses a `Liquid` For tag, creates a Keyword list where the key is the name of the tag
+  (for in this case) and the value is another keyword list which represents the internal
+  structure of the tag.
   """
+  @spec tag() :: NimbleParsec.t()
   def tag, do: Tag.define_closed("for", &statements/1, &body/1)
 
   defp body(combinator) do

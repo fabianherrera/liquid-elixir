@@ -14,8 +14,11 @@ defmodule Liquid.Combinators.Tags.Include do
         ]
 
   @doc """
-  Parse a `Liquid` Include tag.
+  Parses a `Liquid` Include tag, creates a Keyword list where the key is the name of the tag
+  (include in this case) and the value is another keyword list which represents the internal
+  structure of the tag.
   """
+  @spec tag() :: NimbleParsec.t()
   def tag, do: Tag.define_open("include", &head/1)
 
   defp params do

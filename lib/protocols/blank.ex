@@ -1,12 +1,12 @@
 defprotocol Blank do
-  @doc "Returns true when blank"
+  @doc "Returns true when blank."
   def blank?(data)
 end
 
 defimpl Blank, for: List do
-  alias Liquid.Block
-  alias Liquid.Tag
+  alias Liquid.{Block, Tag}
 
+  @spec blank?(list()) :: boolean()
   def blank?([]), do: true
 
   def blank?(list) do

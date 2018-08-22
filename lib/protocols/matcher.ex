@@ -1,28 +1,30 @@
 defprotocol Liquid.Matcher do
   @fallback_to_any true
-  @doc "Assigns context to values"
+  @doc "Assigns context to values."
   def match(_, _)
 end
 
 defimpl Liquid.Matcher, for: Liquid.Context do
   @doc """
-  `Liquid.Matcher` protocol implementation for `Liquid.Context`
+  `Liquid.Matcher` protocol implementation for `Liquid.Context`.
   """
-
+  @spec match(%{}, list()) :: %{}
   def match(current, []), do: current
 
   def match(%{assigns: assigns, presets: presets}, [key | _] = parts) when is_binary(key) do
     current =
       cond do
-        assigns |> Map.has_key?(key) -> assigns
-        presets |> Map.has_key?(key) -> presets
-        !is_nil(Map.get(assigns, key |> Liquid.Atomizer.to_existing_atom())) -> assigns
-        !is_nil(Map.get(presets, key |> Liquid.Atomizer.to_existing_atom())) -> presets
-        is_map(assigns) and Map.has_key?(assigns, :__struct__) -> assigns
+        key_is_in_map?(assigns, key) -> assigns
+        key_is_in_map?(presets, key) -> presets
         true -> nil
       end
 
     Liquid.Matcher.match(current, parts)
+  end
+
+  defp key_is_in_map?(map, key) do
+    Map.has_key?(map, key) || Map.has_key?(map, Liquid.Atomizer.to_existing_atom(key)) ||
+      Map.has_key?(map, :__struct__)
   end
 end
 
@@ -62,12 +64,12 @@ defimpl Liquid.Matcher, for: Any do
   def match(true, _), do: nil
 
   @doc """
-  Match size for strings:
+  Match size for strings.
   """
   def match(current, ["size" | _]) when is_binary(current), do: current |> String.length()
 
   @doc """
-  Match functions for structs:
+  Match functions for structs.
   """
   def match(current, [name | parts]) when is_map(current) and is_binary(name) do
     current |> Liquid.Matcher.match(name) |> Liquid.Matcher.match(parts)
@@ -83,7 +85,7 @@ defimpl Liquid.Matcher, for: Any do
   end
 
   @doc """
-  Matches all remaining cases
+  Matches all remaining cases.
   """
   # !is_list(current)
   def match(_current, key) when is_binary(key), do: nil

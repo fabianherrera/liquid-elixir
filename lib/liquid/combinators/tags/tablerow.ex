@@ -52,8 +52,11 @@ defmodule Liquid.Combinators.Tags.Tablerow do
         ]
 
   @doc """
-  Parse a `Liquid` Tablerow tag.
+  Parses a `Liquid` Tablerow tag, creates a Keyword list where the key is the name of the tag
+  (tablerow in this case) and the value is another keyword list which represents the internal
+  structure of the tag.
   """
+  @spec tag() :: NimbleParsec.t()
   def tag do
     Tag.define_closed("tablerow", &statements/1, fn combinator ->
       optional(combinator, parsec(:__parse__) |> tag(:body))

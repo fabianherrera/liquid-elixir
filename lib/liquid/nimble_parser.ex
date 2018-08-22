@@ -1,6 +1,6 @@
 defmodule Liquid.NimbleParser do
   @moduledoc """
-  Transform a valid liquid markup in an AST to be executed by `render`
+  Transform a valid liquid markup in an AST to be executed by `render`.
   """
   import NimbleParsec
 
@@ -149,7 +149,7 @@ defmodule Liquid.NimbleParser do
   defparsec(:custom, Custom.tag())
 
   @doc """
-  Validates and parse liquid markup
+  Validates and parse liquid markup.
   """
   @spec parse(String.t()) :: {:ok | :error, any()}
   def parse(markup) do
