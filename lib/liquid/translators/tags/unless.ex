@@ -3,7 +3,7 @@ defmodule Liquid.Translators.Tags.Unless do
   Translate new AST to old AST for the Unless tag.
   """
 
-  alias Liquid.Translators.General
+  alias Liquid.Translators.{General, Markup}
   alias Liquid.Combinators.Tags.If
   alias Liquid.Block
 
@@ -20,7 +20,7 @@ defmodule Liquid.Translators.Tags.Unless do
   def translate(conditions: conditions, body: body) do
     nodelist = Enum.filter(body, fn tag -> !General.conditional_statement?(tag) end)
     else_list = Enum.filter(body, &General.else?/1)
-    create_block_if(Enum.join(conditions), nodelist, else_list)
+    create_block_if(Markup.literal(conditions), nodelist, else_list)
   end
 
   defp create_block_if(markup, nodelist, else_list) do
