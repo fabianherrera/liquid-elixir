@@ -180,16 +180,6 @@ defmodule Liquid.Combinators.Tags.CaseTest do
     )
 
     test_combinator_error(
-      "{% case condition %}{% when 5  %} hit {% els %} else {% endcase %}",
-      &Parser.case/1
-    )
-
-    test_combinator_error(
-      "{% case condition %}{% whene 5 %} hit {% else %} else {% endcase %}",
-      &Parser.case/1
-    )
-
-    test_combinator_error(
       "{% case condition %}{% when 5 or %} hit {% else %} else {% endcase %}",
       &Parser.case/1
     )
