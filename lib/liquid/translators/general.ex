@@ -20,7 +20,7 @@ defmodule Liquid.Translators.General do
   def variable_in_parts(variable) do
     Enum.map(variable, fn {key, value} ->
       case key do
-        :part -> value |>  Markup.literal() |> String.replace("?", "")
+        :part -> value |> Markup.literal() |> String.replace("?", "")
         :index -> "[#{Markup.literal(value)}]"
         _ -> "[#{Markup.literal(value)}]"
       end

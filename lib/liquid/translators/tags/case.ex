@@ -117,20 +117,20 @@ defmodule Liquid.Translators.Tags.Case do
 
   defp create_block_for_case(markup, when_tag, else_tag_values) when is_list(when_tag) do
     nodelist = Enum.flat_map(when_tag, &when_to_nodelist/1)
-    nodelist_plus_else =  List.flatten([nodelist | else_tag(else_tag_values)])
+    nodelist_plus_else = List.flatten([nodelist | else_tag(else_tag_values)])
     to_case_block(markup, nodelist_plus_else)
   end
 
   defp create_block_for_case(markup, literal, when_tag) do
     nodelist_when = Enum.flat_map(when_tag, &when_to_nodelist/1)
-    full_list =  List.flatten([literal | nodelist_when])
+    full_list = List.flatten([literal | nodelist_when])
     to_case_block(markup, full_list)
   end
 
   defp create_block_for_case(markup, literal, when_tag, else_tag_values) do
     nodelist_when = Enum.flat_map(when_tag, &when_to_nodelist/1)
     nodelist_plus_else = [nodelist_when | else_tag(else_tag_values)]
-    full_list =  List.flatten([literal | nodelist_plus_else])
+    full_list = List.flatten([literal | nodelist_plus_else])
     to_case_block(markup, full_list)
   end
 
@@ -141,7 +141,7 @@ defmodule Liquid.Translators.Tags.Case do
 
   defp create_block_for_case_else(markup, literal, else_tag_values) do
     nodelist_plus_else = else_tag(else_tag_values)
-    full_list =  List.flatten([literal | nodelist_plus_else])
+    full_list = List.flatten([literal | nodelist_plus_else])
     to_case_block(markup, full_list)
   end
 
