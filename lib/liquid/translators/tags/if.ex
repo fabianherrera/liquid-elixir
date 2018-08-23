@@ -28,7 +28,11 @@ defmodule Liquid.Translators.Tags.If do
       markup: markup,
       nodelist: General.types_only_list(NimbleTranslator.process_node(nodelist)),
       blank: Blank.blank?(nodelist) and Blank.blank?(else_list),
-      elselist: else_list |> NimbleTranslator.process_node() |> List.flatten() |> General.types_only_list()
+      elselist:
+        else_list
+        |> NimbleTranslator.process_node()
+        |> List.flatten()
+        |> General.types_only_list()
     }
 
     IfElse.parse_conditions(block)
