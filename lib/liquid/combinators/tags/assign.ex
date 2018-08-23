@@ -17,8 +17,8 @@ defmodule Liquid.Combinators.Tags.Assign do
   @type markup :: [variable_name: String.t(), value: LexicalToken.value()]
 
   @doc """
-  Parse a `Liquid` Assign tag, create a Keyword list where the key is the name of the tag 
-  (assign in this case) and the value is another keyword list, that represent the internal 
+  Parses a `Liquid` Assign tag, creates a Keyword list where the key is the name of the tag
+  (assign in this case) and the value is another keyword list which represent the internal
   structure of the tag.
   """
   @spec tag() :: NimbleParsec.t()

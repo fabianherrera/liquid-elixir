@@ -19,8 +19,7 @@ defmodule Liquid.Translators.Tags.If do
   def translate(conditions: conditions, body: body) do
     nodelist = Enum.filter(body, fn tag -> !General.conditional_statement?(tag) end)
     else_list = Enum.filter(body, &General.else?/1)
-    # TODO: Check Enum.join(conditions)
-    create_block_if(Enum.join(conditions), nodelist, else_list)
+    create_block_if(Markup.literal(conditions), nodelist, else_list)
   end
 
   defp create_block_if(markup, nodelist, else_list) do

@@ -31,8 +31,8 @@ defmodule Liquid.Combinators.Tags.Raw do
   end
 
   @doc """
-  Parse a `Liquid` Raw tag, create a Keyword list where the key is the name of the tag 
-  (raw in this case) and the value is  the result of the `raw_content()` combinator.
+  Parses a `Liquid` Raw tag, creates a Keyword list where the key is the name of the tag
+  (raw in this case) and the value is the result of the `raw_content()` combinator.
   """
   @spec tag() :: NimbleParsec.t()
   def tag do

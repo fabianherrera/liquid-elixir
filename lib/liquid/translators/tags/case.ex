@@ -91,7 +91,7 @@ defmodule Liquid.Translators.Tags.Case do
   defp when_to_nodelist({:when, [conditions: conditions, body: values]}) do
     tag = %Liquid.Tag{
       name: :when,
-      markup: Enum.join(conditions)
+      markup: Markup.literal(conditions)
     }
 
     result = NimbleTranslator.process_node(values)
