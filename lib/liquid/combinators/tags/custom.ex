@@ -3,7 +3,6 @@ defmodule Liquid.Combinators.Tags.Custom do
   alias Liquid.Combinators.General
 
   def tag do
-    # 
     parsec(:start_tag)
     |> concat(name())
     |> concat(markup())
