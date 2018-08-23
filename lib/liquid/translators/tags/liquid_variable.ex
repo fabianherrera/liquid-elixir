@@ -3,8 +3,7 @@ defmodule Liquid.Translators.Tags.LiquidVariable do
   Translate new AST to old AST for liquid variables.
   """
 
-  alias Liquid.Translators.General
-  alias Liquid.Translators.Markup
+  alias Liquid.Translators.{General, Markup}
 
   @doc """
   Takes the markup of the new AST, creates a `Liquid.Variable` struct (old AST) and fill the keys needed to render a variable and filters.
@@ -53,7 +52,7 @@ defmodule Liquid.Translators.Tags.LiquidVariable do
 
   defp filters_to_list([filter_name, filter_param]) do
     {_, param_value} = filter_param
-    filter_list = Enum.map(param_value, &to_string/1)
+    filter_list = Enum.map(param_value, &Markup.literal/1)
     [String.to_atom(filter_name), filter_list]
   end
 end
