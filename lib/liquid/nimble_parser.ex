@@ -64,7 +64,7 @@ defmodule Liquid.NimbleParser do
   defparsec(:ignore_whitespaces, General.ignore_whitespaces())
   defparsec(:condition, General.condition())
   defparsec(:logical_condition, General.logical_condition())
-  defparsec(:custom_tag, General.custom_tag())
+  # defparsec(:custom_tag, General.custom_tag())
 
   defparsec(:null_value, LexicalToken.null_value())
   defparsec(:number, LexicalToken.number())
