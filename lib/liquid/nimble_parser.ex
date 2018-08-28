@@ -20,7 +20,8 @@ defmodule Liquid.NimbleParser do
     Case,
     Capture,
     Ifchanged,
-    Custom
+    Custom_Tag,
+    Custom_Block
   }
 
   @type t :: [
@@ -43,6 +44,10 @@ defmodule Liquid.NimbleParser do
           | String.t()
         ]
 
+  Liquid.Registers.register("mundo", MundoTag, Liquid.Block)
+  Liquid.Registers.register("PlusOne", PlusOneTag, Liquid.Tag)
+
+  defparsec(:liquid_literal, General.liquid_literal())
   defparsec(:liquid_variable, General.liquid_variable())
   defparsec(:variable_definition, General.variable_definition())
   defparsec(:variable_name, General.variable_name())
@@ -76,19 +81,16 @@ defmodule Liquid.NimbleParser do
   defparsec(:variable_value, LexicalToken.variable_value())
   defparsec(:variable_part, LexicalToken.variable_part())
 
-  defp clean_empty_strings(_rest, args, context, _line, _offset) do
-    result =
-      args
-      |> Enum.filter(fn e -> e != "" end)
-
-    {result, context}
-  end
-
   defparsec(
     :__parse__,
-    General.liquid_literal()
-    |> optional(choice([parsec(:liquid_tag), parsec(:liquid_variable), parsec(:custom)]))
-    |> traverse({:clean_empty_strings, []})
+    choice([
+      parsec(:liquid_literal),
+      parsec(:liquid_tag),
+      parsec(:liquid_variable),
+      parsec(:custom_block),
+      parsec(:custom_tag)
+    ])
+    |> optional(parsec(:__parse__))
   )
 
   defparsec(:assign, Assign.tag())
@@ -122,6 +124,8 @@ defmodule Liquid.NimbleParser do
 
   defparsec(:case, Case.tag())
   defparsec(:clauses, Case.clauses())
+  defparsec(:custom_tag, Custom_Tag.tag())
+  defparsec(:custom_block, Custom_Block.block())
 
   defparsec(
     :liquid_tag,
@@ -145,16 +149,19 @@ defmodule Liquid.NimbleParser do
     ])
   )
 
-  defparsec(:custom, Custom.tag())
-
   @doc """
   Validates and parse liquid markup.
   """
   @spec parse(String.t()) :: {:ok | :error, any()}
+  def parse(""), do: {:ok, []}
+
   def parse(markup) do
     case __parse__(markup) do
       {:ok, template, "", _, _, _} ->
         {:ok, template}
+
+      {:error, mesagge, _, _, _, _} ->
+        {:error, "#{mesagge}"}
 
       {:ok, _, rest, _, _, _} ->
         {:error, "Error parsing: #{rest}"}

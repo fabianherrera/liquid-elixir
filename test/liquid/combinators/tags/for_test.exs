@@ -14,7 +14,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
     Enum.each(tags, fn tag ->
       test_combinator(
         tag,
-        &Parser.for/1,
+        &Parser.__parse__/1,
         for: [
           statements: [
             variable: [parts: [part: "item"]],
@@ -37,7 +37,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
     Enum.each(tags, fn tag ->
       test_combinator(
         tag,
-        &Parser.for/1,
+        &Parser.__parse__/1,
         for: [
           statements: [
             variable: [parts: [part: "item"]],
@@ -62,7 +62,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
     Enum.each(tags, fn tag ->
       test_combinator(
         tag,
-        &Parser.for/1,
+        &Parser.__parse__/1,
         for: [
           statements: [
             variable: [parts: [part: "item"]],
@@ -86,7 +86,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
     Enum.each(tags, fn tag ->
       test_combinator(
         tag,
-        &Parser.for/1,
+        &Parser.__parse__/1,
         for: [
           statements: [
             variable: [parts: [part: "item"]],
@@ -110,7 +110,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
     Enum.each(tags, fn tag ->
       test_combinator(
         tag,
-        &Parser.for/1,
+        &Parser.__parse__/1,
         for: [
           statements: [
             variable: [parts: [part: "item"]],
@@ -134,7 +134,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
     Enum.each(tags, fn tag ->
       test_combinator(
         tag,
-        &Parser.for/1,
+        &Parser.__parse__/1,
         for: [
           statements: [
             variable: [parts: [part: "i"]],
@@ -150,7 +150,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
   test "for tag: range with variables" do
     test_combinator(
       "{% for i in (my_var..10) %}{{ i }}{% endfor %}",
-      &Parser.for/1,
+      &Parser.__parse__/1,
       for: [
         statements: [
           variable: [parts: [part: "i"]],
@@ -165,7 +165,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
   test "for tag: break tag" do
     test_combinator(
       "{% for i in (my_var..10) %}{{ i }}{% break %}{% endfor %}",
-      &Parser.for/1,
+      &Parser.__parse__/1,
       for: [
         statements: [
           variable: [parts: [part: "i"]],
@@ -183,7 +183,7 @@ defmodule Liquid.Combinators.Tags.ForTest do
   test "for tag: continue tag" do
     test_combinator(
       "{% for i in (1..my_var) %}{{ i }}{% continue %}{% endfor %}",
-      &Parser.for/1,
+      &Parser.__parse__/1,
       for: [
         statements: [
           variable: [parts: [part: "i"]],
@@ -201,12 +201,12 @@ defmodule Liquid.Combinators.Tags.ForTest do
   test "for tag: invalid tag structure and variable values" do
     test_combinator_error(
       "{% for i in (my_var..10) %}{{ i }}{% else %}{% else %}{% endfor %}",
-      &Parser.for/1
+      &Parser.parse/1
     )
 
     test_combinator_error(
       "{% for i in (my_var..) %}{{ i }}{% else %}{% endfor %}",
-      &Parser.for/1
+      &Parser.parse/1
     )
   end
 end

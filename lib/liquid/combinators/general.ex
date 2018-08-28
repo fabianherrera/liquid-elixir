@@ -202,7 +202,18 @@ defmodule Liquid.Combinators.General do
       string(@start_tag)
     ])
     |> reduce({List, :to_string, []})
+    |> traverse({Liquid.Combinators.General, :check_empty, []})
   end
+
+  def check_empty(_rest, args, context, _line, _offset) do
+    case is_empty?(args) do
+      true -> {:error, "Not a valid literal"}
+      false -> {args, context}
+    end
+  end
+
+  defp is_empty?([""]), do: true
+  defp is_empty?(_), do: false
 
   @doc """
   All utf8 valid characters or empty limited by start of tag
@@ -284,8 +295,13 @@ defmodule Liquid.Combinators.General do
   def liquid_variable do
     empty()
     |> choice([empty_liquid_variable(), not_empty_liquid_variable()])
-    |> optional(parsec(:__parse__))
   end
+
+  #   def liquid_variable do
+  #   empty()
+  #   |> choice([empty_liquid_variable(), not_empty_liquid_variable()])
+  #   |> optional(parsec(:__parse__))
+  # end
 
   def single_quoted_token do
     parsec(:ignore_whitespaces)
