@@ -206,14 +206,12 @@ defmodule Liquid.Combinators.General do
   end
 
   def check_empty(_rest, args, context, _line, _offset) do
-    case is_empty?(args) do
-      true -> {:error, "Not a valid literal"}
-      false -> {args, context}
+    if args == [""] do
+      {:error, "Not a valid literal"}
+    else
+      {args, context}
     end
   end
-
-  defp is_empty?([""]), do: true
-  defp is_empty?(_), do: false
 
   @doc """
   All utf8 valid characters or empty limited by start of tag

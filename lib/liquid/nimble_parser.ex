@@ -20,8 +20,8 @@ defmodule Liquid.NimbleParser do
     Case,
     Capture,
     Ifchanged,
-    Custom_Tag,
-    Custom_Block
+    CustomTag,
+    CustomBlock
   }
 
   @type t :: [
@@ -124,8 +124,8 @@ defmodule Liquid.NimbleParser do
 
   defparsec(:case, Case.tag())
   defparsec(:clauses, Case.clauses())
-  defparsec(:custom_tag, Custom_Tag.tag())
-  defparsec(:custom_block, Custom_Block.block())
+  defparsec(:custom_tag, CustomTag.tag())
+  defparsec(:custom_block, CustomBlock.block())
 
   defparsec(
     :liquid_tag,

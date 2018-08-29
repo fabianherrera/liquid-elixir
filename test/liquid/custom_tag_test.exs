@@ -19,7 +19,7 @@ defmodule Liquid.CustomTagTest do
   end
 
   setup_all do
-    Liquid.Registers.register("mundo", MundoTag, Block)
+    Liquid.Registers.register("Mundo", MundoTag, Block)
     Liquid.Registers.register("PlusOne", PlusOneTag, Tag)
     Liquid.start()
     on_exit(fn -> Liquid.stop() end)
@@ -30,7 +30,7 @@ defmodule Liquid.CustomTagTest do
     assert_template_result("123", "123{% assign qwe = 5 %}")
     assert_template_result("6", "{% PlusOne 5 %}")
     assert_template_result("a3b", "a{% PlusOne 2 %}b")
-    assert_template_result("a1", "a{% mundo 2 %}b{% endmundo %}")
+    assert_template_result("a1", "a{% Mundo 2 %}b{% endMundo %}")
   end
 
   test "more than one custom tag" do

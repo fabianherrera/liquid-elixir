@@ -1,7 +1,6 @@
-defmodule Liquid.Combinators.Tags.Custom_Block do
+defmodule Liquid.Combinators.Tags.CustomBlock do
   import NimbleParsec
-  alias Liquid.Combinators.General
-  alias Liquid.Combinators.Tags.Custom_Tag
+  alias Liquid.Combinators.Tags.CustomTag
 
   def end_name do
     valid_end_name()
@@ -33,7 +32,7 @@ defmodule Liquid.Combinators.Tags.Custom_Block do
     opener_custom_tag()
     |> optional(parsec(:__parse__) |> tag(:body))
     |> concat(closer_custom_tag())
-    |> traverse({Liquid.Combinators.Tags.Custom_Block, :check_close_tag, []})
+    |> traverse({Liquid.Combinators.Tags.CustomBlock, :check_close_tag, []})
     |> tag(:custom_block)
   end
 
@@ -52,8 +51,8 @@ defmodule Liquid.Combinators.Tags.Custom_Block do
   end
 
   defp valid_end_name() do
-    Custom_Tag.string_name()
-    |> traverse({Liquid.Combinators.Tags.Custom_Block, :check_string_closed, []})
+    CustomTag.string_name()
+    |> traverse({Liquid.Combinators.Tags.CustomBlock, :check_string_closed, []})
   end
 
   def check_string_closed(_rest, args, context, _line, _offset) do
@@ -101,16 +100,16 @@ defmodule Liquid.Combinators.Tags.Custom_Block do
         false
 
       map ->
-        Enum.map(map, &Custom_Tag.simplify(&1))
-        |> Enum.filter(fn {key, type} -> type == Block end)
+        Enum.map(map, &CustomTag.simplify(&1))
+        |> Enum.filter(fn {_key, type} -> type == Block end)
         |> Enum.map(fn {key, _type} -> "#{key}" end)
     end
   end
 
   def all_tags do
     List.flatten([
-      Liquid.Combinators.Tags.Custom_Block.end_register_tag_name()
-      | Liquid.Combinators.Tags.Custom_Tag.liquid_tags()
+      Liquid.Combinators.Tags.CustomBlock.end_register_tag_name()
+      | Liquid.Combinators.Tags.CustomTag.liquid_tags()
     ])
   end
 

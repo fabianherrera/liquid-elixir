@@ -74,8 +74,8 @@ defmodule Liquid.NimbleTranslator do
         :break -> Break.translate(markup)
         :continue -> Continue.translate(markup)
         :case -> Case.translate(markup)
-        :custom_tag -> Liquid.Combinators.Translators.Custom_Tag.translate(markup)
-        :custom_block -> Liquid.Combinators.Translators.Custom_Block.translate(markup)
+        :custom_tag -> Liquid.Combinators.Translators.CustomTag.translate(markup)
+        :custom_block -> Liquid.Combinators.Translators.CustomBlock.translate(markup)
       end
 
     check_blank(translated)

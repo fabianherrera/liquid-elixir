@@ -1,4 +1,4 @@
-defmodule Liquid.Combinators.Tags.Custom_Tag do
+defmodule Liquid.Combinators.Tags.CustomTag do
   import NimbleParsec
   alias Liquid.Combinators.General
 
@@ -53,7 +53,7 @@ defmodule Liquid.Combinators.Tags.Custom_Tag do
 
   defp valid_name() do
     string_name()
-    |> traverse({Liquid.Combinators.Tags.Custom_Tag, :check_string, []})
+    |> traverse({Liquid.Combinators.Tags.CustomTag, :check_string, []})
   end
 
   def check_string(_rest, args, context, _line, _offset) do
@@ -63,7 +63,7 @@ defmodule Liquid.Combinators.Tags.Custom_Tag do
     end
   end
 
-  defp liquid_tag_name?([string]) do
+  defp liquid_tag_name?([string]) when is_bitstring(string) do
     case string in all_tags() do
       true -> true
       false -> false
@@ -79,15 +79,15 @@ defmodule Liquid.Combinators.Tags.Custom_Tag do
 
       map ->
         Enum.map(map, &simplify(&1))
-        |> Enum.filter(fn {key, type} -> type == Block end)
+        |> Enum.filter(fn {_key, type} -> type == Block end)
         |> Enum.map(fn {key, _type} -> "#{key}" end)
     end
   end
 
   def all_tags do
     List.flatten([
-      Liquid.Combinators.Tags.Custom_Tag.end_register_tag_name()
-      | Liquid.Combinators.Tags.Custom_Tag.liquid_tags()
+      Liquid.Combinators.Tags.CustomTag.end_register_tag_name()
+      | Liquid.Combinators.Tags.CustomTag.liquid_tags()
     ])
   end
 

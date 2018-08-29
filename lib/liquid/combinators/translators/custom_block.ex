@@ -1,5 +1,5 @@
-defmodule Liquid.Combinators.Translators.Custom_Block do
-  alias Liquid.Translators.{General, Markup}
+defmodule Liquid.Combinators.Translators.CustomBlock do
+  alias Liquid.Translators.General
 
   def translate(custom_name: name, custom_markup: markup, body: body, custom_name: endname) do
     tag_name = String.to_atom(name)
