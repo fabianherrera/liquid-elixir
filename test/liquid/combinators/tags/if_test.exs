@@ -1,22 +1,20 @@
 defmodule Liquid.Combinators.Tags.IfTest do
   use ExUnit.Case
-
-  import Liquid.Helpers
   alias Liquid.NimbleParser, as: Parser
 
+  import Liquid.Helpers
+
   test "if using booleans" do
-    test_combinator(
+    test_parse(
       "{% if false %} this text should not go into the output {% endif %}",
-      &Parser.__parse__/1,
       if: [
         conditions: [false],
         body: [" this text should not go into the output "]
       ]
     )
 
-    test_combinator(
+    test_parse(
       "{% if true %} this text should go into the output {% endif %}",
-      &Parser.__parse__/1,
       if: [
         conditions: [true],
         body: [" this text should go into the output "]
@@ -25,17 +23,15 @@ defmodule Liquid.Combinators.Tags.IfTest do
   end
 
   test "if else " do
-    test_combinator(
+    test_parse(
       "{% if \"foo\" %} YES {% else %} NO {% endif %}",
-      &Parser.__parse__/1,
       if: [conditions: ["foo"], body: [" YES ", {:else, [" NO "]}]]
     )
   end
 
   test "opening if tag with multiple conditions " do
-    test_combinator(
+    test_parse(
       "{% if line_item.grams > 20000 and customer_address.city == 'Ottawa' or customer_address.city == 'Seatle' %}hello test{% endif %}",
-      &Parser.__parse__/1,
       if: [
         conditions: [
           condition: {{:variable, [parts: [part: "line_item", part: "grams"]]}, :>, 20000},
@@ -56,9 +52,8 @@ defmodule Liquid.Combinators.Tags.IfTest do
   end
 
   test "using values" do
-    test_combinator(
+    test_parse(
       "{% if a == true or b == 4 %} YES {% endif %}",
-      &Parser.__parse__/1,
       if: [
         conditions: [
           condition: {{:variable, [parts: [part: "a"]]}, :==, true},
@@ -76,9 +71,8 @@ defmodule Liquid.Combinators.Tags.IfTest do
     awful_markup =
       "a == 'and' and b == 'or' and c == 'foo and bar' and d == 'bar or baz' and e == 'foo' and foo and bar"
 
-    test_combinator(
+    test_parse(
       "{% if #{awful_markup} %} YES {% endif %}",
-      &Parser.__parse__/1,
       if: [
         conditions: [
           condition: {{:variable, [parts: [part: "a"]]}, :==, "and"},
@@ -107,18 +101,16 @@ defmodule Liquid.Combinators.Tags.IfTest do
   end
 
   test "nested if" do
-    test_combinator(
+    test_parse(
       "{% if false %}{% if false %} NO {% endif %}{% endif %}",
-      &Parser.__parse__/1,
       if: [
         conditions: [false],
         body: [if: [conditions: [false], body: [" NO "]]]
       ]
     )
 
-    test_combinator(
+    test_parse(
       "{% if false %}{% if shipping_method.title == 'International Shipping' %}You're shipping internationally. Your order should arrive in 2–3 weeks.{% elsif shipping_method.title == 'Domestic Shipping' %}Your order should arrive in 3–4 days.{% else %} Thank you for your order!{% endif %}{% endif %}",
-      &Parser.__parse__/1,
       if: [
         conditions: [false],
         body: [
@@ -160,23 +152,20 @@ defmodule Liquid.Combinators.Tags.IfTest do
   end
 
   test "comparing values" do
-    test_combinator(
+    test_parse(
       "{% if null < 10 %} NO {% endif %}",
-      &Parser.__parse__/1,
       if: [conditions: [condition: {nil, :<, 10}], body: [" NO "]]
     )
 
-    test_combinator(
+    test_parse(
       "{% if 10 < null %} NO {% endif %}",
-      &Parser.__parse__/1,
       if: [conditions: [condition: {10, :<, nil}], body: [" NO "]]
     )
   end
 
   test "usisng contains" do
-    test_combinator(
+    test_parse(
       "{% if    'bob'     contains     'f'     %}yes{% else %}no{% endif %}",
-      &Parser.__parse__/1,
       if: [
         conditions: [condition: {"bob", :contains, "f"}],
         body: ["yes", {:else, ["no"]}]
@@ -185,9 +174,8 @@ defmodule Liquid.Combinators.Tags.IfTest do
   end
 
   test "using elsif and else" do
-    test_combinator(
+    test_parse(
       "{% if shipping_method.title == 'International Shipping' %}You're shipping internationally. Your order should arrive in 2–3 weeks.{% elsif shipping_method.title == 'Domestic Shipping' %}Your order should arrive in 3–4 days.{% else %} Thank you for your order!{% endif %}",
-      &Parser.__parse__/1,
       if: [
         conditions: [
           condition:
@@ -214,9 +202,8 @@ defmodule Liquid.Combinators.Tags.IfTest do
   end
 
   test "2 else conditions in one if" do
-    test_combinator(
+    test_parse(
       "{% if true %}test{% else %} a {% else %} b {% endif %}",
-      &Parser.__parse__/1,
       if: [
         conditions: [true],
         body: ["test", {:else, [" a "]}, {:else, [" b "]}]

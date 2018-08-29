@@ -2,7 +2,6 @@ defmodule Liquid.Combinators.Tags.IfchangedTest do
   use ExUnit.Case
 
   import Liquid.Helpers
-  alias Liquid.NimbleParser, as: Parser
 
   test "ifchanged tag: basic tag structures" do
     tags = [
@@ -12,9 +11,8 @@ defmodule Liquid.Combinators.Tags.IfchangedTest do
     ]
 
     Enum.each(tags, fn tag ->
-      test_combinator(
+      test_parse(
         tag,
-        &Parser.__parse__/1,
         ifchanged: [
           "<h3>",
           {:liquid_variable,

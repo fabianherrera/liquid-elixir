@@ -5,9 +5,8 @@ defmodule Liquid.Combinators.Tags.CaptureTest do
   alias Liquid.NimbleParser, as: Parser
 
   test "capture tag: parser basic structures" do
-    test_combinator(
+    test_parse(
       "{% capture about_me %} I am {{ age }} and my favorite food is {{ favorite_food }}{% endcapture %}",
-      &Parser.__parse__/1,
       capture: [
         variable_name: "about_me",
         parts: [

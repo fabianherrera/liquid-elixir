@@ -5,9 +5,8 @@ defmodule Liquid.Combinators.Tags.CaseTest do
   alias Liquid.NimbleParser, as: Parser
 
   test "case using multiples when" do
-    test_combinator(
+    test_parse(
       "{% case condition %}{% when 1 %} its 1 {% when 2 %} its 2 {% endcase %}",
-      &Parser.__parse__/1,
       case: [
         variable: [parts: [part: "condition"]],
         clauses: [
@@ -19,9 +18,8 @@ defmodule Liquid.Combinators.Tags.CaseTest do
   end
 
   test "case using a single when" do
-    test_combinator(
+    test_parse(
       "{% case condition %}{% when \"string here\" %} hit {% endcase %}",
-      &Parser.__parse__/1,
       case: [
         variable: [parts: [part: "condition"]],
         clauses: [
@@ -32,9 +30,8 @@ defmodule Liquid.Combinators.Tags.CaseTest do
   end
 
   test "evaluate variables and expressions" do
-    test_combinator(
+    test_parse(
       "{% case a.size %}{% when 1 %}1{% when 2 %}2{% endcase %}",
-      &Parser.__parse__/1,
       case: [
         variable: [parts: [part: "a", part: "size"]],
         clauses: [
@@ -46,9 +43,8 @@ defmodule Liquid.Combinators.Tags.CaseTest do
   end
 
   test "case with a else tag" do
-    test_combinator(
+    test_parse(
       "{% case condition %}{% when 5 %} hit {% else %} else {% endcase %}",
-      &Parser.__parse__/1,
       case: [
         variable: [parts: [part: "condition"]],
         clauses: [when: [conditions: [5], body: [" hit "]]],
@@ -58,9 +54,8 @@ defmodule Liquid.Combinators.Tags.CaseTest do
   end
 
   test "when tag with an or condition" do
-    test_combinator(
+    test_parse(
       "{% case condition %}{% when 1 or 2 or 3 %} its 1 or 2 or 3 {% when 4 %} its 4 {% endcase %}",
-      &Parser.__parse__/1,
       case: [
         variable: [parts: [part: "condition"]],
         clauses: [
@@ -75,9 +70,8 @@ defmodule Liquid.Combinators.Tags.CaseTest do
   end
 
   test "when with comma's" do
-    test_combinator(
+    test_parse(
       "{% case condition %}{% when 1, 2, 3 %} its 1 or 2 or 3 {% when 4 %} its 4 {% endcase %}",
-      &Parser.__parse__/1,
       case: [
         variable: [parts: [part: "condition"]],
         clauses: [
@@ -92,9 +86,8 @@ defmodule Liquid.Combinators.Tags.CaseTest do
   end
 
   test "when tag separated by commas and with different values" do
-    test_combinator(
+    test_parse(
       "{% case condition %}{% when 1, \"string\", null %} its 1 or 2 or 3 {% when 4 %} its 4 {% endcase %}",
-      &Parser.__parse__/1,
       case: [
         variable: [parts: [part: "condition"]],
         clauses: [
@@ -113,9 +106,8 @@ defmodule Liquid.Combinators.Tags.CaseTest do
   end
 
   test "when tag with assign tag" do
-    test_combinator(
+    test_parse(
       "{% case collection.handle %}{% when 'menswear-jackets' %}{% assign ptitle = 'menswear' %}{% when 'menswear-t-shirts' %}{% assign ptitle = 'menswear' %}{% else %}{% assign ptitle = 'womenswear' %}{% endcase %}",
-      &Parser.__parse__/1,
       case: [
         variable: [parts: [part: "collection", part: "handle"]],
         clauses: [
