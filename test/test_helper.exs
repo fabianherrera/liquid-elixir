@@ -13,8 +13,13 @@ defmodule Liquid.Helpers do
     assert response == expected
   end
 
-  def test_combinator_error(markup, combiner) do
+  def test_combinator_internal_error(markup, combiner) do
     {:error, _, _, _, _, _} = combiner.(markup)
+    assert true
+  end
+
+  def test_combinator_error(markup, combiner) do
+    {:error, _} = combiner.(markup)
     assert true
   end
 

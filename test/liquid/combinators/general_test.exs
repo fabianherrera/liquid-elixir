@@ -43,8 +43,7 @@ defmodule Liquid.Combinators.GeneralTest do
     test_combinator("stop in {%", &Parser.liquid_literal/1, ["stop in "])
     test_combinator("stop in %}", &Parser.liquid_literal/1, ["stop in %}"])
     test_combinator("stop in }}", &Parser.liquid_literal/1, ["stop in }}"])
-    test_combinator("{{ this is not processed", &Parser.liquid_literal/1, [""])
-    test_combinator("", &Parser.liquid_literal/1, [""])
+    test_combinator_internal_error("{{ this is not processed", &Parser.liquid_literal/1)
   end
 
   test "extra_spaces ignore all :whitespaces" do
@@ -85,7 +84,7 @@ defmodule Liquid.Combinators.GeneralTest do
     invalid_names = ~w(. .a @a #a ^a 好a ,a -a)
 
     Enum.each(invalid_names, fn n ->
-      test_combinator_error(n, &Parser.variable_name/1)
+      test_combinator_internal_error(n, &Parser.variable_name/1)
     end)
   end
 end

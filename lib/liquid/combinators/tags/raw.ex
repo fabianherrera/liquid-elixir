@@ -40,7 +40,6 @@ defmodule Liquid.Combinators.Tags.Raw do
     |> Tag.open_tag()
     |> concat(raw_content())
     |> tag(:raw)
-    |> optional(parsec(:__parse__))
   end
 
   defp any_tag do

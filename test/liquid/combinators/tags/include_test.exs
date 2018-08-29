@@ -7,7 +7,7 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
   test "include tag parser" do
     test_combinator(
       "{% include 'snippet', my_variable: 'apples', my_other_variable: 'oranges' %}",
-      &Parser.include/1,
+      &Parser.__parse__/1,
       include: [
         variable_name: "snippet",
         params: [
@@ -19,7 +19,7 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
 
     test_combinator(
       "{% include 'snippet' my_variable: 'apples', my_other_variable: 'oranges' %}",
-      &Parser.include/1,
+      &Parser.__parse__/1,
       include: [
         variable_name: "snippet",
         params: [
@@ -31,13 +31,13 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
 
     test_combinator(
       "{% include 'pick_a_source' %}",
-      &Parser.include/1,
+      &Parser.__parse__/1,
       include: [variable_name: "pick_a_source"]
     )
 
     test_combinator(
       "{% include 'product' with products[0] %}",
-      &Parser.include/1,
+      &Parser.__parse__/1,
       include: [
         variable_name: "product",
         with: [
@@ -48,13 +48,13 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
 
     test_combinator(
       "{% include 'product' with 'products' %}",
-      &Parser.include/1,
+      &Parser.__parse__/1,
       include: [variable_name: "product", with: ["products"]]
     )
 
     test_combinator(
       "{% include 'product' for 'products' %}",
-      &Parser.include/1,
+      &Parser.__parse__/1,
       include: [variable_name: "product", for: ["products"]]
     )
   end

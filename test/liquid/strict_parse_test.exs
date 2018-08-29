@@ -48,7 +48,7 @@ defmodule Liquid.StrictParseTest do
   #    end
   #  end
   test "missing endtag parse time error" do
-    assert_raise RuntimeError, "Error parsing: {% for a in b %} ...", fn ->
+    assert_raise RuntimeError, "Invalid tag name", fn ->
       Template.parse("{% for a in b %} ...")
     end
   end
@@ -62,11 +62,11 @@ defmodule Liquid.StrictParseTest do
   #  assert_raise SyntaxError, "Invalid variable name", fn -> Template.parse("{{%%%}}") end
   #  end
   test "unrecognized operator" do
-    assert_raise RuntimeError, "Error parsing: {% if 1 =! 2 %}ok{% endif %}", fn ->
+    assert_raise RuntimeError, "Invalid tag name", fn ->
       Template.parse("{% if 1 =! 2 %}ok{% endif %}")
     end
 
-    assert_raise RuntimeError, "Error parsing: {{%%%}}", fn ->
+    assert_raise RuntimeError, "expected string \"{%\"", fn ->
       Template.parse("{{%%%}}")
     end
   end

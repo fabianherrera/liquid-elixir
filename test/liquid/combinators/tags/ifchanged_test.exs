@@ -14,7 +14,7 @@ defmodule Liquid.Combinators.Tags.IfchangedTest do
     Enum.each(tags, fn tag ->
       test_combinator(
         tag,
-        &Parser.ifchanged/1,
+        &Parser.__parse__/1,
         ifchanged: [
           "<h3>",
           {:liquid_variable,

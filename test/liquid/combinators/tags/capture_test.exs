@@ -7,7 +7,7 @@ defmodule Liquid.Combinators.Tags.CaptureTest do
   test "capture tag: parser basic structures" do
     test_combinator(
       "{% capture about_me %} I am {{ age }} and my favorite food is {{ favorite_food }}{% endcapture %}",
-      &Parser.capture/1,
+      &Parser.__parse__/1,
       capture: [
         variable_name: "about_me",
         parts: [
@@ -25,6 +25,6 @@ defmodule Liquid.Combinators.Tags.CaptureTest do
       "{% capture about_me %} I am {{ age } and my favorite food is { favorite_food }} {% endcapture %}",
       "{% capture about_me %}{% ndcapture %}"
     ]
-    |> Enum.each(fn bad_markup -> test_combinator_error(bad_markup, &Parser.capture/1) end)
+    |> Enum.each(fn bad_markup -> test_combinator_error(bad_markup, &Parser.parse/1) end)
   end
 end
