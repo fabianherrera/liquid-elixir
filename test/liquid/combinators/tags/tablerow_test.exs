@@ -14,14 +14,13 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
     Enum.each(tags, fn tag ->
       test_combinator(
         tag,
-        &Parser.tablerow/1,
+        &Parser.__parse__/1,
         tablerow: [
           statements: [
             variable: [parts: [part: "item"]],
             value: {:variable, [parts: [part: "array"]]},
             params: []
-          ],
-          body: []
+          ]
         ]
       )
     end)
@@ -38,14 +37,13 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
     Enum.each(tags, fn tag ->
       test_combinator(
         tag,
-        &Parser.tablerow/1,
+        &Parser.__parse__/1,
         tablerow: [
           statements: [
             variable: [parts: [part: "item"]],
             value: {:variable, [parts: [part: "array"]]},
             params: [limit: [2]]
-          ],
-          body: []
+          ]
         ]
       )
     end)
@@ -61,14 +59,13 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
     Enum.each(tags, fn tag ->
       test_combinator(
         tag,
-        &Parser.tablerow/1,
+        &Parser.__parse__/1,
         tablerow: [
           statements: [
             variable: [parts: [part: "item"]],
             value: {:variable, [parts: [part: "array"]]},
             params: [offset: [2]]
-          ],
-          body: []
+          ]
         ]
       )
     end)
@@ -84,14 +81,13 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
     Enum.each(tags, fn tag ->
       test_combinator(
         tag,
-        &Parser.tablerow/1,
+        &Parser.__parse__/1,
         tablerow: [
           statements: [
             variable: [parts: [part: "item"]],
             value: {:variable, [parts: [part: "array"]]},
             params: [cols: [2]]
-          ],
-          body: []
+          ]
         ]
       )
     end)
@@ -107,7 +103,7 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
     Enum.each(tags, fn tag ->
       test_combinator(
         tag,
-        &Parser.tablerow/1,
+        &Parser.__parse__/1,
         tablerow: [
           statements: [
             variable: [parts: [part: "i"]],
@@ -125,7 +121,7 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
   test "tablerow tag: range with variables" do
     test_combinator(
       "{% tablerow i in (my_var..10) %}{{ i }}{% endtablerow %}",
-      &Parser.tablerow/1,
+      &Parser.__parse__/1,
       tablerow: [
         statements: [
           variable: [parts: [part: "i"]],
@@ -142,7 +138,7 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
   test "tablerow tag: call with 2 parameters" do
     test_combinator(
       "{% tablerow i in (my_var..10) limit:2 cols:2 %}{{ i }}{% endtablerow %}",
-      &Parser.tablerow/1,
+      &Parser.__parse__/1,
       tablerow: [
         statements: [
           variable: [parts: [part: "i"]],
@@ -159,17 +155,17 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
   test "tablerow tag: invalid tag structure and variable values" do
     test_combinator_error(
       "{% tablerow i in (my_var..10) %}{{ i }}{% else %}{% else %}{% endtablerow %}",
-      &Parser.tablerow/1
+      &Parser.parse/1
     )
 
     test_combinator_error(
       "{% tablerow i in (my_var..product.title[2]) %}{{ i }}{% else %}{% endtablerow %}",
-      &Parser.tablerow/1
+      &Parser.parse/1
     )
 
     test_combinator_error(
       "{% tablerow i in products limit: a %}{{ i }}{% else %}{% endtablerow %}",
-      &Parser.tablerow/1
+      &Parser.parse/1
     )
   end
 end

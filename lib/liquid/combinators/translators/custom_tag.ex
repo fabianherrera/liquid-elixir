@@ -1,4 +1,4 @@
-defmodule Liquid.Combinators.Translators.Custom do
+defmodule Liquid.Combinators.Translators.CustomTag do
   def translate(custom_name: name, custom_markup: markup) do
     tag_name = String.to_atom(name)
     custom_tag = Application.get_env(:liquid, :extra_tags)

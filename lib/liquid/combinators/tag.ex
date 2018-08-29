@@ -30,14 +30,12 @@ defmodule Liquid.Combinators.Tag do
     |> combinator_body.()
     |> close_tag(tag_name)
     |> tag(String.to_atom(tag_name))
-    |> optional(parsec(:__parse__))
   end
 
   def define_open(tag_name, combinator_head \\ & &1) do
     tag_name
     |> open_tag(combinator_head)
     |> tag(String.to_atom(tag_name))
-    |> optional(parsec(:__parse__))
   end
 
   def define_inverse_open(tag_name, combinator_head \\ & &1) do
