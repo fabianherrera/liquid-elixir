@@ -2,12 +2,10 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
   use ExUnit.Case
 
   import Liquid.Helpers
-  alias Liquid.NimbleParser, as: Parser
 
   test "include tag parser" do
-    test_combinator(
+    test_parse(
       "{% include 'snippet', my_variable: 'apples', my_other_variable: 'oranges' %}",
-      &Parser.__parse__/1,
       include: [
         variable_name: "snippet",
         params: [
@@ -17,9 +15,8 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
       ]
     )
 
-    test_combinator(
+    test_parse(
       "{% include 'snippet' my_variable: 'apples', my_other_variable: 'oranges' %}",
-      &Parser.__parse__/1,
       include: [
         variable_name: "snippet",
         params: [
@@ -29,15 +26,13 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
       ]
     )
 
-    test_combinator(
+    test_parse(
       "{% include 'pick_a_source' %}",
-      &Parser.__parse__/1,
       include: [variable_name: "pick_a_source"]
     )
 
-    test_combinator(
+    test_parse(
       "{% include 'product' with products[0] %}",
-      &Parser.__parse__/1,
       include: [
         variable_name: "product",
         with: [
@@ -46,15 +41,13 @@ defmodule Liquid.Combinators.Tags.IncludeTest do
       ]
     )
 
-    test_combinator(
+    test_parse(
       "{% include 'product' with 'products' %}",
-      &Parser.__parse__/1,
       include: [variable_name: "product", with: ["products"]]
     )
 
-    test_combinator(
+    test_parse(
       "{% include 'product' for 'products' %}",
-      &Parser.__parse__/1,
       include: [variable_name: "product", for: ["products"]]
     )
   end

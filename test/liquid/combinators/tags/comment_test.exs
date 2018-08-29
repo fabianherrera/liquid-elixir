@@ -5,9 +5,8 @@ defmodule Liquid.Combinators.Tags.CommentTest do
   alias Liquid.NimbleParser, as: Parser
 
   test "comment tag parser" do
-    test_combinator(
+    test_parse(
       "{% comment %} Allows you to leave un-rendered code inside a Liquid template. Any text within the opening and closing comment blocks will not be output, and any Liquid code within will not be executed. {% endcomment %}",
-      &Parser.__parse__/1,
       comment: [
         " Allows you to leave un-rendered code inside a Liquid template. Any text within the opening and closing comment blocks will not be output, and any Liquid code within will not be executed. "
       ]
@@ -15,118 +14,101 @@ defmodule Liquid.Combinators.Tags.CommentTest do
   end
 
   test "comment with tags and variables in body" do
-    test_combinator(
+    test_parse(
       "{% comment %} {% if true %} {% endcomment %}",
-      &Parser.__parse__/1,
       comment: [" {% if true %} "]
     )
   end
 
   test "comment with any tags in body" do
-    test_combinator(
+    test_parse(
       "{% comment %} {% if true %} sadsadasd  {% afi true %}{% endcomment %}",
-      &Parser.__parse__/1,
       comment: [" {% if true %} sadsadasd  {% afi true %}"]
     )
   end
 
   test "comment with any tags and comments or raw in body" do
-    test_combinator(
+    test_parse(
       "{% comment %} {% if true %} {% comment %} {% if true %} {% endcomment %} {% endcomment %}",
-      &Parser.__parse__/1,
       comment: [" {% if true %}  {% if true %}  "]
     )
   end
 
   test "comment with any tags and nested comment" do
-    test_combinator(
+    test_parse(
       "{% comment %} {% comment %} {% if true %} {% comment %} {% if true %} {% endcomment %} {% endcomment %} {% endcomment %}",
-      &Parser.__parse__/1,
       comment: ["  {% if true %}  {% if true %}   "]
     )
 
-    test_combinator(
+    test_parse(
       "{% comment %} {% comment %} {% comment %}   {% comment %}  {% comment %} {% comment %} {% endcomment %} {% endcomment %}  {% endcomment %}{% endcomment %} {% endcomment %} {% endcomment %}",
-      &Parser.__parse__/1,
       comment: ["              "]
     )
 
-    test_combinator(
+    test_parse(
       "{% comment %} a {% comment %} b {% endcomment %} {% comment %} c{% endcomment %} {% comment %} d {% endcomment %}{% endcomment %}",
-      &Parser.__parse__/1,
       comment: [" a  b   c  d "]
     )
 
-    test_combinator(
+    test_parse(
       "{% comment %} a {% comment %} b {% endcomment %} {% comment %} c{% endcomment %} {% comment %} d {% endcomment %}{% endcomment %}",
-      &Parser.__parse__/1,
       comment: [" a  b   c  d "]
     )
 
-    test_combinator(
+    test_parse(
       "{% comment %} hi {% endcomment %}{% comment %} there {% endcomment %}",
-      &Parser.__parse__/1,
       comment: [" hi "],
       comment: [" there "]
     )
   end
 
   test "comment with any tag that are similar to comment and endcomment" do
-    test_combinator(
+    test_parse(
       "{% comment %} {% if true %} {% andcomment %} {% aendcomment %} {% acomment %} {% endcomment %}",
-      &Parser.__parse__/1,
       comment: [" {% if true %} {% andcomment %} {% aendcomment %} {% acomment %} "]
     )
 
-    test_combinator(
+    test_parse(
       "{% comment %} {% commenta %} {% endcomment %}",
-      &Parser.__parse__/1,
       comment: [" {% commenta %} "]
     )
   end
 
   test "comment with several raw" do
-    test_combinator(
+    test_parse(
       "{% comment %} {% raw %} {% comment %} {% endraw %} {% raw %} {% endcomment %}{% endraw %} {% raw %} hi there .. {% endraw %}{% endcomment %}",
-      &Parser.__parse__/1,
       comment: ["  {% comment %}   {% endcomment %}  hi there .. "]
     )
 
-    test_combinator(
+    test_parse(
       "{% comment %} {% raw %} {% comment %} {% endraw %} {% comment %} hi {% endcomment %} {% raw %} i am raw text .. {% endraw %} {% comment %} i am  a comment {% endcomment %}{% endcomment %}",
-      &Parser.__parse__/1,
       comment: ["  {% comment %}   hi   i am raw text ..   i am  a comment "]
     )
 
-    test_combinator(
+    test_parse(
       "{% comment %}{% raw %}any {% endraw %}{% if true %}{% endcomment %}",
-      &Parser.__parse__/1,
       comment: ["any {% if true %}"]
     )
 
-    test_combinator(
+    test_parse(
       "{% comment %}{% raw %}any {% endraw %}{% if true %}{% endif %}{% for item in products %}{% endfor %}{% endcomment %}",
-      &Parser.__parse__/1,
       comment: ["any {% if true %}{% endif %}{% for item in products %}{% endfor %}"]
     )
 
-    test_combinator(
+    test_parse(
       "{% comment %}{% raw %}any {% endraw %}{% if true %}{% endif %}{% for item in products %}{%%}{% endcomment %}",
-      &Parser.__parse__/1,
       comment: ["any {% if true %}{% endif %}{% for item in products %}{%%}"]
     )
   end
 
   test "comment start and end tags" do
-    test_combinator(
+    test_parse(
       "{%            comment      \n\n\n %}%}{%   \n\n\n     endcomment \n\n\n %}",
-      &Parser.__parse__/1,
       comment: ["%}"]
     )
 
-    test_combinator(
+    test_parse(
       "{% comment %}{%%}{%%}{%%}{%%}{%%}{% endcomment %}",
-      &Parser.__parse__/1,
       comment: ["{%%}{%%}{%%}{%%}{%%}"]
     )
   end
