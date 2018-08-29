@@ -12,9 +12,8 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
     ]
 
     Enum.each(tags, fn tag ->
-      test_combinator(
+      test_parse(
         tag,
-        &Parser.__parse__/1,
         tablerow: [
           statements: [
             variable: [parts: [part: "item"]],
@@ -35,9 +34,8 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
     ]
 
     Enum.each(tags, fn tag ->
-      test_combinator(
+      test_parse(
         tag,
-        &Parser.__parse__/1,
         tablerow: [
           statements: [
             variable: [parts: [part: "item"]],
@@ -57,9 +55,8 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
     ]
 
     Enum.each(tags, fn tag ->
-      test_combinator(
+      test_parse(
         tag,
-        &Parser.__parse__/1,
         tablerow: [
           statements: [
             variable: [parts: [part: "item"]],
@@ -79,9 +76,8 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
     ]
 
     Enum.each(tags, fn tag ->
-      test_combinator(
+      test_parse(
         tag,
-        &Parser.__parse__/1,
         tablerow: [
           statements: [
             variable: [parts: [part: "item"]],
@@ -101,9 +97,8 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
     ]
 
     Enum.each(tags, fn tag ->
-      test_combinator(
+      test_parse(
         tag,
-        &Parser.__parse__/1,
         tablerow: [
           statements: [
             variable: [parts: [part: "i"]],
@@ -119,9 +114,8 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
   end
 
   test "tablerow tag: range with variables" do
-    test_combinator(
+    test_parse(
       "{% tablerow i in (my_var..10) %}{{ i }}{% endtablerow %}",
-      &Parser.__parse__/1,
       tablerow: [
         statements: [
           variable: [parts: [part: "i"]],
@@ -136,9 +130,8 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
   end
 
   test "tablerow tag: call with 2 parameters" do
-    test_combinator(
+    test_parse(
       "{% tablerow i in (my_var..10) limit:2 cols:2 %}{{ i }}{% endtablerow %}",
-      &Parser.__parse__/1,
       tablerow: [
         statements: [
           variable: [parts: [part: "i"]],

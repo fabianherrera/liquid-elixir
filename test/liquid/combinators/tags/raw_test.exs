@@ -2,12 +2,10 @@ defmodule Liquid.Combinators.Tags.RawTest do
   use ExUnit.Case
 
   import Liquid.Helpers
-  alias Liquid.NimbleParser, as: Parser
 
   test "raw tag parser" do
-    test_combinator(
+    test_parse(
       "{% raw %} Raw temporarily disables tag processing. This is useful for generating content (eg, Mustache, Handlebars )like this {{ product }} which uses conflicting syntax.{% endraw %}",
-      &Parser.__parse__/1,
       raw: [
         " Raw temporarily disables tag processing. This is useful for generating content (eg, Mustache, Handlebars )like this {{ product }} which uses conflicting syntax."
       ]
@@ -15,9 +13,8 @@ defmodule Liquid.Combinators.Tags.RawTest do
   end
 
   test "raw with tags and variables in body" do
-    test_combinator(
+    test_parse(
       "{% raw %} {% if true %} {% endraw %}",
-      &Parser.__parse__/1,
       raw: [" {% if true %} "]
     )
   end

@@ -21,7 +21,9 @@ defmodule Liquid.NimbleTranslator do
     LiquidVariable,
     Raw,
     Tablerow,
-    Unless
+    Unless,
+    CustomTag,
+    CustomBlock
   }
 
   @doc """
@@ -74,8 +76,8 @@ defmodule Liquid.NimbleTranslator do
         :break -> Break.translate(markup)
         :continue -> Continue.translate(markup)
         :case -> Case.translate(markup)
-        :custom_tag -> Liquid.Combinators.Translators.CustomTag.translate(markup)
-        :custom_block -> Liquid.Combinators.Translators.CustomBlock.translate(markup)
+        :custom_tag -> CustomTag.translate(markup)
+        :custom_block -> CustomBlock.translate(markup)
       end
 
     check_blank(translated)
