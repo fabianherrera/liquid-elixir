@@ -1,12 +1,10 @@
-Code.require_file("../../test_helper.exs", __ENV__.file)
-
 defmodule Liquid.CustomTagTest do
   use ExUnit.Case
-  alias Liquid.{Template, Tag, Block}
+  alias Liquid.{Template, Tag}
 
-  defmodule MundoTag do
-    def render(output, block, context) do
-      number = block.markup |> Integer.parse() |> elem(0)
+  defmodule MinusOneTag do
+    def render(output, tag, context) do
+      number = tag.markup |> Integer.parse() |> elem(0)
       {["#{number - 1}"] ++ output, context}
     end
   end
@@ -19,7 +17,7 @@ defmodule Liquid.CustomTagTest do
   end
 
   setup_all do
-    Liquid.Registers.register("Mundo", MundoTag, Block)
+    Liquid.Registers.register("MinusOne", MinusOneTag, Tag)
     Liquid.Registers.register("PlusOne", PlusOneTag, Tag)
     Liquid.start()
     on_exit(fn -> Liquid.stop() end)
@@ -28,20 +26,20 @@ defmodule Liquid.CustomTagTest do
 
   test "custom tag from example(almost random now :)" do
     assert_template_result("123", "123{% assign qwe = 5 %}")
-    assert_template_result("6", "{% PlusOne 5 %}")
-    assert_template_result("a3b", "a{% PlusOne 2 %}b")
-    assert_template_result("a1", "a{% Mundo 2 %}b{% endMundo %}")
+    assert_template_result("4", "{% MinusOne 5 %}")
+    assert_template_result("a1b", "a{% MinusOne 2 %}b")
   end
 
   test "more than one custom tag" do
-    assert_template_result("43", "{% assign qwe = 5 %}{% PlusOne 3 %}{% PlusOne 2 %}")
+    assert_template_result("43", "{% assign qwe = 5 %}{% MinusOne 5 %}{% PlusOne 2 %}")
   end
 
   test "custom tag error" do
     assert_raise Liquid.SyntaxError,
                  "This custom tag: {% not_registered %} is not registered",
                  fn ->
-                   tag = "{% assign qwe = 5 %}{% PlusOne 2 %}{% not_registered hola%}"
+                   tag =
+                     "{% assign qwe = 5 %}{% MinusOne 5 %}{% PlusOne 2 %}{% not_registered hola%}"
 
                    Template.parse(tag) |> Template.render()
                  end
