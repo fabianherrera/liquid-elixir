@@ -1,7 +1,7 @@
 defmodule Liquid.Translators.Tags.CustomBlock do
   alias Liquid.Translators.General
 
-  def translate(custom_name: name, custom_markup: markup, body: body, custom_name: endname) do
+  def translate(custom_name: name, custom_markup: markup, body: body, custom_name: _endname) do
     tag_name = String.to_atom(name)
 
     nodelist =
