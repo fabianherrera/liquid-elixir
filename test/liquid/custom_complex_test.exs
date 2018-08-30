@@ -1,8 +1,6 @@
-Code.require_file("../../test_helper.exs", __ENV__.file)
-
 defmodule Liquid.CustomComplexTest do
   use ExUnit.Case
-  alias Liquid.{Template, Tag, Block}
+  alias Liquid.{Template, Block}
 
   defmodule CityOfBLock do
     def parse(%Block{} = block, %Template{} = context) do
@@ -78,7 +76,6 @@ defmodule Liquid.CustomComplexTest do
     end
 
     def render(output, block, context) do
-      tag_markup = block.markup
       nodelist = block.nodelist
 
       var = %Liquid.Template{
