@@ -17,9 +17,7 @@ defmodule Liquid.Translators.Tags.CustomBlock do
       nodelist: nodelist
     }
 
-    {module, _type} = Map.get(custom_tags, tag_name)
-    {block, _contex} = module.parse(partial_block, %Template{})
-    block
+    user_parse(partial_block, custom_tags, tag_name)
   end
 
   def translate(custom_name: name, custom_markup: markup) do
@@ -31,7 +29,11 @@ defmodule Liquid.Translators.Tags.CustomBlock do
       markup: String.trim(markup)
     }
 
-    {module, _type} = Map.get(custom_tags, tag_name)
+    user_parse(partial_block, custom_tags, tag_name)
+  end
+
+  defp user_parse(partial_block, map_of_tags, tag_name) do
+    {module, _type} = Map.get(map_of_tags, tag_name)
     {block, _contex} = module.parse(partial_block, %Template{})
     block
   end
