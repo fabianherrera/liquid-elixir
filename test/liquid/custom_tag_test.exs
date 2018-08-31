@@ -3,6 +3,10 @@ defmodule Liquid.CustomTagTest do
   alias Liquid.{Template, Tag}
 
   defmodule MinusOneTag do
+    def parse(%Tag{} = tag, %Template{} = context) do
+      {tag, context}
+    end
+
     def render(output, tag, context) do
       number = tag.markup |> Integer.parse() |> elem(0)
       {["#{number - 1}"] ++ output, context}
@@ -10,6 +14,10 @@ defmodule Liquid.CustomTagTest do
   end
 
   defmodule PlusOneTag do
+    def parse(%Tag{} = tag, %Template{} = context) do
+      {tag, context}
+    end
+
     def render(output, tag, context) do
       number = tag.markup |> Integer.parse() |> elem(0)
       {["#{number + 1}"] ++ output, context}

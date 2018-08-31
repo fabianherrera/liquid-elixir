@@ -41,7 +41,7 @@ defmodule Liquid.Combinators.Tags.CustomBlock do
     [opened_name, closed_name] = tags_name
 
     case opened_name == "end" <> closed_name do
-      true -> {args, context}
+      true -> {fix_parse(args), context}
       false -> {:error, "#{opened_name} can be closed by  #{closed_name}"}
     end
   end
@@ -61,6 +61,17 @@ defmodule Liquid.Combinators.Tags.CustomBlock do
       false -> {args, context}
     end
   end
+
+  defp fix_parse(
+         custom_name: _endname,
+         body: body,
+         custom_markup: markup,
+         custom_name: name
+       ),
+       do: [body: body, custom_markup: markup, custom_name: name]
+
+  defp fix_parse(custom_name: _endname, custom_markup: markup, custom_name: name),
+    do: [custom_markup: markup, custom_name: name]
 
   defp liquid_tags_without_customs?([string])
        when string in [
