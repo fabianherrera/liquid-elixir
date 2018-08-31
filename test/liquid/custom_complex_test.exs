@@ -141,7 +141,7 @@ defmodule Liquid.CustomComplexTest do
   end
 
   defp assert_result(expected, markup, assigns) do
-    template = Template.old_parse(markup)
+    template = Template.parse(markup)
 
     with {:ok, result, _} <- Template.render(template, assigns) do
       assert result == expected

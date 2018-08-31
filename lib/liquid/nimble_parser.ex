@@ -44,9 +44,6 @@ defmodule Liquid.NimbleParser do
           | String.t()
         ]
 
-  Liquid.Registers.register("mundo", MundoTag, Liquid.Block)
-  Liquid.Registers.register("PlusOne", PlusOneTag, Liquid.Tag)
-
   defparsec(:liquid_literal, General.liquid_literal())
   defparsec(:liquid_variable, General.liquid_variable())
   defparsec(:variable_definition, General.variable_definition())
