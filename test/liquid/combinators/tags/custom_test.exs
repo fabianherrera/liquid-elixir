@@ -45,7 +45,15 @@ defmodule Liquid.Combinators.Tags.CustomTest do
             custom_name: "MyCustomTag",
             custom_markup: "argument            =            1        "
           ]
-        ]}
+        ]},
+      # Non-existent tag is parsed. Render phase will validate if exist.
+      {"{% MyCustomTaget             argument            =            1        %}",
+         [
+         custom_tag: [
+         custom_name: "MyCustomTaget",
+       custom_markup: "argument            =            1        "
+       ]
+       ]}
     ]
 
     Enum.each(tags, fn {tag, expected} ->
@@ -59,24 +67,21 @@ defmodule Liquid.Combinators.Tags.CustomTest do
         [
           custom_block: [
             custom_name: "MyCustomBlock",
-            custom_markup: "argument = 1 ",
-            custom_name: "endMyCustomBlock"
+            custom_markup: "argument = 1 "
           ]
         ]},
       {"{%MyCustomBlock  argument = 1%}{%endMyCustomBlock%}",
         [
           custom_block: [
             custom_name: "MyCustomBlock",
-            custom_markup: "argument = 1",
-            custom_name: "endMyCustomBlock"
+            custom_markup: "argument = 1"
           ]
         ]},
       {"{% MyCustomBlock            argument            =            1        %}{%      endMyCustomBlock      %}",
         [
           custom_block: [
             custom_name: "MyCustomBlock",
-            custom_markup: "argument            =            1        ",
-            custom_name: "endMyCustomBlock"
+            custom_markup: "argument            =            1        "
           ]
         ]}
     ]
