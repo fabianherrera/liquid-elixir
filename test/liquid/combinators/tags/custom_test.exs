@@ -63,11 +63,17 @@ defmodule Liquid.Combinators.Tags.CustomTest do
 
   test "custom blocks: basic blocks structures" do
     tags = [
-      {"{% MyCustomBlock             argument = 1 %}{% endMyCustomBlock %}",
+      {"{% MyCustomBlock             argument = 1 %}{% if true %}this is true{% endif %}{% endMyCustomBlock %}",
         [
           custom_block: [
             custom_name: "MyCustomBlock",
-            custom_markup: "argument = 1 "
+            custom_markup: "argument = 1 ",
+            body: [
+              if: [
+                conditions: [true],
+                body: ["this is true"]
+              ]
+            ]
           ]
         ]},
       {"{%MyCustomBlock  argument = 1%}{%endMyCustomBlock%}",
