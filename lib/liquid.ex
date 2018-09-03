@@ -1,7 +1,4 @@
 defmodule Liquid do
-  @moduledoc """
-  Base module for the application
-  """
   use Application
 
   def start(_type, _args), do: start()
@@ -52,22 +49,20 @@ defmodule Liquid do
   def filter_parser, do: ~r/(?:\||(?:\s*(?!(?:\|))(?:#{quoted_fragment()}|\S+)\s*)+)/
 
   defmodule List do
-    @moduledoc false
-    @doc """
-    Takes the elements of a list and creates a new list containing only the  elements on the even position
-    """
+    def even_elements([_, h | t]) do
+      [h] ++ even_elements(t)
+    end
+
     def even_elements([]), do: []
-    def even_elements([_, h | t]), do: [h | even_elements(t)]
   end
 
   defmodule Atomizer do
-    @moduledoc """
-    Safe use of String.to_string_atom/1
-    """
     def to_existing_atom(string) do
-      String.to_existing_atom(string)
-    rescue
-      ArgumentError -> nil
+      try do
+        String.to_existing_atom(string)
+      rescue
+        ArgumentError -> nil
+      end
     end
   end
 end

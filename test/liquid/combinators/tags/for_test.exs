@@ -2,7 +2,6 @@ defmodule Liquid.Combinators.Tags.ForTest do
   use ExUnit.Case
 
   import Liquid.Helpers
-  alias Liquid.NimbleParser, as: Parser
 
   test "for tag: basic tag structures" do
     tags = [
@@ -191,13 +190,11 @@ defmodule Liquid.Combinators.Tags.ForTest do
 
   test "for tag: invalid tag structure and variable values" do
     test_combinator_error(
-      "{% for i in (my_var..10) %}{{ i }}{% else %}{% else %}{% endfor %}",
-      &Parser.parse/1
+      "{% for i in (my_var..10) %}{{ i }}{% else %}{% else %}{% endfor %}"
     )
 
     test_combinator_error(
-      "{% for i in (my_var..) %}{{ i }}{% else %}{% endfor %}",
-      &Parser.parse/1
+      "{% for i in (my_var..) %}{{ i }}{% else %}{% endfor %}"
     )
   end
 end

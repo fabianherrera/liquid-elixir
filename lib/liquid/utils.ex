@@ -6,7 +6,6 @@ defmodule Liquid.HTML do
 
   @doc ~S"""
   Escapes the given HTML.
-  ##Example
 
       iex> Plug.HTML.html_escape("<foo>")
       "&lt;foo&gt;"
@@ -14,7 +13,6 @@ defmodule Liquid.HTML do
       iex> Plug.HTML.html_escape("quotes: \" & \'")
       "quotes: &quot; &amp; &#39;"
   """
-  @spec html_escape(String.t()) :: String.t()
   def html_escape(data) when is_binary(data) do
     IO.iodata_to_binary(for <<char <- data>>, do: escape_char(char))
   end
@@ -32,10 +30,6 @@ defmodule Liquid.HTML do
 
   @escape_regex ~r/["><']|&(?!([a-zA-Z]+|(#\d+));)/
 
-  @doc """
-  Escapes the given HTML just once.
-  """
-  @spec html_escape_once(String.t()) :: String.t()
   def html_escape_once(data) when is_binary(data) do
     Regex.replace(@escape_regex, data, fn v, _ -> @escapes_map[v] end)
   end
@@ -49,13 +43,12 @@ end
 
 defmodule Liquid.Utils do
   @moduledoc """
-  A number of useful utils for liquid parser/filters.
+  A number of useful utils for liquid parser/filters
   """
 
   @doc """
-  Converts various input to number for further processing.
+  Converts various input to number for further processing
   """
-  @spec to_number(String.t() | number()) :: number()
   def to_number(nil), do: 0
 
   def to_number(input) when is_number(input), do: input

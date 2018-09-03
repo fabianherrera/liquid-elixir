@@ -1,6 +1,5 @@
 defmodule Liquid.Combinators.Tags.IfTest do
   use ExUnit.Case
-  alias Liquid.NimbleParser, as: Parser
 
   import Liquid.Helpers
 
@@ -212,10 +211,10 @@ defmodule Liquid.Combinators.Tags.IfTest do
   end
 
   test "missing a opening tag and a closing tag" do
-    test_combinator_error(" if true %}test{% else %} a {% endif %}", &Parser.parse/1)
-    test_combinator_error("test{% else %} a {% endif %}", &Parser.parse/1)
-    test_combinator_error("{% if true %}test{% else %} a ", &Parser.parse/1)
-    test_combinator_error(" if true %}test{% else  a {% endif %}", &Parser.parse/1)
-    test_combinator_error("{% if true %}test{% else %} a  endif %}", &Parser.parse/1)
+    test_combinator_error(" if true %}test{% else %} a {% endif %}")
+    test_combinator_error("test{% else %} a {% endif %}")
+    test_combinator_error("{% if true %}test{% else %} a ")
+    test_combinator_error(" if true %}test{% else  a {% endif %}")
+    test_combinator_error("{% if true %}test{% else %} a  endif %}")
   end
 end

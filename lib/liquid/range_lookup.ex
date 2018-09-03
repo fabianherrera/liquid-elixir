@@ -1,14 +1,10 @@
 defmodule Liquid.RangeLookup do
-  @moduledoc """
-  Looks for ranges and parse it for the uses of the liquid syntax.
-  """
   defstruct range_start: 0, range_end: 0
-  alias Liquid.{Context, RangeLookup, Expression, Variable}
+  alias Liquid.Expression
+  alias Liquid.RangeLookup
+  alias Liquid.Variable
+  alias Liquid.Context
 
-  @doc """
-  Parses ranges.
-  """
-  @spec parse(%RangeLookup{}, %Context{}) :: list()
   def parse(
         %RangeLookup{range_start: %Variable{} = range_start, range_end: %Variable{} = range_end},
         %Context{} = context
@@ -51,9 +47,11 @@ defmodule Liquid.RangeLookup do
   defp valid_range_value(value, fallback \\ 0)
 
   defp valid_range_value(value, fallback) when is_binary(value) do
-    case Integer.parse(value) do
-      :error -> fallback
-      {value, _} -> value
+    if is_binary(value) do
+      case Integer.parse(value) do
+        :error -> fallback
+        {value, _} -> value
+      end
     end
   end
 
@@ -68,8 +66,8 @@ defmodule Liquid.RangeLookup do
   end
 
   defp build_range(left, right) do
-    left = to_string(left) |> String.to_integer()
-    right = to_string(right) |> String.to_integer()
+    left = left |> to_string |> String.to_integer()
+    right = right |> to_string |> String.to_integer()
 
     Enum.to_list(left..right)
   end
