@@ -72,7 +72,7 @@ defmodule Liquid.Template do
 
   @spec parse(nil, map) :: Liquid.Template
   def parse(nil, presets) do
-    Liquid.Parse.parse("", %Template{presets: presets})
+    parse("", %Template{presets: presets})
   end
 
   # TODO: delete this when new parser is finished
