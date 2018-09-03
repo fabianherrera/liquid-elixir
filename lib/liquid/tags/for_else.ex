@@ -64,7 +64,6 @@ defmodule Liquid.ForElse do
 
   def syntax, do: ~r/(\w+)\s+in\s+(#{Liquid.quoted_fragment()}+)\s*(reversed)?/
 
-
 #TODO: Delete parse legacy code parse_iterator and parse_attribute (For Tag)
   def parse_iterator(%Block{markup: markup}) do
     [[_, item | [orig_collection | reversed]]] = Regex.scan(syntax(), markup)
