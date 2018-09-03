@@ -147,6 +147,4 @@ defmodule Liquid.Filters.List do
   end
 
   def map(_, _), do: ""
-
-
 end

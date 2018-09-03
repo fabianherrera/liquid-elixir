@@ -95,6 +95,7 @@ defmodule Liquid.Filters.Math do
   defp get_int_and_counter(input) do
     input |> to_number |> get_int_and_counter
   end
+
   @doc """
   Divides a number by the specified number. Can use strings
 
@@ -233,13 +234,12 @@ defmodule Liquid.Filters.Math do
   def modulo(0, _), do: 0
 
   def modulo(input, operand) when is_number(input) and is_number(operand) and input > 0,
-      do: input |> rem(operand)
+    do: input |> rem(operand)
 
   def modulo(input, operand) when is_number(input) and is_number(operand) and input < 0,
-      do: modulo(input + operand, operand)
+    do: modulo(input + operand, operand)
 
   def modulo(input, operand) do
     input |> to_number |> modulo(to_number(operand))
   end
-
 end

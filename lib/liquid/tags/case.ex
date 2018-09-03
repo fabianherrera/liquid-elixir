@@ -1,23 +1,23 @@
 defmodule Liquid.Case do
   @moduledoc """
-   Creates a switch statement to compare a variable with different values.
-   Case initializes the switch statement, and When compares its values.
+  Creates a switch statement to compare a variable against different values.
+  `case` initializes the switch statement, and `when` compares its values.
   Input:
-    ```
-      {% assign handle = 'cake' %}
-      {% case handle %}
-      {% when 'cake' %}
-        This is a cake
-      {% when 'cookie' %}
-        This is a cookie
-      {% else %}
-        This is not a cake nor a cookie
-      {% endcase %}
-    ```
-  Output:
-    ```
+  ```
+    {% assign handle = 'cake' %}
+    {% case handle %}
+    {% when 'cake' %}
       This is a cake
-    ```
+    {% when 'cookie' %}
+      This is a cookie
+    {% else %}
+      This is not a cake nor a cookie
+    {% endcase %}
+  ```
+  Output:
+  ```
+    This is a cake
+  ```
   """
   alias Liquid.{Block, Condition, Tag, Template, Variable}
 
@@ -33,7 +33,9 @@ defmodule Liquid.Case do
     do: ~r/(#{Liquid.quoted_fragment()})(?:(?:\s+or\s+|\s*\,\s*)(#{Liquid.quoted_fragment()}.*))?/
 
   @doc """
-  Implementation of Capture parse operations.
+  Parses a `Liquid` Case tag, creates a Keyword list where the key is the name of the tag
+  (case in this function) and the value is another keyword list which represents the internal
+  structure of the tag.
   """
   @spec parse(%Block{}, %Template{}) :: {%Block{}, %Template{}}
   def parse(%Block{markup: markup} = b, %Template{} = t) do
@@ -65,7 +67,7 @@ defmodule Liquid.Case do
 
   defp parse_when(markup) do
     [[_, h | t] | m] = Regex.scan(when_syntax(), markup)
-    m = List.flatten(m) |> Liquid.List.even_elements()
+    m = m |> List.flatten() |> Liquid.List.even_elements()
     t = Enum.join([t | m], " ")
     t = if t == "", do: [], else: [t]
     {h, t}
@@ -74,13 +76,13 @@ end
 
 defmodule Liquid.When do
   @moduledoc """
-   Defines When implementations (sub-component of Case). Case creates a switch statement to compare a variable with different values.
-   Case initializes the switch statement, and When compares its values.
+  Defines `When` implementations (sub-component of Case). Case creates a switch statement to compare a variable with different values.
+  Case initializes the switch statement, and When compares its values.
   """
   alias Liquid.{Tag, Template}
 
   @doc """
-  Identity function. Implementation of When (sub-component of Case) parse operations.
+  Parses a `When` tag (sub-component of Case).
   """
   @spec parse(%Tag{}, %Template{}) :: {%Tag{}, %Template{}}
   def parse(%Tag{} = tag, %Template{} = t), do: {tag, t}

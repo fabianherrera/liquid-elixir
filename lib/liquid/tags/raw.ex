@@ -1,5 +1,7 @@
 defmodule Liquid.Raw do
-  alias Liquid.{Block, Render, Template, Context}
+  alias Liquid.Template
+  alias Liquid.Render
+  alias Liquid.Block
 
   def full_token_possibly_invalid,
     do: ~r/\A(.*)#{Liquid.tag_start()}\s*(\w+)\s*(.*)?#{Liquid.tag_end()}\z/m
@@ -11,11 +13,11 @@ defmodule Liquid.Raw do
       regex_result =
         Regex.scan(Liquid.Raw.full_token_possibly_invalid(), h, capture: :all_but_first)
 
-      [extra_data, endblock | _] = List.flatten(regex_result)
+      [extra_data, endblock | _] = regex_result |> List.flatten()
 
       if block_delimiter == endblock do
         extra_accum = accum ++ [extra_data]
-        block = %{block | strict: false, nodelist: Enum.filter(extra_accum, &(&1 != ""))}
+        block = %{block | strict: false, nodelist: extra_accum |> Enum.filter(&(&1 != ""))}
         {block, t, template}
       else
         if length(t) > 0 do
@@ -33,10 +35,6 @@ defmodule Liquid.Raw do
     {block, t}
   end
 
-  @doc """
-  Implementation of 'Raw' render operations.
-  """
-  @spec render(list(), %Block{}, %Context{}) :: {list(), %Context{}}
   def render(output, %Block{} = block, context) do
     Render.render(output, block.nodelist, context)
   end

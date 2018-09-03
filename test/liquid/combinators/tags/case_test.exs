@@ -2,7 +2,6 @@ defmodule Liquid.Combinators.Tags.CaseTest do
   use ExUnit.Case
 
   import Liquid.Helpers
-  alias Liquid.NimbleParser, as: Parser
 
   test "case using multiples when" do
     test_parse(
@@ -142,48 +141,39 @@ defmodule Liquid.Combinators.Tags.CaseTest do
 
   test "bad formed cases" do
     test_combinator_error(
-      "{% case condition %}{% when 5 %} hit {% else %} else endcase %}",
-      &Parser.parse/1
+      "{% case condition %}{% when 5 %} hit {% else %} else endcase %}"
     )
 
     test_combinator_error(
-      "{% case condition %}{% when 5 %} hit {% else %} else {% endcas %}",
-      &Parser.parse/1
+      "{% case condition %}{% when 5 %} hit {% else %} else {% endcas %}"
     )
 
     test_combinator_error(
-      "{ case condition %}{% when 5 %} hit {% else %} else {% endcase %}",
-      &Parser.parse/1
+      "{ case condition %}{% when 5 %} hit {% else %} else {% endcase %}"
     )
 
     test_combinator_error(
-      "case condition %}{% when 5 %} hit {% else %} else {% endcase %}",
-      &Parser.parse/1
+      "case condition %}{% when 5 %} hit {% else %} else {% endcase %}"
     )
 
     test_combinator_error(
-      "{% casa condition %}{% when 5 %} hit {% else %} else {% endcase %}",
-      &Parser.parse/1
+      "{% casa condition %}{% when 5 %} hit {% else %} else {% endcase %}"
     )
 
     test_combinator_error(
-      "{% case condition %}{% when 5 5 %} hit {% else %} else {% endcase %}",
-      &Parser.parse/1
+      "{% case condition %}{% when 5 5 %} hit {% else %} else {% endcase %}"
     )
 
     test_combinator_error(
-      "{% case condition %}{% when 5 or %} hit {% else %} else {% endcase %}",
-      &Parser.parse/1
+      "{% case condition %}{% when 5 or %} hit {% else %} else {% endcase %}"
     )
 
     test_combinator_error(
-      "{% case condition %}{% when 5  hit {% else %} else {% endcase %}",
-      &Parser.parse/1
+      "{% case condition %}{% when 5  hit {% else %} else {% endcase %}"
     )
 
     test_combinator_error(
-      "{% case condition condition condition2 %}{% when 5 %} hit {% else %} else {% endcase %}",
-      &Parser.parse/1
+      "{% case condition condition condition2 %}{% when 5 %} hit {% else %} else {% endcase %}"
     )
   end
 end

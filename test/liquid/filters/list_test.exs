@@ -72,8 +72,7 @@ defmodule Liquid.Filters.ListTest do
   end
 
   test :map do
-    assert [1, 2, 3, 4] ==
-             List.map([%{"a" => 1}, %{"a" => 2}, %{"a" => 3}, %{"a" => 4}], "a")
+    assert [1, 2, 3, 4] == List.map([%{"a" => 1}, %{"a" => 2}, %{"a" => 3}, %{"a" => 4}], "a")
 
     assert_template_result("abc", "{{ ary | map:'foo' | map:'bar' }}", %{
       "ary" => [
@@ -116,5 +115,4 @@ defmodule Liquid.Filters.ListTest do
         assert message == expected
     end
   end
-
 end

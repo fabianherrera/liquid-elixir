@@ -87,4 +87,9 @@ defmodule Liquid.Combinators.GeneralTest do
       test_combinator_internal_error(n, &Parser.variable_name/1)
     end)
   end
+
+  defp test_combinator_internal_error(markup, combiner) do
+    {:error, _, _, _, _, _} = combiner.(markup)
+    assert true
+  end
 end

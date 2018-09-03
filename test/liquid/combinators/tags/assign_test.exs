@@ -2,7 +2,6 @@ defmodule Liquid.Combinators.Tags.AssignTest do
   use ExUnit.Case
 
   import Liquid.Helpers
-  alias Liquid.NimbleParser, as: Parser
 
   test "assign" do
     tags = [
@@ -128,10 +127,8 @@ defmodule Liquid.Combinators.Tags.AssignTest do
   end
 
   test "incorrect variable assignment" do
-    test_combinator_error("{% assign cart@ = 5 %}", &Parser.parse/1)
-    test_combinator_error("{% assign cart. = 5 %}", &Parser.parse/1)
-    test_combinator_error("{% assign .cart = 5 %}", &Parser.parse/1)
-    # TODO: this must fails
-    # test_combinator_error("{% assign cart? = 5 %}", &Parser.assign/1)
+    test_combinator_error("{% assign cart@ = 5 %}")
+    test_combinator_error("{% assign cart. = 5 %}")
+    test_combinator_error("{% assign .cart = 5 %}")
   end
 end

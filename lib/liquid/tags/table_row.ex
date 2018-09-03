@@ -3,47 +3,15 @@ defmodule Liquid.TableRow do
   `tablerow` tag iterates over an array or collection splitting it up to a table with pre-set columns number
 
   Several useful variables are available to you within the loop.
-  Generates an HTML table. Must be wrapped in opening <table> and closing </table> HTML tags.
-  Input:
-  ```
-    <table>
-    {% tablerow product in collection.products %}
-    {{ product.title }}
-    {% endtablerow %}
-    </table>
-  ```
-  Output:
-  ```
-    <table>
-    <tr class="row1">
-      <td class="col1">
-        Cool Shirt
-      </td>
-      <td class="col2">
-        Alien Poster
-      </td>
-      <td class="col3">
-        Batman Poster
-      </td>
-      <td class="col4">
-        Bullseye Shirt
-      </td>
-      <td class="col5">
-        Another Classic Vinyl
-      </td>
-      <td class="col6">
-        Awesome Jeans
-      </td>
-    </tr>
-    </table>
-    ```
   """
-  alias Liquid.{Block, Context, Expression, RangeLookup, Render, Template, Variable}
+  alias Liquid.Render
+  alias Liquid.Block
+  alias Liquid.Variable
+  alias Liquid.Context
+  alias Liquid.Expression
+  alias Liquid.RangeLookup
 
   defmodule Iterator do
-    @moduledoc """
-    Defines iteraction structs used by 'TableRow' in order to iterates over an list or collection.
-    """
     defstruct name: nil,
               collection: nil,
               item: nil,
@@ -53,15 +21,12 @@ defmodule Liquid.TableRow do
               forloop: %{}
   end
 
-  @doc """
-  Returns a regex for tag 'TableRow' expressions syntax validation
-  """
   def syntax, do: ~r/(\w+)\s+in\s+(#{Liquid.quoted_fragment()}+)/
 
   @doc """
-  Implementation of 'TableRaw' parse operations. Parses and organises markup to set up iterator.
+  Parses and organises markup to set up iterator
   """
-  @spec parse(%Block{}, %Template{}) :: {%Block{}, %Template{}}
+  @spec parse(Liquid.Block, Liquid.Template) :: {Liquid.Block, Liquid.Template}
   def parse(%Block{nodelist: nodelist} = block, %Liquid.Template{} = t) do
     block = %{block | iterator: parse_iterator(block)}
 
@@ -79,7 +44,7 @@ defmodule Liquid.TableRow do
   def parse_iterator(%Block{markup: markup}) do
     [[_, item | [orig_collection]]] = Regex.scan(syntax(), markup)
     collection = Expression.parse(orig_collection)
-    attributes = Regex.scan(Liquid.tag_attributes(), markup)
+    attributes = Liquid.tag_attributes() |> Regex.scan(markup)
     limit = attributes |> parse_attribute("limit") |> Variable.create()
     offset = attributes |> parse_attribute("offset", "0") |> Variable.create()
 
@@ -106,8 +71,8 @@ defmodule Liquid.TableRow do
   end
 
   @doc """
-  Implementation of 'TableRaw' render operations. Iterates through pre-set data and appends it to rendered output list
-  Adds the HTML table rows and cols depending on the initial `cols` parameter.
+  Iterates through pre-set data and appends it to rendered output list
+  Adds the HTML table rows and cols depending on the initial `cols` parameter
   """
   @spec render(list(), %Block{}, %Context{}) :: {list(), %Context{}}
   def render(output, %Block{iterator: it} = block, %Context{} = context) do
@@ -206,7 +171,7 @@ defmodule Liquid.TableRow do
     do: Variable.lookup(offset, context)
 
   defp next_forloop(%Iterator{forloop: loop} = it, count, _, _) when map_size(loop) < 1 do
-    count = Enum.count(count)
+    count = count |> Enum.count()
 
     %{
       "name" => it.item <> "-" <> it.name,
