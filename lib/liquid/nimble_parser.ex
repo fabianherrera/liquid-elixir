@@ -81,13 +81,14 @@ defmodule Liquid.NimbleParser do
 
   defparsec(
     :__parse__,
-    choice([
-      parsec(:liquid_literal),
-      parsec(:liquid_tag),
-      parsec(:liquid_variable),
-      parsec(:custom_block),
-      parsec(:custom_tag)
-    ])
+    empty()
+    |> choice([
+        parsec(:liquid_literal),
+        parsec(:liquid_tag),
+        parsec(:liquid_variable),
+        parsec(:custom_block),
+        parsec(:custom_tag)
+      ])
     |> optional(parsec(:__parse__))
   )
 
@@ -161,8 +162,8 @@ defmodule Liquid.NimbleParser do
       {:error, message, _, _, _, _} ->
         {:error, "#{message}"}
 
-      {:ok, _, rest, _, _, _} ->
-        {:error, "Error parsing: #{rest}"}
+      {:ok, _, incorrect_markup, _, _, _} ->
+        {:error, "Error parsing: #{incorrect_markup}"}
     end
   end
 end

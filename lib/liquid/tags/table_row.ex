@@ -23,25 +23,24 @@ defmodule Liquid.TableRow do
 
   def syntax, do: ~r/(\w+)\s+in\s+(#{Liquid.quoted_fragment()}+)/
 
-#  @doc """
-#  Parses and organises markup to set up iterator
-#  """
-#  @spec parse(Liquid.Block, Liquid.Template) :: {Liquid.Block, Liquid.Template}
-#  def parse(%Block{nodelist: nodelist} = block, %Liquid.Template{} = t) do
-#    block = %{block | iterator: parse_iterator(block)}
-#
-#    case Block.split(block) do
-#      {true_block, [_, false_block]} ->
-#        is_blank = Blank.blank?([true_block | false_block])
-#        {%{block | nodelist: true_block, elselist: false_block, blank: is_blank}, t}
-#
-#      {_, []} ->
-#        is_blank = Blank.blank?(nodelist)
-#        {%{block | blank: is_blank}, t}
-#    end
-#  end
+  @doc """
+  Parses and organises markup to set up iterator
+  """
+  @spec parse(Liquid.Block, Liquid.Template) :: {Liquid.Block, Liquid.Template}
+  def parse(%Block{nodelist: nodelist} = block, %Liquid.Template{} = t) do
+    block = %{block | iterator: parse_iterator(block)}
 
-#TODO: Delete parse legacy code parse_iterator and parse_attribute (Tablerow Tag)
+    case Block.split(block) do
+      {true_block, [_, false_block]} ->
+        is_blank = Blank.blank?([true_block | false_block])
+        {%{block | nodelist: true_block, elselist: false_block, blank: is_blank}, t}
+
+      {_, []} ->
+        is_blank = Blank.blank?(nodelist)
+        {%{block | blank: is_blank}, t}
+    end
+  end
+
   def parse_iterator(%Block{markup: markup}) do
     [[_, item | [orig_collection]]] = Regex.scan(syntax(), markup)
     collection = Expression.parse(orig_collection)
