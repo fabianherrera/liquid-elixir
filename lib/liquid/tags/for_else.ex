@@ -64,20 +64,8 @@ defmodule Liquid.ForElse do
 
   def syntax, do: ~r/(\w+)\s+in\s+(#{Liquid.quoted_fragment()}+)\s*(reversed)?/
 
-  def parse(%Block{nodelist: nodelist} = block, %Liquid.Template{} = t) do
-    block = %{block | iterator: parse_iterator(block)}
 
-    case Block.split(block) do
-      {true_block, [_, false_block]} ->
-        is_blank = Blank.blank?([true_block | false_block])
-        {%{block | nodelist: true_block, elselist: false_block, blank: is_blank}, t}
-
-      {_, []} ->
-        is_blank = Blank.blank?(nodelist)
-        {%{block | blank: is_blank}, t}
-    end
-  end
-
+#TODO: Delete parse legacy code parse_iterator and parse_attribute (For Tag)
   def parse_iterator(%Block{markup: markup}) do
     [[_, item | [orig_collection | reversed]]] = Regex.scan(syntax(), markup)
     collection = Expression.parse(orig_collection)
@@ -252,9 +240,6 @@ end
 defmodule Liquid.Break do
   alias Liquid.Tag, as: Tag
   alias Liquid.Context, as: Context
-  alias Liquid.Template, as: Template
-
-  def parse(%Tag{} = tag, %Template{} = template), do: {tag, template}
 
   def render(output, %Tag{}, %Context{} = context) do
     {output, %{context | break: true}}
@@ -265,17 +250,13 @@ defmodule Liquid.Continue do
   alias Liquid.Tag, as: Tag
   alias Liquid.Context, as: Context
 
-  def parse(%Tag{} = tag, template), do: {tag, template}
-
   def render(output, %Tag{}, %Context{} = context) do
     {output, %{context | continue: true}}
   end
 end
 
 defmodule Liquid.IfChanged do
-  alias Liquid.{Template, Block}
-
-  def parse(%Block{} = block, %Template{} = t), do: {block, t}
+  alias Liquid.Block
 
   def render(output, %Block{nodelist: nodelist}, context) do
     case context.registers["changed"] do
