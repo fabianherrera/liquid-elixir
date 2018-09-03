@@ -9,15 +9,9 @@ defmodule Liquid.Assign do
     {{ foo }}
   ```
   """
-  alias Liquid.{Context, Tag, Template, Variable}
+  alias Liquid.{Context, Tag, Variable}
 
   def syntax, do: ~r/([\w\-]+)\s*=\s*(.*)\s*/
-
-  @doc """
-  Implementation of `assign` parse operations.
-  """
-  @spec parse(%Tag{}, %Template{}) :: {%Tag{}, %Template{}}
-  def parse(%Tag{} = tag, %Template{} = template), do: {%{tag | blank: true}, template}
 
   @doc """
   Renders the Assign markup adding the rendered parts to the output list and returning it,
