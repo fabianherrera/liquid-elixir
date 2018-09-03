@@ -8,13 +8,7 @@ defmodule Liquid.Include do
   def syntax,
     do: ~r/(#{Liquid.quoted_fragment()}+)(\s+(?:with|for)\s+(#{Liquid.quoted_fragment()}+))?/
 
-  def parse(%Tag{markup: markup} = tag, %Template{} = template) do
-    [parts | _] = Regex.scan(syntax(), markup)
-    tag = parse_tag(tag, parts)
-    attributes = parse_attributes(markup)
-    {%{tag | attributes: attributes}, template}
-  end
-
+#TODO: Delete parse legacy code parse parse_tag and parse_attributes (Include Tag)
   def parse(%Tag{markup: markup} = tag) do
     [parts | _] = Regex.scan(syntax(), markup)
     tag = parse_tag(tag, parts)
