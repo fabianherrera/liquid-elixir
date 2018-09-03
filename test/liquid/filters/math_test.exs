@@ -77,5 +77,4 @@ defmodule Liquid.Filters.MathTest do
         assert message == expected
     end
   end
-
 end

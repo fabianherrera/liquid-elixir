@@ -327,5 +327,4 @@ defmodule Liquid.Filters.String do
   def pluralize(input, single, plural), do: input |> to_number |> pluralize(single, plural)
 
   defdelegate pluralise(input, single, plural), to: __MODULE__, as: :pluralize
-
 end

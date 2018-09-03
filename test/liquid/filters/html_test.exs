@@ -18,8 +18,7 @@ defmodule Liquid.Filters.HTMLTest do
   end
 
   test :escape_once do
-    assert "&lt;strong&gt;Hulk&lt;/strong&gt;" ==
-             HTML.escape_once("&lt;strong&gt;Hulk</strong>")
+    assert "&lt;strong&gt;Hulk&lt;/strong&gt;" == HTML.escape_once("&lt;strong&gt;Hulk</strong>")
   end
 
   test :url_encode do

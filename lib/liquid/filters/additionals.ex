@@ -11,7 +11,7 @@ defmodule Liquid.Filters.Additionals do
   def default(input, default_val \\ "")
 
   def default(input, default_val) when input in [nil, false, '', "", [], {}, %{}],
-      do: default_val
+    do: default_val
 
   def default(input, _), do: input
 
@@ -49,6 +49,4 @@ defmodule Liquid.Filters.Additionals do
   def date(input, format) do
     with {:ok, date_str} <- Timex.format(input, format, :strftime), do: date_str
   end
-
-
 end
