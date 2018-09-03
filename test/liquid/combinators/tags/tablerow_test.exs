@@ -2,7 +2,6 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
   use ExUnit.Case
 
   import Liquid.Helpers
-  alias Liquid.NimbleParser, as: Parser
 
   test "tablerow tag: basic tag structures" do
     tags = [
@@ -147,18 +146,15 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
 
   test "tablerow tag: invalid tag structure and variable values" do
     test_combinator_error(
-      "{% tablerow i in (my_var..10) %}{{ i }}{% else %}{% else %}{% endtablerow %}",
-      &Parser.parse/1
+      "{% tablerow i in (my_var..10) %}{{ i }}{% else %}{% else %}{% endtablerow %}"
     )
 
     test_combinator_error(
-      "{% tablerow i in (my_var..product.title[2]) %}{{ i }}{% else %}{% endtablerow %}",
-      &Parser.parse/1
+      "{% tablerow i in (my_var..product.title[2]) %}{{ i }}{% else %}{% endtablerow %}"
     )
 
     test_combinator_error(
-      "{% tablerow i in products limit: a %}{{ i }}{% else %}{% endtablerow %}",
-      &Parser.parse/1
+      "{% tablerow i in products limit: a %}{{ i }}{% else %}{% endtablerow %}"
     )
   end
 end

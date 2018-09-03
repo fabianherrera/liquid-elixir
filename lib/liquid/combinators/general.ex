@@ -205,13 +205,8 @@ defmodule Liquid.Combinators.General do
     |> traverse({Liquid.Combinators.General, :check_empty, []})
   end
 
-  def check_empty(_rest, args, context, _line, _offset) do
-    if args == [""] do
-      {:error, "Not a valid literal"}
-    else
-      {args, context}
-    end
-  end
+  def check_empty(_rest, [""], _context, _line, _offset), do: {:error, "Not a valid literal"}
+  def check_empty(_rest, args, context, _line, _offset), do: {args, context}
 
   @doc """
   All utf8 valid characters or empty limited by start of tag

@@ -1,5 +1,5 @@
 defmodule Liquid.Appointer do
-  @moduledoc "A module to assign context for `Liquid.Variable`."
+  @moduledoc "A module to assign context for `Liquid.Variable`"
   alias Liquid.{Matcher, Variable}
 
   @literals %{
@@ -16,19 +16,19 @@ defmodule Liquid.Appointer do
   @float ~r/^(-?\d[\d\.]+)$/
   @start_quoted_string ~r/^#{Liquid.quoted_string()}/
 
-  @doc "Assigns context for Variable and filters."
+  @doc "Assigns context for Variable and filters"
   def assign(%Variable{literal: literal, parts: [], filters: filters}, context) do
-    {literal, assign_context(filters, context.assigns)}
+    {literal, filters |> assign_context(context.assigns)}
   end
 
   def assign(
         %Variable{literal: nil, parts: parts, filters: filters},
         %{assigns: assigns} = context
       ) do
-    {match(context, parts), assign_context(filters, assigns)}
+    {match(context, parts), filters |> assign_context(assigns)}
   end
 
-  @doc "Verifies matches between Variable and filters, data types and parts."
+  @doc "Verifies matches between Variable and filters, data types and parts"
   def match(%{assigns: assigns} = context, [key | _] = parts) when is_binary(key) do
     case assigns do
       %{^key => _value} -> match(assigns, parts)
@@ -45,7 +45,7 @@ defmodule Liquid.Appointer do
   def match(current, key) when is_binary(key), do: Map.get(current, key)
 
   @doc """
-  Makes `Variable.parts` or literals from the given markup.
+  Makes `Variable.parts` or literals from the given markup
   """
   @spec parse_name(String.t()) :: map()
   def parse_name(name) do

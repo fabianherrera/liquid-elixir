@@ -20,7 +20,8 @@ defmodule Liquid.Assign do
   def parse(%Tag{} = tag, %Template{} = template), do: {%{tag | blank: true}, template}
 
   @doc """
-  Implementation of `assign` render operations.
+  Renders the Assign markup adding the rendered parts to the output list and returning it,
+  in a tuple, with the new context.
   """
   @spec render(list(), %Tag{}, %Context{}) :: {list(), %Context{}}
   def render(output, %Tag{markup: markup}, %Context{} = context) do
