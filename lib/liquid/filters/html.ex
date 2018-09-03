@@ -84,5 +84,4 @@ defmodule Liquid.Filters.HTML do
   end
 
   def url_encode(nil), do: nil
-
 end

@@ -22,7 +22,10 @@ defmodule Liquid.Filters.AdditionalsTest do
 
   test :date do
     assert "May" == Additionals.date(~N[2006-05-05 10:00:00], "%B")
-    assert "June" == Additionals.date(Timex.parse!("2006-06-05 10:00:00", "%F %T", :strftime), "%B")
+
+    assert "June" ==
+             Additionals.date(Timex.parse!("2006-06-05 10:00:00", "%F %T", :strftime), "%B")
+
     assert "July" == Additionals.date(~N[2006-07-05 10:00:00], "%B")
 
     assert "May" == Additionals.date("2006-05-05 10:00:00", "%B")
