@@ -1,8 +1,5 @@
-Code.require_file("../../test_helper.exs", __ENV__.file)
-
 defmodule Liquid.AssignTest do
   use ExUnit.Case
-  use ExUnit.Callbacks
 
   setup_all do
     Liquid.start()
@@ -21,7 +18,7 @@ defmodule Liquid.AssignTest do
   end
 
   test :assign_with_filter do
-    assert_result(".bar.", "{% assign foo = values | split: ',' %}.{{ foo[1] }}.", %{
+    assert_result(".Foo.", "{% assign foo = values | capitalize | split: ',' %}.{{ foo[0] }}.", %{
       "values" => "foo,bar,baz"
     })
   end

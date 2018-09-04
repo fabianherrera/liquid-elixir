@@ -83,7 +83,7 @@ defmodule Liquid.IfElse do
     end)
   end
 
-  defp parse_conditions(%Block{markup: markup} = block) do
+  def parse_conditions(%Block{markup: markup} = block) do
     expressions = Regex.scan(expressions_and_operators(), markup)
     expressions = expressions |> split_conditions |> Enum.reverse()
     condition = Condition.create(expressions)
