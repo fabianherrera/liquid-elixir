@@ -42,6 +42,72 @@ defmodule Liquid.NimbleTranslator do
     %Template{root: %Liquid.Block{name: :document, nodelist: list}}
   end
 
+  ############################ multi ##################################
+
+  def translate_multiprocess_node({:ok, [""]}) do
+    %Template{root: %Liquid.Block{name: :document}}
+  end
+
+  def translate_multiprocess_node({:ok, [literal_text]}) when is_bitstring(literal_text) do
+    %Template{root: %Liquid.Block{name: :document, nodelist: [literal_text]}}
+  end
+
+  def translate_multiprocess_node({:ok, nodelist}) when is_list(nodelist) do
+    list = multiprocess_node(nodelist, self())
+    %Template{root: %Liquid.Block{name: :document, nodelist: list}}
+  end
+
+  defp multiprocess_node(nodelist, external_process) do
+    nodelist
+    |> Enum.map(fn elem ->
+      spawn_link(fn -> send(external_process, {self(), process_node_multi(elem)}) end)
+    end)
+    |> Enum.map(fn pid ->
+      receive do
+        {^pid, result} -> result
+      end
+    end)
+  end
+
+  def process_node_multi(elem) when is_bitstring(elem), do: elem
+
+  def process_node_multi([elem]) when is_bitstring(elem), do: elem
+
+  def process_node_multi(nodelist) when is_list(nodelist) do
+    multiprocess_node(nodelist, self())
+  end
+
+  def process_node_multi({tag, markup}) do
+    translated =
+      case tag do
+        :liquid_variable -> LiquidVariable.translate(markup)
+        :assign -> Assign.translate(markup)
+        :capture -> Capture.translate(markup)
+        :comment -> Comment.translate(markup)
+        :cycle -> Cycle.translate(markup)
+        :decrement -> Decrement.translate(markup)
+        :for -> For.translate(markup)
+        :if -> If.translate(markup)
+        :unless -> Unless.translate(markup)
+        :elsif -> If.translate(markup)
+        :else -> process_node(markup)
+        :include -> Include.translate(markup)
+        :increment -> Increment.translate(markup)
+        :tablerow -> Tablerow.translate(markup)
+        :ifchanged -> Ifchanged.translate(markup)
+        :raw -> Raw.translate(markup)
+        :break -> Break.translate(markup)
+        :continue -> Continue.translate(markup)
+        :case -> Case.translate(markup)
+        :custom_tag -> CustomTag.translate(markup)
+        :custom_block -> CustomBlock.translate(markup)
+      end
+
+    check_blank(translated)
+  end
+
+  ################################ single ########################################
+
   @doc """
   Takes the new parsed tag and match it with his translator, then return the old parser struct.
   """
