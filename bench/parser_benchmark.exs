@@ -19,13 +19,14 @@ simple_template = """
 
 empty_template = ""
 
-template = complex_template
+template = middle_template
 
 time = DateTime.to_string(DateTime.utc_now())
 
 Benchee.run(
   %{
-    nimble: fn -> Liquid.NimbleParser.parse(template) end,
+    nimble: fn -> Liquid.NimleParser.parse(template) end,
+    nimble_with_translator: fn -> Liquid.Template.parse(template) end,
     regex: fn -> Liquid.Parse.parse(template, %Liquid.Template{}) end
   },
   warmup: 5,
