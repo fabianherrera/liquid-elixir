@@ -1,7 +1,27 @@
 defmodule Liquid.Combinators.Tags.CustomTag do
+  @moduledoc """
+  Implementation of custom tag. "Tags" are tags that take any number of arguments, but do not contain a block of template code.
+  To create a new tag, Use Liquid.Register module and register your tag with Liquid.Register.register/3.
+  The register tag  takes three arguments: the user-facing name of the tag, the module where code of parsing/rendering is located
+  and the type that implements it (tag or block).
+
+  ```
+    {% MyCustomTag argument1 =1, argument2, argument3 = 5 %}
+  ```
+
+  """
   import NimbleParsec
   alias Liquid.Combinators.General
 
+  @type t :: [custom_tag: Custom_tag.markup()]
+  @type markup :: [custom_name: String.t(), custom_markup: [String.t()]]
+
+  @doc """
+  Parses a `Liquid` Custom tag, creates a Keyword list where the key is the name of the custom tag
+  (custom_tag in this case) and the value is another keyword list which represent the internal
+  structure of the tag (arguments).
+  """
+  @spec tag() :: NimbleParsec.t()
   def tag do
     parsec(:start_tag)
     |> concat(name())
@@ -10,7 +30,7 @@ defmodule Liquid.Combinators.Tags.CustomTag do
     |> tag(:custom_tag)
   end
 
-  def name do
+  defp name do
     valid_name()
     |> unwrap_and_tag(:custom_name)
   end
@@ -23,20 +43,14 @@ defmodule Liquid.Combinators.Tags.CustomTag do
     |> unwrap_and_tag(:custom_markup)
   end
 
-  def check_close_tag(_rest, args, context, _line, _offset) do
-    tags_name = Keyword.get_values(args, :custom_name)
-    [opened_name, closed_name] = tags_name
-
-    case opened_name == "end" <> closed_name do
-      true -> {args, context}
-      false -> {:error, "#{opened_name} #{closed_name}"}
-    end
-  end
-
   defp valid_markup() do
     repeat_until(utf8_char([]), [string("{%"), string("%}"), string("{{"), string("}}")])
   end
 
+  @doc """
+  Parses a `Liquid` Custom tag's name, isolates custom tag name from markup.
+  """
+  @spec string_name() :: NimbleParsec.t()
   def string_name do
     repeat_until(utf8_char([]), [
       string(" "),
@@ -56,6 +70,10 @@ defmodule Liquid.Combinators.Tags.CustomTag do
     |> traverse({Liquid.Combinators.Tags.CustomTag, :check_string, []})
   end
 
+  @doc """
+  Parses a `Liquid` Custom tag's name, isolates custom tag name from markup.
+  """
+  @spec check_string(rest :: String.t, args :: String.t, context :: Map.t, line :: Integer.t, offset :: Integer.t) :: Keyword.t()
   def check_string(_rest, args, context, _line, _offset) do
     case liquid_tag_name?(args) do
       true -> {:error, "Invalid tag name"}
@@ -72,7 +90,7 @@ defmodule Liquid.Combinators.Tags.CustomTag do
 
   defp liquid_tag_name?([_]), do: false
 
-  def register_tags() do
+  defp register_tags() do
     case Application.get_env(:liquid, :extra_tags) do
       nil ->
         false
@@ -84,13 +102,16 @@ defmodule Liquid.Combinators.Tags.CustomTag do
     end
   end
 
-  def all_tags do
+  defp all_tags do
     List.flatten([
       Liquid.Combinators.Tags.CustomTag.end_register_tag_name()
       | Liquid.Combinators.Tags.CustomTag.liquid_tags()
     ])
   end
-
+  @doc """
+  Return a List of Liquid reserved tag's name, includind end block types.
+  """
+  @spec liquid_tags() :: List.t()
   def liquid_tags do
     [
       "case",
@@ -120,7 +141,10 @@ defmodule Liquid.Combinators.Tags.CustomTag do
       ""
     ]
   end
-
+  @doc """
+  Return a List of Liquid reserved end tag's name, includind tag names.
+  """
+  @spec end_register_tag_name() :: List.t()
   def end_register_tag_name do
     list = register_tags()
 
@@ -133,9 +157,17 @@ defmodule Liquid.Combinators.Tags.CustomTag do
         [new_list | register_tags()]
     end
   end
+  @doc """
+  Return a Keyword resulting of transformation of custom tag and type (tag or block).
+  `{key, Tag}`
+  `{key, Block}`
 
-  def simplify({key, {_, Liquid.Block}}), do: {key, Block}
-  def simplify({key, {_, Block}}), do: {key, Block}
-  def simplify({key, {_, Tag}}), do: {key, Tag}
-  def simplify({key, {_, Liquid.Tag}}), do: {key, Tag}
+  """
+  @spec simplify({key :: atom, {tag_name :: atom, tag_type :: String.t}}) :: Tupple.t()
+  def simplify({key, {tag_name, tag_type}}), do: simplify_helper({key, {tag_name, tag_type}})
+
+  defp simplify_helper({key, {_, Liquid.Block}}), do: {key, Block}
+  defp simplify_helper({key, {_, Block}}), do: {key, Block}
+  defp simplify_helper({key, {_, Tag}}), do: {key, Tag}
+  defp simplify_helper({key, {_, Liquid.Tag}}), do: {key, Tag}
 end
