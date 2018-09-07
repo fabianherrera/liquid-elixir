@@ -1,6 +1,8 @@
 Liquid.start()
 
-template = """
+complex_template = File.read!("test/templates/complex/01/input.liquid")
+
+middle_template = """
   {% decrement product.price %}
   <h1>{{ product.name }}</h1>
   <h2>{{ product.price }}</h2>
@@ -10,16 +12,21 @@ template = """
   {% raw %}This is a raw tag{% endraw %}
   {% for item in array %} Repeat this {% else %} Array Empty {% endfor %}
 """
-template = """
+
+simple_template = """
   {% for item in array %} Repeat this {% else %} Array Empty {% endfor %}
 """
+
+empty_template = ""
+
+template = complex_template
 
 time = DateTime.to_string(DateTime.utc_now())
 
 Benchee.run(
   %{
     nimble: fn -> Liquid.NimbleParser.parse(template) end,
-    regex: fn -> Liquid.Template.parse(template) end
+    regex: fn -> Liquid.Parse.parse(template, %Liquid.Template{}) end
   },
   warmup: 5,
   time: 60,
