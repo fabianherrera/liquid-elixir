@@ -32,17 +32,6 @@ defmodule Liquid.Case do
   def when_syntax,
     do: ~r/(#{Liquid.quoted_fragment()})(?:(?:\s+or\s+|\s*\,\s*)(#{Liquid.quoted_fragment()}.*))?/
 
-  @doc """
-  Parses a `Liquid` Case tag, creates a Keyword list where the key is the name of the tag
-  (case in this function) and the value is another keyword list which represents the internal
-  structure of the tag.
-  """
-  @spec parse(%Block{}, %Template{}) :: {%Block{}, %Template{}}
-  def parse(%Block{markup: markup} = b, %Template{} = t) do
-    [[_, name]] = Regex.scan(syntax(), markup)
-    {split(Variable.create(name), b.nodelist), t}
-  end
-
   def split(%Variable{}, []), do: []
   def split(%Variable{} = v, [h | t]) when is_binary(h), do: split(v, t)
   def split(%Variable{} = _, [%Liquid.Tag{name: :else} | t]), do: t

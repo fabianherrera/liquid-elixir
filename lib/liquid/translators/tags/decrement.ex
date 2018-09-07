@@ -12,7 +12,7 @@ defmodule Liquid.Translators.Tags.Decrement do
   """
   @spec translate(Decrement.markup()) :: Tag.t()
   def translate(markup) do
-    variable_name = Keyword.get(markup, :variable_name)
+    variable_name = Keyword.get(markup, :variable)
     %Liquid.Tag{name: :decrement, markup: Markup.literal(variable_name)}
   end
 end
