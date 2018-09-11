@@ -78,6 +78,8 @@ defmodule Liquid.Combinators.Tags.CustomBlock do
               "case",
               "endcase",
               "assign",
+              "decrement",
+              "increment",
               "when",
               "if",
               "endif",

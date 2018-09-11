@@ -25,7 +25,7 @@ defmodule Liquid.Combinators.Tags.Decrement do
 
   @type t :: [decrement: Decrement.markup()]
 
-  @type markup :: [variable_name: String.t()]
+  @type markup :: LexicalToken.variable_value()
 
   @doc """
   Parses a `Liquid` Decrement tag, creates a Keyword list where the key is the name of the tag
@@ -35,7 +35,7 @@ defmodule Liquid.Combinators.Tags.Decrement do
   @spec tag() :: NimbleParsec.t()
   def tag do
     Tag.define_open("decrement", fn combinator ->
-      parsec(combinator, :variable_name)
+      parsec(combinator, :variable_value)
     end)
   end
 end
