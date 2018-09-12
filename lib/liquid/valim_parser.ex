@@ -21,6 +21,7 @@ defmodule Liquid.ValimParser do
   closing_tag =
     empty()
     |> parsec(:start_tag)
+    |> string("end")
     |> concat(tag)
     |> parsec(:end_tag)
 
@@ -36,6 +37,7 @@ defmodule Liquid.ValimParser do
 
   defparsecp(
     :__parse__,
+    # |> repeat_until(choice([parsec(:__parse__), text]), [string("{%"), string("{{")])
     empty()
     |> choice([
       raw,
@@ -43,30 +45,23 @@ defmodule Liquid.ValimParser do
       capture
     ])
     |> traverse(:store_tag_in_context)
-    |> repeat_until(
-      choice([parsec(:__parse__), text]),
-      [string("{%"), string("{{")]
-    )
+    |> choice([parsec(:__parse__), text])
     |> wrap()
     |> concat(closing_tag)
     |> traverse(:check_close_tag_and_emit_tag)
   )
 
-  defp store_tag_in_context(_rest, [tag], %{tags: tags} = context, _line, _offset) do
+  defp store_tag_in_context(_rest, tag, %{tags: tags} = context, _line, _offset) do
     # inspect(tag)
-    # tag_name = tag |> Enum.reverse() |> hd()
-    # {tag, %{context | tags: [tag_name | tags]}}
-    {[tag], %{context | tags: [tag | tags]}}
-
+    tag_name = tag |> Enum.reverse() |> hd()
+    {tag, %{context | tags: [tag_name | tags]}}
+    # {[tag], %{context | tags: [tag | tags]}}
   end
 
   defp check_close_tag_and_emit_tag(_rest, acc, context, _line, _offset) do
-    [closing, [opening | contents]] = acc
-    IO.puts(closing)
-    IO.puts(opening)
-    IO.puts(contents)
+    [tag_name, end_string, [opening | contents]] = acc
 
-    if closing == "end#{opening}" do
+    if "end#{tag_name}" == "end#{opening}" do
       context = update_in(context.tags, &tl/1)
 
       element =
@@ -77,7 +72,8 @@ defmodule Liquid.ValimParser do
 
       {[element], context}
     else
-      {:error, "closing tag #{inspect(closing)} did not match opening tag #{inspect(opening)}"}
+      {:error,
+       "closing tag end#{inspect(tag_name)} did not match opening tag #{inspect(opening)}"}
     end
   end
 
