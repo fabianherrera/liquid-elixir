@@ -33,16 +33,16 @@ defmodule Liquid.Combinators.Tags.Cycle do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.{Tag, General}
+  alias Liquid.Combinators.{Tag, LexicalToken, General}
 
   @type t :: [cycle: Cycle.markup()]
   @type markup :: [group: String.t(), values: [LexicalToken.value()]]
 
   defp group do
-    parsec(:ignore_whitespaces)
+    General.ignore_whitespaces()
     |> concat(
       choice([
-        parsec(:quoted_token),
+        General.quoted_token(),
         repeat(utf8_char(not: ?,, not: ?:))
       ])
     )
@@ -52,7 +52,7 @@ defmodule Liquid.Combinators.Tags.Cycle do
   end
 
   defp body do
-    parsec(:cycle_values)
+    cycle_values()
     |> tag(:values)
   end
 
@@ -63,7 +63,7 @@ defmodule Liquid.Combinators.Tags.Cycle do
   @spec cycle_values() :: NimbleParsec.t()
   def cycle_values do
     empty()
-    |> times(parsec(:value_definition), min: 1)
+    |> times(LexicalToken.value_definition(), min: 1)
     |> optional(ignore(utf8_char([General.codepoints().comma])))
     |> optional(parsec(:cycle_values))
   end
@@ -78,7 +78,7 @@ defmodule Liquid.Combinators.Tags.Cycle do
     Tag.define_open("cycle", fn combinator ->
       combinator
       |> optional(group())
-      |> parsec(:ignore_whitespaces)
+      |> concat(General.ignore_whitespaces())
       |> concat(body())
     end)
   end

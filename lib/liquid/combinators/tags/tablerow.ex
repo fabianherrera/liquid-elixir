@@ -38,7 +38,7 @@ defmodule Liquid.Combinators.Tags.Tablerow do
   ```
   """
   import NimbleParsec
-  alias Liquid.Combinators.{General, Tag}
+  alias Liquid.Combinators.{General, LexicalToken, Tag}
 
   @type t :: [tablerow: Tablerow.markup()]
 
@@ -65,9 +65,8 @@ defmodule Liquid.Combinators.Tags.Tablerow do
 
   defp params do
     empty()
-    |> times(
-      choice([General.tag_param("offset"), General.tag_param("cols"), General.tag_param("limit")]),
-      min: 1
+    |> repeat(
+      choice([General.tag_param("offset"), General.tag_param("cols"), General.tag_param("limit")])
     )
     |> optional()
     |> tag(:params)
@@ -75,13 +74,13 @@ defmodule Liquid.Combinators.Tags.Tablerow do
 
   defp statements(combinator) do
     combinator
-    |> parsec(:variable_value)
-    |> parsec(:ignore_whitespaces)
+    |> concat(LexicalToken.variable_value())
+    |> concat(General.ignore_whitespaces())
     |> ignore(string("in"))
-    |> parsec(:ignore_whitespaces)
-    |> parsec(:value)
+    |> concat(General.ignore_whitespaces())
+    |> concat(LexicalToken.value())
     |> optional(params())
-    |> parsec(:ignore_whitespaces)
+    |> concat(General.ignore_whitespaces())
     |> tag(:statements)
   end
 end

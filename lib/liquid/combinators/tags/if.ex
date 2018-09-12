@@ -39,7 +39,7 @@ defmodule Liquid.Combinators.Tags.If do
   def elsif_tag do
     "elsif"
     |> Tag.open_tag(&predicate/1)
-    |> parsec(:body_elsif)
+    |> concat(body_elsif())
     |> tag(:elsif)
     |> optional(parsec(:__parse__))
   end
@@ -63,8 +63,8 @@ defmodule Liquid.Combinators.Tags.If do
   defp body do
     empty()
     |> optional(parsec(:__parse__))
-    |> optional(times(parsec(:elsif_tag), min: 1))
-    |> optional(times(Generic.else_tag(), min: 1))
+    |> optional(repeat(parsec(:elsif_tag)))
+    |> optional(repeat(Generic.else_tag()))
     |> tag(:body)
   end
 

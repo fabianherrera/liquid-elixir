@@ -4,7 +4,7 @@ defmodule Liquid.Combinators.Tags.Include do
   Templates can also be recursively included.
   """
   import NimbleParsec
-  alias Liquid.Combinators.{Tag, General}
+  alias Liquid.Combinators.{Tag, General, LexicalToken}
 
   @type t :: [include: Include.markup()]
 
@@ -32,13 +32,13 @@ defmodule Liquid.Combinators.Tags.Include do
   defp predicate(name) do
     empty()
     |> ignore(string(name))
-    |> parsec(:value_definition)
+    |> concat(LexicalToken.value_definition())
     |> tag(String.to_atom(name))
   end
 
   defp head(combinator) do
     combinator
-    |> parsec(:quoted_variable_name)
+    |> concat(General.quoted_variable_name())
     |> optional(choice([predicate("with"), predicate("for"), params()]))
   end
 end
