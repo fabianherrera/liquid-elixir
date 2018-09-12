@@ -82,13 +82,26 @@ defmodule Liquid.NimbleParser do
     :__parse__,
     empty()
     |> choice([
+      parsec(:liquid_literal),
+      parsec(:liquid_tag),
+      parsec(:liquid_variable),
+      parsec(:custom_block),
+      parsec(:custom_tag)
+    ])
+    |> optional(parsec(:__parse__))
+  )
+
+  defparsec(
+    :__parse2__,
+    repeat(
+      choice([
         parsec(:liquid_literal),
         parsec(:liquid_tag),
         parsec(:liquid_variable),
         parsec(:custom_block),
         parsec(:custom_tag)
       ])
-    |> optional(parsec(:__parse__))
+    )
   )
 
   defparsec(:assign, Assign.tag())
@@ -155,6 +168,25 @@ defmodule Liquid.NimbleParser do
 
   def parse(markup) do
     case __parse__(markup) do
+      {:ok, template, "", _, _, _} ->
+        {:ok, template}
+
+      {:error, message, _, _, _, _} ->
+        {:error, "#{message}"}
+
+      {:ok, _, incorrect_markup, _, _, _} ->
+        {:error, "Error parsing: #{incorrect_markup}"}
+    end
+  end
+
+  @doc """
+  Validates and parse liquid markup.
+  """
+  @spec parse2(String.t()) :: {:ok | :error, any()}
+  def parse2(""), do: {:ok, []}
+
+  def parse2(markup) do
+    case __parse2__(markup) do
       {:ok, template, "", _, _, _} ->
         {:ok, template}
 
