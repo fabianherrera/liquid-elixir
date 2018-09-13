@@ -4,7 +4,7 @@ defmodule Liquid.ValimParser do
   """
   import NimbleParsec
 
-  alias Liquid.Combinators.{General, LexicalToken}
+  alias Liquid.Combinators.General
 
   defparsec(:ignore_whitespaces, General.ignore_whitespaces())
   defparsec(:variable_definition, General.variable_definition())
