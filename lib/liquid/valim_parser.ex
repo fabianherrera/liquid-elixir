@@ -7,6 +7,16 @@ defmodule Liquid.ValimParser do
   alias Liquid.Combinators.General
 
   defparsec(:ignore_whitespaces, General.ignore_whitespaces())
+  defparsec(:literal, General.liquid_literal())
+  defparsec(:filter, General.filter())
+  defparsec(:filters, General.filters())
+  defparsec(:filter_param, General.filter_param())
+  defparsec(:value, LexicalToken.value())
+  defparsec(:object_property, LexicalToken.object_property())
+  defparsec(:variable_part, LexicalToken.variable_part())
+  defparsec(:variable_value, LexicalToken.variable_value())
+  defparsec(:value_definition, LexicalToken.value_definition())
+  defparsec(:liquid_variable, General.liquid_variable())
   defparsec(:variable_definition, General.variable_definition())
   defparsec(:variable_definition_for_assignment, General.variable_definition_for_assignment())
   defparsec(:variable_name_for_assignment, General.variable_name_for_assignment())
@@ -16,12 +26,11 @@ defmodule Liquid.ValimParser do
   defparsec(:variable_name, General.variable_name())
 
   tag = ascii_string([?a..?z, ?A..?Z], min: 1)
-  text = ascii_string([not: ?{], min: 1) |> tag(:literal)
 
   closing_tag =
     empty()
     |> parsec(:start_tag)
-    |> string("end")
+    |> ignore(string("end"))
     |> concat(tag)
     |> parsec(:end_tag)
 
@@ -35,46 +44,55 @@ defmodule Liquid.ValimParser do
     |> choice([parsec(:quoted_variable_name), parsec(:variable_name)])
     |> parsec(:end_tag)
 
-  defparsecp(
-    :__parse__,
-    # |> repeat_until(choice([parsec(:__parse__), text]), [string("{%"), string("{{")])
+  tags =
     empty()
     |> choice([
       raw,
       comment,
       capture
     ])
-    |> traverse(:store_tag_in_context)
-    |> choice([parsec(:__parse__), text])
-    |> wrap()
+    # |> traverse(:store_tag_in_context)
+    |> parsec(:__parse__)
+    # |> wrap()
     |> concat(closing_tag)
-    |> traverse(:check_close_tag_and_emit_tag)
+    # |> traverse(:check_close_tag_and_emit_tag)
+
+  defparsecp(
+    :__parse__,
+    repeat(
+      choice([
+        tags,
+        parsec(:liquid_variable),
+        parsec(:literal)
+      ])
+    )
   )
 
   defp store_tag_in_context(_rest, tag, %{tags: tags} = context, _line, _offset) do
-    # inspect(tag)
-    tag_name = tag |> Enum.reverse() |> hd()
+    tag_name = List.last(tag)
     {tag, %{context | tags: [tag_name | tags]}}
-    # {[tag], %{context | tags: [tag | tags]}}
+    {[tag], %{context | tags: [tag | tags]}}
   end
 
   defp check_close_tag_and_emit_tag(_rest, acc, context, _line, _offset) do
-    [tag_name, end_string, [opening | contents]] = acc
+    context = update_in(context.tags, &tl/1)
+    {acc, context}
 
-    if "end#{tag_name}" == "end#{opening}" do
-      context = update_in(context.tags, &tl/1)
+    # [closing, [opening | contents]] = acc
 
-      element =
-        case contents do
-          [text] -> {String.to_atom(opening), [], text}
-          nodes -> {String.to_atom(opening), [], nodes}
-        end
+    # if closing == opening do
+    #   context = update_in(context.tags, &tl/1)
 
-      {[element], context}
-    else
-      {:error,
-       "closing tag end#{inspect(tag_name)} did not match opening tag #{inspect(opening)}"}
-    end
+    #   element =
+    #     case contents do
+    #       [text] -> {String.to_atom(opening), [], text}
+    #       nodes -> {String.to_atom(opening), [], nodes}
+    #     end
+
+    #   {[element], context}
+    # else
+    #   {:error, "closing tag #{inspect(closing)} did not match opening tag #{inspect(opening)}"}
+    # end
   end
 
   @doc """
