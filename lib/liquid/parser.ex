@@ -131,10 +131,10 @@ defmodule Liquid.Parser do
       # parsec(:capture),
       parsec(:increment),
       parsec(:decrement),
-      # parsec(:include),
-      # parsec(:cycle),
-      # parsec(:raw),
-      # parsec(:comment),
+      parsec(:include),
+      parsec(:cycle),
+      parsec(:raw),
+      parsec(:comment),
       # parsec(:for),
       # parsec(:break_tag),
       # parsec(:continue_tag),
@@ -146,13 +146,13 @@ defmodule Liquid.Parser do
     ])
   )
 
-  defp process_markup(markup, context, ast) do
+  defp process_markup(markup, context) do
     case __parse__(markup, [context: context]) do
-      {:ok, acc, "", %{tags: []}, _line, _offset} ->
-        {:ok, [acc | ast]}
+      {:ok, [acc], "", %{tags: []}, _line, _offset} ->
+        {:ok, acc}
 
       {:ok, acc, markup, context, _line, _offset} ->
-        build_ast(markup, context, [acc | ast])
+          build_ast(markup, context, acc)
 
       {:error, reason, rest, _context, _line, _offset} ->
         {:error, reason, rest}
@@ -163,11 +163,16 @@ defmodule Liquid.Parser do
     case Tokenizer.tokenize(markup) do
       {literal, ""} -> {:ok, [literal | ast]}
 
-      {"", liquid} -> process_markup(liquid, context, ast)
+      {"", liquid} ->
+        case process_markup(liquid, context) do
+          {:ok, acc} -> {:ok, [acc | ast] |> List.flatten()}
+
+          error -> error
+        end
 
       {literal, liquid} ->
-        case process_markup(liquid, context, ast) do
-          {:ok, acc} -> {:ok, [acc | [literal | ast]]}
+        case process_markup(liquid, context) do
+          {:ok, acc} -> {:ok, [acc | [literal | ast]] |> List.flatten()}
 
           error -> error
         end
@@ -184,7 +189,8 @@ defmodule Liquid.Parser do
 
   def parse(markup) do
     case build_ast(markup) do
-      {:ok, template} -> {:ok, template}
+      {:ok, template} when is_list(template) -> {:ok, Enum.reverse(template)}
+      {:ok, template} -> {:ok, [template]}
       {:error, message} -> {:error, message}
     end
   end

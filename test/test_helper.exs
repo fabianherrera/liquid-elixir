@@ -2,14 +2,14 @@ ExUnit.start(exclude: [:skip])
 
 defmodule Liquid.Helpers do
   use ExUnit.Case
-  alias Liquid.{Template, NimbleParser, NimbleTranslator}
+  alias Liquid.{Template, Parser, NimbleParser, NimbleTranslator}
 
   def render(text, data \\ %{}) do
     text |> Template.parse() |> Template.render(data) |> elem(1)
   end
 
   def test_parse(markup, expected) do
-    {:ok, response} = NimbleParser.parse(markup)
+    {:ok, response} = Parser.parse(markup)
     assert response == expected
   end
 
