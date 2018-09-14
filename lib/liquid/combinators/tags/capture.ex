@@ -38,4 +38,23 @@ defmodule Liquid.Combinators.Tags.Capture do
       fn combinator -> optional(combinator, parsec(:__parse__) |> tag(:parts)) end
     )
   end
+
+  def tag2 do
+    Tag.define_open(
+      "capture",
+      fn combinator ->
+        choice(combinator, [
+              parsec(:quoted_variable_name),
+              parsec(:variable_name)
+            ])
+      end
+    )
+    |> traverse({__MODULE__, :store_tag_in_context, []})
+  end
+
+  def store_tag_in_context(_rest, tag, %{tags: tags} = context, _line, _offset) do
+    tag_name = tag |> Keyword.keys() |> hd()
+    {[block: tag], %{context | tags: [tag_name | tags]}}
+    {[block: tag], context}
+  end
 end

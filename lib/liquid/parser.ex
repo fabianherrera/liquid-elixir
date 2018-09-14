@@ -91,7 +91,7 @@ defmodule Liquid.Parser do
   )
 
   defparsec(:assign, Assign.tag())
-  defparsec(:capture, Capture.tag())
+  defparsec(:capture, Capture.tag2())
   defparsec(:decrement, Decrement.tag())
   defparsec(:increment, Increment.tag())
 
@@ -128,7 +128,7 @@ defmodule Liquid.Parser do
     :liquid_tag,
     choice([
       parsec(:assign),
-      # parsec(:capture),
+      parsec(:capture),
       parsec(:increment),
       parsec(:decrement),
       parsec(:include),
@@ -152,14 +152,44 @@ defmodule Liquid.Parser do
         {:ok, acc}
 
       {:ok, acc, markup, context, _line, _offset} ->
-          build_ast(markup, context, acc)
+        build_ast(markup, context, acc)
 
       {:error, reason, rest, _context, _line, _offset} ->
         {:error, reason, rest}
     end
   end
 
-  defp build_ast(markup, context \\ %{tags: []}, ast \\ []) do
+  defp build_ast(markup, %{tags: [tag | tags]}, [endblock: [{tag_name, body}]] = ast) do
+    if(tag == tag_name) do
+      {:ok, ast}
+    else
+      {:error, "Apertura de #{tag_name} sin cierre", markup}
+    end
+  end
+
+  defp build_ast(markup, context, [block: [{tag_name, body}]]) do
+    case Tokenizer.tokenize(markup) do
+      {literal, ""} -> {:ok, {tag_name, Keyword.put(body, :body, literal)}}
+
+      {"", liquid} ->
+        case process_markup(liquid, context) do
+          {:ok, acc} -> {:ok, {tag_name, Keyword.put(body, :body, acc)}}
+
+          error -> error
+        end
+
+      {literal, liquid} ->
+        case process_markup(liquid, context) do
+          {:ok, acc} -> {:ok, {tag_name, Keyword.put(body, :body, [acc | literal])}}
+
+          error -> error
+        end
+
+      _ -> {:ok, []}
+    end
+  end
+
+  defp build_ast(markup, context, ast) do
     case Tokenizer.tokenize(markup) do
       {literal, ""} -> {:ok, [literal | ast]}
 
@@ -188,10 +218,10 @@ defmodule Liquid.Parser do
   def parse(""), do: {:ok, []}
 
   def parse(markup) do
-    case build_ast(markup) do
+    case build_ast(markup, %{tags: []}, []) do
       {:ok, template} when is_list(template) -> {:ok, Enum.reverse(template)}
       {:ok, template} -> {:ok, [template]}
-      {:error, message} -> {:error, message}
+      {:error, message, rest} -> {:error, message, rest}
     end
   end
 end
