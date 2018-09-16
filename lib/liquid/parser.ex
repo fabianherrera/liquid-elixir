@@ -11,6 +11,7 @@ defmodule Liquid.Parser do
     Assign,
     Comment,
     Decrement,
+    EndBlock,
     Increment,
     Include,
     Raw,
@@ -101,6 +102,8 @@ defmodule Liquid.Parser do
   defparsec(:cycle_values, Cycle.cycle_values())
   defparsec(:cycle, Cycle.tag())
 
+  defparsec(:end_block, EndBlock.tag())
+
   defparsecp(:raw_content, Raw.raw_content())
   defparsec(:raw, Raw.tag())
 
@@ -135,6 +138,7 @@ defmodule Liquid.Parser do
       parsec(:cycle),
       parsec(:raw),
       parsec(:comment),
+      # parsec(:end_block),
       # parsec(:for),
       # parsec(:break_tag),
       # parsec(:continue_tag),
@@ -149,7 +153,7 @@ defmodule Liquid.Parser do
   defp process_markup(markup, context) do
     case __parse__(markup, [context: context]) do
       {:ok, [acc], "", %{tags: []}, _line, _offset} ->
-        {:ok, acc}
+        {:ok, acc, context}
 
       {:ok, acc, markup, context, _line, _offset} ->
         build_ast(markup, context, acc)
@@ -159,28 +163,24 @@ defmodule Liquid.Parser do
     end
   end
 
-  defp build_ast(markup, %{tags: [tag | tags]}, [endblock: [{tag_name, body}]] = ast) do
-    if(tag == tag_name) do
-      {:ok, ast}
-    else
-      {:error, "Apertura de #{tag_name} sin cierre", markup}
-    end
+  defp build_ast(_markup, context, [endblock: _tag_name]) do
+    {:ok, [], context}
   end
 
   defp build_ast(markup, context, [block: [{tag_name, body}]]) do
     case Tokenizer.tokenize(markup) do
-      {literal, ""} -> {:ok, {tag_name, Keyword.put(body, :body, literal)}}
+      {literal, ""} -> {:ok, {tag_name, Keyword.put(body, :body, literal)}, context}
 
       {"", liquid} ->
         case process_markup(liquid, context) do
-          {:ok, acc} -> {:ok, {tag_name, Keyword.put(body, :body, acc)}}
+          {:ok, acc} -> {:ok, {tag_name, Keyword.put(body, :body, acc)}, context}
 
           error -> error
         end
 
       {literal, liquid} ->
         case process_markup(liquid, context) do
-          {:ok, acc} -> {:ok, {tag_name, Keyword.put(body, :body, [acc | literal])}}
+          {:ok, acc} -> {:ok, {tag_name, Keyword.put(body, :body, [acc | literal])}, context}
 
           error -> error
         end
@@ -195,14 +195,14 @@ defmodule Liquid.Parser do
 
       {"", liquid} ->
         case process_markup(liquid, context) do
-          {:ok, acc} -> {:ok, [acc | ast] |> List.flatten()}
+          {:ok, acc} -> {:ok, [acc | ast] |> List.flatten(), context}
 
           error -> error
         end
 
       {literal, liquid} ->
         case process_markup(liquid, context) do
-          {:ok, acc} -> {:ok, [acc | [literal | ast]] |> List.flatten()}
+          {:ok, acc} -> {:ok, [acc | [literal | ast]] |> List.flatten(), context}
 
           error -> error
         end
@@ -219,8 +219,9 @@ defmodule Liquid.Parser do
 
   def parse(markup) do
     case build_ast(markup, %{tags: []}, []) do
-      {:ok, template} when is_list(template) -> {:ok, Enum.reverse(template)}
-      {:ok, template} -> {:ok, [template]}
+      {:ok, template, %{tags: []}} when is_list(template) -> {:ok, Enum.reverse(template)}
+      {:ok, template, %{tags: []}} -> {:ok, [template]}
+      {:ok, _, %{tags: [unclosed | _]}} -> {:error, "Malformed tag, open without close: '#{unclosed}'"}
       {:error, message, rest} -> {:error, message, rest}
     end
   end
