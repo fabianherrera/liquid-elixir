@@ -109,7 +109,7 @@ defmodule Liquid.Parser do
   defparsec(:include, Include.tag())
 
   defparsec(:body_elsif, If.body_elsif())
-  defparsec(:if, If.tag())
+#  defparsec(:if, If.tag())
   defparsec(:elsif_tag, If.elsif_tag())
   defparsec(:unless, If.unless_tag())
 
