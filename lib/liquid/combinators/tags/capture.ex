@@ -53,8 +53,7 @@ defmodule Liquid.Combinators.Tags.Capture do
   end
 
   def store_tag_in_context(_rest, tag, %{tags: tags} = context, _line, _offset) do
-    tag_name = tag |> Keyword.keys() |> hd()
+    tag_name = tag |> Keyword.keys() |> hd() |> to_string()
     {[block: tag], %{context | tags: [tag_name | tags]}}
-    {[block: tag], context}
   end
 end
