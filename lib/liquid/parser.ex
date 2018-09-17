@@ -85,9 +85,9 @@ defmodule Liquid.Parser do
     empty()
     |> choice([
       parsec(:liquid_tag),
-      parsec(:liquid_variable),
-      parsec(:custom_block),
-      parsec(:custom_tag)
+      parsec(:liquid_variable)
+#      parsec(:custom_block),
+#      parsec(:custom_tag)
     ])
   )
 
@@ -112,7 +112,7 @@ defmodule Liquid.Parser do
   defparsec(:include, Include.tag())
 
   defparsec(:body_elsif, If.body_elsif())
-#  defparsec(:if, If.tag())
+  defparsec(:if, If.tag())
   defparsec(:elsif_tag, If.elsif_tag())
   defparsec(:unless, If.unless_tag())
 
@@ -138,6 +138,7 @@ defmodule Liquid.Parser do
       parsec(:cycle),
       parsec(:raw),
       parsec(:comment),
+      parsec(:end_block)
       # parsec(:end_block),
       # parsec(:for),
       # parsec(:break_tag),
@@ -155,16 +156,21 @@ defmodule Liquid.Parser do
       {:ok, [acc], "", %{tags: []}, _line, _offset} ->
         {:ok, acc, context}
 
-      {:ok, acc, markup, context, _line, _offset} ->
-        build_ast(markup, context, acc)
+      {:ok, acc, markup, nimble_context, _line, _offset} ->
+        IO.puts("Estoy recibiendo esto y se va a mandar a build_ast: acc: #{inspect(acc)} context: #{inspect(nimble_context)}")
+        build_ast(markup, nimble_context, acc)
 
-      {:error, reason, rest, _context, _line, _offset} ->
+      {:error, reason, rest, _nimble_contexto, _line, _offset} ->
         {:error, reason, rest}
     end
   end
 
   defp build_ast(_markup, context, [endblock: _tag_name]) do
     {:ok, [], context}
+  end
+
+  defp build_ast(_markup, context, [not_closed_block: _tag_name]) do
+    {:error, "Block not closed"}
   end
 
   defp build_ast(markup, context, [block: [{tag_name, body}]]) do

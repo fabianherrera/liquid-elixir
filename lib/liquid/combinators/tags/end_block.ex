@@ -20,9 +20,12 @@ defmodule Liquid.Combinators.Tags.EndBlock do
   def check_closed_blocks(_rest, [tag_name: [tag_name]] = acc, %{tags: [current_tag | tags]} = context, _, _) do
     IO.puts("processing opening: #{inspect(tag_name)} closing: #{inspect(current_tag)}")
     if tag_name == current_tag do
-      {[end_block: acc], %{context | tags: tags}}
+      IO.puts("processing tag_name == current_tag: #{inspect(tag_name)} closing: #{inspect(current_tag)}")
+      {[end_block: acc], %{tags: [tag_name | tags]}}
     else
-      {:error, "The '#{tag_name}' tag has not been correctly closed"}
+      IO.puts("tag_name diferent of current_tag: #{inspect(tag_name)} closing: #{inspect(current_tag)}")
+      {[block_not_closed: acc], context}
+#      {:error, "The '#{tag_name}' #{current_tag} mamaguevos de mierda tag has not been correctly closed"}
     end
   end
 end
