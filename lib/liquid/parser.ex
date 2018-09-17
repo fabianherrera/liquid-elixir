@@ -152,10 +152,16 @@ defmodule Liquid.Parser do
 
   defp process_markup(markup, context) do
     case __parse__(markup, [context: context]) do
+      {:ok, [{:end_block, _tag_name}], "", nimble_context, _line, _offset} ->
+        IO.puts("process_markup endblock without rest")
+        {:ok, [], nimble_context}
+
       {:ok, [acc], "", %{tags: []} = nimble_context, _line, _offset} ->
+        IO.puts("process_markup without rest before call build_ast - acc: #{inspect(acc)}")
         {:ok, acc, nimble_context}
 
       {:ok, acc, markup, nimble_context, _line, _offset} ->
+        IO.puts("process_markup with rest before call build_ast - acc: #{inspect(acc)}")
         build_ast(markup, nimble_context, acc)
 
       {:error, error_message, rest_markup, _nimble_context, _line, _offset} ->
@@ -163,8 +169,26 @@ defmodule Liquid.Parser do
     end
   end
 
-  defp build_ast(_markup, context, [endblock: _tag_name]) do
-    {:ok, [], context}
+  defp build_ast(markup, context, [end_block: _tag_name]) do
+    case Tokenizer.tokenize(markup) do
+      {literal, ""} -> {:ok, literal, context}
+
+      # {"", liquid} ->
+      #   case process_markup(liquid, context) do
+      #     {:ok, acc, nimble_context} -> {:ok, [acc | ast] |> List.flatten(), nimble_context}
+
+      #     {:error, error_message, rest_markup} -> {:error, error_message, rest_markup}
+      #   end
+
+      # {literal, liquid} ->
+      #   case process_markup(liquid, context) do
+      #     {:ok, acc, nimble_context} -> {:ok, [acc | [literal | ast]] |> List.flatten(), nimble_context}
+
+      #     {:error, error_message, rest_markup} -> {:error, error_message, rest_markup}
+      #   end
+
+      # _ -> {:ok, [], context}
+    end
   end
 
   defp build_ast(markup, context, [block: [{tag_name, body}]]) do
