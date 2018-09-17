@@ -84,10 +84,10 @@ defmodule Liquid.Parser do
     :__parse__,
     empty()
     |> choice([
-      parsec(:liquid_tag),
       parsec(:liquid_variable),
-      parsec(:custom_block),
-      parsec(:custom_tag)
+      # parsec(:custom_block),
+      # parsec(:custom_tag),
+      parsec(:liquid_tag)
     ])
   )
 
@@ -138,7 +138,7 @@ defmodule Liquid.Parser do
       parsec(:cycle),
       parsec(:raw),
       parsec(:comment),
-      # parsec(:end_block),
+      parsec(:end_block),
       # parsec(:for),
       # parsec(:break_tag),
       # parsec(:continue_tag),
@@ -152,14 +152,14 @@ defmodule Liquid.Parser do
 
   defp process_markup(markup, context) do
     case __parse__(markup, [context: context]) do
-      {:ok, [acc], "", %{tags: []}, _line, _offset} ->
-        {:ok, acc, context}
+      {:ok, [acc], "", %{tags: []} = nimble_context, _line, _offset} ->
+        {:ok, acc, nimble_context}
 
-      {:ok, acc, markup, context, _line, _offset} ->
-        build_ast(markup, context, acc)
+      {:ok, acc, markup, nimble_context, _line, _offset} ->
+        build_ast(markup, nimble_context, acc)
 
-      {:error, reason, rest, _context, _line, _offset} ->
-        {:error, reason, rest}
+      {:error, error_message, rest_markup, _nimble_context, _line, _offset} ->
+        {:error, error_message, rest_markup}
     end
   end
 
@@ -173,41 +173,41 @@ defmodule Liquid.Parser do
 
       {"", liquid} ->
         case process_markup(liquid, context) do
-          {:ok, acc} -> {:ok, {tag_name, Keyword.put(body, :body, acc)}, context}
+          {:ok, acc, nimble_context} -> {:ok, {tag_name, Keyword.put(body, :body, acc)}, nimble_context}
 
-          error -> error
+          {:error, error_message, rest_markup} -> {:error, error_message, rest_markup}
         end
 
       {literal, liquid} ->
         case process_markup(liquid, context) do
-          {:ok, acc} -> {:ok, {tag_name, Keyword.put(body, :body, [acc | literal])}, context}
+          {:ok, acc, nimble_context, rest_markup} -> {:ok, {tag_name, Keyword.put(body, :body, [acc | literal])}, nimble_context, rest_markup}
 
-          error -> error
+          {:error, error_message, rest_markup} -> {:error, error_message, rest_markup}
         end
 
-      _ -> {:ok, []}
+      _ -> {:ok, [], context}
     end
   end
 
   defp build_ast(markup, context, ast) do
     case Tokenizer.tokenize(markup) do
-      {literal, ""} -> {:ok, [literal | ast]}
+      {literal, ""} -> {:ok, [literal | ast], context}
 
       {"", liquid} ->
         case process_markup(liquid, context) do
-          {:ok, acc} -> {:ok, [acc | ast] |> List.flatten(), context}
+          {:ok, acc, nimble_context} -> {:ok, [acc | ast] |> List.flatten(), nimble_context}
 
-          error -> error
+          {:error, error_message, rest_markup} -> {:error, error_message, rest_markup}
         end
 
       {literal, liquid} ->
         case process_markup(liquid, context) do
-          {:ok, acc} -> {:ok, [acc | [literal | ast]] |> List.flatten(), context}
+          {:ok, acc, nimble_context} -> {:ok, [acc | [literal | ast]] |> List.flatten(), nimble_context}
 
-          error -> error
+          {:error, error_message, rest_markup} -> {:error, error_message, rest_markup}
         end
 
-      _ -> {:ok, []}
+      _ -> {:ok, [], context}
     end
   end
 
@@ -221,8 +221,8 @@ defmodule Liquid.Parser do
     case build_ast(markup, %{tags: []}, []) do
       {:ok, template, %{tags: []}} when is_list(template) -> {:ok, Enum.reverse(template)}
       {:ok, template, %{tags: []}} -> {:ok, [template]}
-      {:ok, _, %{tags: [unclosed | _]}} -> {:error, "Malformed tag, open without close: '#{unclosed}'"}
-      {:error, message, rest} -> {:error, message, rest}
+      {:ok, _, %{tags: [unclosed | _]}} -> {:error, "Malformed tag, open without close: '#{unclosed}'", ""}
+      {:error, message, rest_markup} -> {:error, message, rest_markup}
     end
   end
 end

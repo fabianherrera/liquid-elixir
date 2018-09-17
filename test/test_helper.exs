@@ -19,7 +19,7 @@ defmodule Liquid.Helpers do
   end
 
   def test_combinator_error(markup) do
-    {:error, message, rest} = Parser.parse(markup)
+    {:error, message, _rest} = Parser.parse(markup)
     assert message != ""
   end
 
