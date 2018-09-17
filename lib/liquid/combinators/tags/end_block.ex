@@ -18,7 +18,6 @@ defmodule Liquid.Combinators.Tags.EndBlock do
   end
 
   def check_closed_blocks(_rest, [tag_name: [tag_name]] = acc, %{tags: [current_tag | tags]} = context, _, _) do
-    IO.puts("processing end block - opening: #{tag_name} closing: #{current_tag}")
     if tag_name == current_tag do
       {[end_block: acc], %{context | tags: tags}}
     else

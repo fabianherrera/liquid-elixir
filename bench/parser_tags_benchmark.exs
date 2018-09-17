@@ -4,7 +4,7 @@ big_literal = File.read!("test/templates/complex/01/big_literal.liquid")
 # big_literal_with_tags = File.read!("test/templates/complex/01/big_literal_with_tags.liquid")
 small_literal = "X"
 assign = "Price in stock {% assign a = 5 %} Final Price"
-capture = "{% capture about_me %} I am {{ age }} and my favorite food is {{ favorite_food }}{% endcapture %}"
+capture = "Price is not registered {% capture about_me %} I am {{ age }} and my favorite food is {{ favorite_food }}{% endcapture %} Use new price"
 case_tag = "{% case condition %}{% when 1 %} its 1 {% when 2 %} its 2 {% endcase %}"
 comment = "{% comment %} {% if true %} sadsadasd  {% afi true %}{% endcomment %}"
 cycle = "This time {%cycle \"one\", \"two\"%} we win MF!"
@@ -21,10 +21,10 @@ templates = [
   # big_literal_with_tags: big_literal_with_tags,
   # small_literal: small_literal,
   # assign: assign,
-  # capture: capture,
+  capture: capture,
   # case: case_tag,
   # comment: comment,
-  cycle: cycle,
+  # cycle: cycle,
   # decrement: decrement,
   # for: for_tag,
   # if: if_tag,
