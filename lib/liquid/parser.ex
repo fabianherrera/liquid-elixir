@@ -154,13 +154,14 @@ defmodule Liquid.Parser do
   defp process_markup(markup, context) do
     case __parse__(markup, [context: context]) do
       {:ok, [acc], "", %{tags: []}, _line, _offset} ->
+        IO.puts("Estoy recibiendo esto y se va a mandar a build_ast (PM %{tags: []): acc: #{inspect(acc)}")
         {:ok, acc, context}
 
       {:ok, acc, markup, nimble_context, _line, _offset} ->
         IO.puts("Estoy recibiendo esto y se va a mandar a build_ast: acc: #{inspect(acc)} context: #{inspect(nimble_context)}")
         build_ast(markup, nimble_context, acc)
 
-      {:error, reason, rest, _nimble_contexto, _line, _offset} ->
+      {:error, reason, rest, _nimble_context, _line, _offset} ->
         {:error, reason, rest}
     end
   end
@@ -169,7 +170,7 @@ defmodule Liquid.Parser do
     {:ok, [], context}
   end
 
-  defp build_ast(_markup, context, [not_closed_block: _tag_name]) do
+  defp build_ast(_markup, _context, [not_closed_block: _tag_name]) do
     {:error, "Block not closed"}
   end
 

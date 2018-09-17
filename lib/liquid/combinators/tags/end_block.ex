@@ -21,7 +21,7 @@ defmodule Liquid.Combinators.Tags.EndBlock do
     IO.puts("processing opening: #{inspect(tag_name)} closing: #{inspect(current_tag)}")
     if tag_name == current_tag do
       IO.puts("processing tag_name == current_tag: #{inspect(tag_name)} closing: #{inspect(current_tag)}")
-      {[end_block: acc], %{tags: [tag_name | tags]}}
+      {[end_block: acc], %{tags: []}}
     else
       IO.puts("tag_name diferent of current_tag: #{inspect(tag_name)} closing: #{inspect(current_tag)}")
       {[block_not_closed: acc], context}
