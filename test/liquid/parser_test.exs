@@ -49,21 +49,28 @@ defmodule Liquid.ParserTest do
   test "empty closed tag" do
     test_parse(
       "{% capture variable %}{% endcapture %}",
-      [capture: [body: [], variable: [parts: [part: "variable"]]]]
+      [{:capture, [body: [], variable_name: "variable"]}]
+    )
+  end
+
+  test "literal inside block" do
+    test_parse(
+      "{% capture variable %}Hello{% endcapture %}",
+      [{:capture, [body: ["Hello"], variable_name: "variable"]}]
     )
   end
 
   test "nested closed tags" do
     test_parse(
       "{% capture first_variable %}{% endcapture %}{% capture last_variable %}{% endcapture %}",
-      [capture: [body: [], variable: [parts: [part: "variable"]]]]
+      [{:capture, [body: ["Hello"], variable_name: "variable"]}]
     )
   end
 
   test "multiple closed tags" do
     test_parse(
       "{% capture variable %}{% capture internal_variable %}{% endcapture %}{% endcapture %}",
-      [capture: [body: [], variable: [parts: [part: "variable"]]]]
+      [{:capture, [body: ["Hello"], variable_name: "variable"]}]
     )
   end
 
