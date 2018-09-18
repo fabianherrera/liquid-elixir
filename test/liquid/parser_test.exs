@@ -44,6 +44,7 @@ defmodule Liquid.ParserTest do
     )
   end
 
+  @tag :skip
   test "empty closed tag" do
     test_parse(
       "{% capture variable %}{% endcapture %}",
