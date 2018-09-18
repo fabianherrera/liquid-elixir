@@ -21,23 +21,26 @@ defmodule Liquid.AstBuilder do
 
   defp build_block({"", liquid}, tag_name, content, context) do
     wrap_block(liquid, context, fn acc, nimble_context ->
-      case acc do
-        {:end_block, markup} -> [{tag_name, Keyword.put(content, :body, [])}, clean_build_ast(markup, [], nimble_context)]
-
-        _ ->
-         {tag_name, Keyword.put(content, :body, acc)}
-      end
+      internal_block(acc, nimble_context, tag_name, content, [], acc)
     end)
   end
 
-  defp build_block({literal, liquid}, tag_name, body, context) do
+  defp build_block({literal, liquid}, tag_name, content, context) do
     wrap_block(liquid, context, fn acc, nimble_context ->
-      case acc do
-        {:end_block, markup} -> [{tag_name, Keyword.put(body, :body, [literal])}, clean_build_ast(markup, [], nimble_context)]
-
-        _ -> {tag_name, Keyword.put(body, :body, [literal | acc])}
-      end
+      internal_block(acc, nimble_context, tag_name, content, [literal], [literal | acc])
     end)
+  end
+
+  defp internal_block(acc, nimble_context, tag_name, content, finish_block, next_block) do
+    case acc do
+      {:end_block, markup} ->
+        [
+          clean_build_ast(markup, [], nimble_context),
+          {tag_name, Enum.reverse(Keyword.put(content, :body, finish_block))}
+        ]
+      _ ->
+        {tag_name, Enum.reverse(Keyword.put(content, :body, next_block))}
+    end
   end
 
   defp wrap_block(liquid, context, constructor) do
