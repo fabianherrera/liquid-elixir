@@ -2,8 +2,6 @@ defmodule Liquid.ParserTest do
   use ExUnit.Case
   import Liquid.Helpers
 
-  alias Liquid.Parser
-
   test "only literal" do
     test_parse("Hello", ["Hello"])
   end
@@ -53,31 +51,26 @@ defmodule Liquid.ParserTest do
     )
   end
 
-  test "literal inside block" do
+  @tag :skip
+  test "literal left, right and inside block" do
     test_parse(
-      "{% capture variable %}Hello{% endcapture %}",
-      [{:capture, [body: ["Hello"], variable_name: "variable"]}]
+      "Hello{% capture variable %}World{% endcapture %}Here",
+      ["Hello", {:capture, [body: ["World"], variable_name: "variable"]}, "Here"]
     )
   end
 
-  test "nested closed tags" do
-    test_parse(
-      "{% capture first_variable %}{% endcapture %}{% capture last_variable %}{% endcapture %}",
-      [{:capture, [body: ["Hello"], variable_name: "variable"]}]
-    )
-  end
-
+  @tag :skip
   test "multiple closed tags" do
     test_parse(
-      "{% capture variable %}{% capture internal_variable %}{% endcapture %}{% endcapture %}",
-      [{:capture, [body: ["Hello"], variable_name: "variable"]}]
+      "{% capture first_variable %}{% endcapture %}{% capture last_variable %}{% endcapture %}",
+      [{:capture, [body: [], variable_name: "first_variable"]}, {:capture, [body: [], variable_name: "last_variable"]}]
     )
   end
 
-  test "nested == multiple" do
-    nested = "{% capture variable %}{% capture internal_variable %}{% endcapture %}{% endcapture %}"
-    multiple = "{% capture variable %}{% endcapture %}{% capture internal_variable %}{% endcapture %}"
-
-    assert Parser.parse(nested) == Parser.parse(multiple)
-  end
+  # test "nested closed tags" do
+  #   test_parse(
+  #     "{% capture variable %}{% capture internal_variable %}{% endcapture %}{% endcapture %}",
+  #     [{:capture, [body: ["Hello"], variable_name: "variable"]}]
+  #   )
+  # end
 end
