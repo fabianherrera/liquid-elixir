@@ -44,7 +44,6 @@ defmodule Liquid.ParserTest do
     )
   end
 
-  @tag :skip
   test "empty closed tag" do
     test_parse(
       "{% capture variable %}{% endcapture %}",
@@ -52,7 +51,6 @@ defmodule Liquid.ParserTest do
     )
   end
 
-  @tag :skip
   test "literal left, right and inside block" do
     test_parse(
       "Hello{% capture variable %}World{% endcapture %}Here",
@@ -60,7 +58,6 @@ defmodule Liquid.ParserTest do
     )
   end
 
-  @tag :skip
   test "multiple closed tags" do
     test_parse(
       "{% capture first_variable %}{% endcapture %}{% capture last_variable %}{% endcapture %}",
@@ -68,10 +65,10 @@ defmodule Liquid.ParserTest do
     )
   end
 
-  # test "nested closed tags" do
-  #   test_parse(
-  #     "{% capture variable %}{% capture internal_variable %}{% endcapture %}{% endcapture %}",
-  #     [{:capture, [body: ["Hello"], variable_name: "variable"]}]
-  #   )
-  # end
+  test "nested closed tags" do
+    test_parse(
+      "{% capture variable %}{% capture internal_variable %}{% endcapture %}{% endcapture %}",
+      [{:capture, [body: ["Hello"], variable_name: "variable"]}]
+    )
+  end
 end
