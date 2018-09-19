@@ -17,17 +17,11 @@ defmodule Liquid.Combinators.Tags.EndBlock do
     |> traverse({__MODULE__, :check_closed_blocks, []})
   end
 
-  def check_closed_blocks(
-        _rest,
-        [tag_name: [tag_name]] = acc,
-        %{tags: [current_tag | tags]} = context,
-        _,
-        _
-      ) do
-    if tag_name == current_tag do
+  def check_closed_blocks(_, [tag_name: [tag]] = acc, %{tags: [last_tag | tags]} = context, _, _) do
+    if tag == last_tag do
       {[end_block: acc], %{context | tags: tags}}
     else
-      {:error, "The '#{tag_name}' tag has not been correctly closed"}
+      {:error, "The '#{tag}' tag has not been correctly closed"}
     end
   end
 end
