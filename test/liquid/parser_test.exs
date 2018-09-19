@@ -7,7 +7,7 @@ defmodule Liquid.ParserTest do
   end
 
   test "liquid variable" do
-    test_parse("{{ X }}", [liquid_variable: [variable: [parts: [part: "X"]]]])
+    test_parse("{{ X }}", liquid_variable: [variable: [parts: [part: "X"]]])
   end
 
   test "test liquid open tag" do
@@ -43,9 +43,7 @@ defmodule Liquid.ParserTest do
   end
 
   test "unclosed block must fails" do
-    test_combinator_error(
-      "{% capture variable %}"
-    )
+    test_combinator_error("{% capture variable %}")
   end
 
   test "empty closed tag" do
@@ -65,7 +63,13 @@ defmodule Liquid.ParserTest do
   test "multiple closed tags" do
     test_parse(
       "Open{% capture first_variable %}Hey{% endcapture %}{% capture second_variable %}Hello{% endcapture %}{% capture last_variable %}{% endcapture %}Close",
-      ["Open", {:capture, [variable_name: "first_variable", body: ["Hey"]]}, {:capture, [variable_name: "second_variable", body: ["Hello"]]}, {:capture, [variable_name: "last_variable", body: []]}, "Close"]
+      [
+        "Open",
+        {:capture, [variable_name: "first_variable", body: ["Hey"]]},
+        {:capture, [variable_name: "second_variable", body: ["Hello"]]},
+        {:capture, [variable_name: "last_variable", body: []]},
+        "Close"
+      ]
     )
   end
 
@@ -79,21 +83,36 @@ defmodule Liquid.ParserTest do
   test "literal and tag inside block" do
     test_parse(
       "{% capture x %}X{% decrement x %}{% endcapture %}",
-      [{:capture, [variable_name: "x", body: ["X", {:decrement, [variable: [parts: [part: "x"]]]}]]}]
+      [
+        {:capture,
+         [variable_name: "x", body: ["X", {:decrement, [variable: [parts: [part: "x"]]]}]]}
+      ]
     )
   end
 
   test "two tags inside block" do
     test_parse(
       "{% capture x %}{% decrement x %}{% decrement x %}{% endcapture %}",
-      [{:capture, [variable_name: "x", body: [{:decrement, [variable: [parts: [part: "x"]]]}, {:decrement, [variable: [parts: [part: "x"]]]}]]}]
+      [
+        {:capture,
+         [
+           variable_name: "x",
+           body: [
+             {:decrement, [variable: [parts: [part: "x"]]]},
+             {:decrement, [variable: [parts: [part: "x"]]]}
+           ]
+         ]}
+      ]
     )
   end
 
   test "tag inside block with tag ending" do
     test_parse(
       "{% capture x %}{% increment x %}{% endcapture %}{% decrement y %}",
-      [{:capture, [variable_name: "x", body: [{:liquid_variable, [variable: [parts: [part: "x"]]]}]]}]
+      [
+        {:capture,
+         [variable_name: "x", body: [{:liquid_variable, [variable: [parts: [part: "x"]]]}]]}
+      ]
     )
   end
 

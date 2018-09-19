@@ -7,7 +7,7 @@ defmodule Liquid.TokenizerTest do
     assert Tokenizer.tokenize("") == {"", ""}
   end
 
-  test "white string"  do
+  test "white string" do
     assert Tokenizer.tokenize("    ") == {"    ", ""}
   end
 
@@ -28,6 +28,7 @@ defmodule Liquid.TokenizerTest do
   end
 
   test "literal inside block" do
-    assert Tokenizer.tokenize("{% hello %} Hello {% endhello %}") == {"", "{% hello %} Hello {% endhello %}"}
+    assert Tokenizer.tokenize("{% hello %} Hello {% endhello %}") ==
+             {"", "{% hello %} Hello {% endhello %}"}
   end
 end

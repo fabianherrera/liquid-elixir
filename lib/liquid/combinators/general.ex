@@ -396,15 +396,15 @@ defmodule Liquid.Combinators.General do
   def valid_tag_name do
     empty()
     |> repeat_until(utf8_char([]), [
-          string(" "),
-          string("%}"),
-          ascii_char([
-            @horizontal_tab,
-            @carriage_return,
-            @newline,
-            @space
-          ])
-        ])
-      |> reduce({List, :to_string, []})
+      string(" "),
+      string("%}"),
+      ascii_char([
+        @horizontal_tab,
+        @carriage_return,
+        @newline,
+        @space
+      ])
+    ])
+    |> reduce({List, :to_string, []})
   end
 end

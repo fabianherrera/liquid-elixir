@@ -44,9 +44,9 @@ defmodule Liquid.Combinators.Tags.Capture do
       "capture",
       fn combinator ->
         choice(combinator, [
-              parsec(:quoted_variable_name),
-              parsec(:variable_name)
-            ])
+          parsec(:quoted_variable_name),
+          parsec(:variable_name)
+        ])
       end
     )
     |> traverse({__MODULE__, :store_tag_in_context, []})

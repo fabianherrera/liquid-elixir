@@ -189,12 +189,8 @@ defmodule Liquid.Combinators.Tags.ForTest do
   end
 
   test "for tag: invalid tag structure and variable values" do
-    test_combinator_error(
-      "{% for i in (my_var..10) %}{{ i }}{% else %}{% else %}{% endfor %}"
-    )
+    test_combinator_error("{% for i in (my_var..10) %}{{ i }}{% else %}{% else %}{% endfor %}")
 
-    test_combinator_error(
-      "{% for i in (my_var..) %}{{ i }}{% else %}{% endfor %}"
-    )
+    test_combinator_error("{% for i in (my_var..) %}{{ i }}{% else %}{% endfor %}")
   end
 end

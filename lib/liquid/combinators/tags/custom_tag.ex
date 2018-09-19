@@ -74,7 +74,13 @@ defmodule Liquid.Combinators.Tags.CustomTag do
   It returns Custom tag's name. If tag is called equal to Liquid registered tag, this function returns a map with an error causing
   Nimble Parser stops its excecution.
   """
-  @spec check_string(rest :: String.t, args :: String.t, context :: Map.t, line :: Integer.t, offset :: Integer.t) :: Keyword.t()
+  @spec check_string(
+          rest :: String.t(),
+          args :: String.t(),
+          context :: Map.t(),
+          line :: Integer.t(),
+          offset :: Integer.t()
+        ) :: Keyword.t()
   def check_string(_rest, args, context, _line, _offset) do
     case liquid_tag_name?(args) do
       true ->
@@ -113,6 +119,7 @@ defmodule Liquid.Combinators.Tags.CustomTag do
       | Liquid.Combinators.Tags.CustomTag.liquid_tags()
     ])
   end
+
   @doc """
   This function returns a List of Liquid reserved tag's name, also contains end block types names. It is used in order to verify
   custom tags will not be called with a registered tag's name.
@@ -149,12 +156,14 @@ defmodule Liquid.Combinators.Tags.CustomTag do
       ""
     ]
   end
+
   @doc """
   It checks correct end tags for a given open tag.
   """
   @spec end_register_tag_name() :: List.t()
   def end_register_tag_name do
     list = register_tags()
+
     case list do
       false ->
         []
@@ -164,13 +173,14 @@ defmodule Liquid.Combinators.Tags.CustomTag do
         [new_list | register_tags()]
     end
   end
+
   @doc """
   Returns a Keyword resulting of transformation of custom tag and type (tag or block).
   `{key, Tag}`
   `{key, Block}`
 
   """
-  @spec simplify({key :: atom, {tag_name :: atom, tag_type :: String.t}}) :: Tupple.t()
+  @spec simplify({key :: atom, {tag_name :: atom, tag_type :: String.t()}}) :: Tupple.t()
   def simplify({key, {tag_name, tag_type}}), do: simplify_helper({key, {tag_name, tag_type}})
 
   defp simplify_helper({key, {_, Liquid.Block}}), do: {key, Block}

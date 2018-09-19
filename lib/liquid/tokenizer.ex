@@ -9,9 +9,12 @@ defmodule Liquid.Tokenizer do
   Takes a markup, find start of liquid construction (tag or variable) and returns
   a tuple with two elements: a literal and a possible liquid construction
   """
-  @spec tokenize(String.t) :: []
+  @spec tokenize(String.t()) :: []
   def tokenize(markup) do
-    case :binary.match(markup, [General.codepoints.start_tag, General.codepoints.start_variable]) do
+    case :binary.match(markup, [
+           General.codepoints().start_tag,
+           General.codepoints().start_variable
+         ]) do
       :nomatch -> {markup, ""}
       {0, _} -> {"", markup}
       {start, _} -> split(markup, start)

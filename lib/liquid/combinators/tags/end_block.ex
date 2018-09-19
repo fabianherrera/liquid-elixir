@@ -24,8 +24,6 @@ defmodule Liquid.Combinators.Tags.EndBlock do
         _,
         _
       ) do
-    IO.puts("close: #{inspect(context)}")
-
     if tag_name == current_tag do
       {[end_block: acc], %{context | tags: tags}}
     else

@@ -20,20 +20,20 @@ raw = "{% raw %} {% if true %} {% endraw %}"
 tablerow = "{% tablerow item in array %}{% endtablerow %}"
 
 templates = [
-  # literal: big_literal,
-  # big_literal_with_tags: big_literal_with_tags,
-  # small_literal: small_literal,
-  # assign: assign,
+  literal: big_literal,
+  big_literal_with_tags: big_literal_with_tags,
+  small_literal: small_literal,
+  assign: assign,
   capture: capture,
   # case: case_tag,
-  # comment: comment,
+  comment: comment,
   # cycle: cycle,
-  # decrement: decrement,
+  decrement: decrement,
   # for: for_tag,
   # if: if_tag,
   # include: include,
-  # increment: increment,
-  # raw: raw,
+  increment: increment,
+  raw: raw,
   # tablerow: tablerow
 ]
 
