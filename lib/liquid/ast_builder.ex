@@ -38,6 +38,7 @@ defmodule Liquid.AstBuilder do
           clean_build_ast(markup, [], nimble_context),
           {tag_name, Enum.reverse(Keyword.put(content, :body, finish_block))}
         ]
+
       _ ->
         {tag_name, Enum.reverse(Keyword.put(content, :body, next_block))}
     end
@@ -71,7 +72,7 @@ defmodule Liquid.AstBuilder do
 
   defp process_liquid(markup, context) do
     case Parser.__parse__(markup, context: context) do
-      {:ok, [{:end_block, _tag_name}], "", nimble_context, _line, _offset} ->
+      {:ok, [{:end_block, _}], "", nimble_context, _line, _offset} ->
         {:ok, [], nimble_context}
 
       {:ok, [acc], "", %{tags: []} = nimble_context, _line, _offset} ->

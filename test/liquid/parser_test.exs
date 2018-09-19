@@ -90,9 +90,9 @@ defmodule Liquid.ParserTest do
     )
   end
 
-  test "variable inside block" do
+  test "tag inside block with tag ending" do
     test_parse(
-      "{% capture x %}{% increment x %}{% endcapture %}{% capture y %}{% endcapture %}",
+      "{% capture x %}{% increment x %}{% endcapture %}{% decrement y %}",
       [{:capture, [variable_name: "x", body: [{:liquid_variable, [variable: [parts: [part: "x"]]]}]]}]
     )
   end
