@@ -1,19 +1,19 @@
-defmodule Liquid.AstBuilder do
+defmodule Liquid.Ast do
   alias Liquid.{Tokenizer, Parser}
 
   @doc """
   End the block tag
   """
-  def build_ast(markup, [end_block: _], context), do: {:ok, {:end_block, markup}, context}
+  def build(markup, [end_block: _], context), do: {:ok, {:end_block, markup}, context}
 
   @doc """
   Start the block tag
   """
-  def build_ast(markup, [block: [{tag_name, content}]], context) do
+  def build(markup, [block: [{tag_name, content}]], context) do
     markup |> Tokenizer.tokenize() |> build_block(tag_name, content, context)
   end
 
-  def build_ast(markup, ast, context),
+  def build(markup, ast, context),
     do: markup |> Tokenizer.tokenize() |> build_tag(ast, context)
 
   defp build_block({literal, ""}, tag_name, content, context),
@@ -35,7 +35,7 @@ defmodule Liquid.AstBuilder do
     case acc do
       {:end_block, markup} ->
         [
-          clean_build_ast(markup, [], nimble_context),
+          clean_build(markup, [], nimble_context),
           {tag_name, Enum.reverse(Keyword.put(content, :body, finish_block))}
         ]
 
@@ -64,8 +64,8 @@ defmodule Liquid.AstBuilder do
     end
   end
 
-  defp clean_build_ast(markup, ast, context) do
-    case build_ast(markup, ast, context) do
+  defp clean_build(markup, ast, context) do
+    case build(markup, ast, context) do
       {:ok, ast, _context} -> ast
     end
   end
@@ -79,7 +79,7 @@ defmodule Liquid.AstBuilder do
         {:ok, acc, nimble_context}
 
       {:ok, acc, markup, nimble_context, _line, _offset} ->
-        build_ast(markup, acc, nimble_context)
+        build(markup, acc, nimble_context)
 
       {:error, error_message, rest_markup, _nimble_context, _line, _offset} ->
         {:error, error_message, rest_markup}
