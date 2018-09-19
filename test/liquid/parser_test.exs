@@ -109,17 +109,30 @@ defmodule Liquid.ParserTest do
   test "tag inside block with tag ending" do
     test_parse(
       "{% capture x %}{% increment x %}{% endcapture %}{% decrement y %}",
-      [
-        {:capture,
-         [variable_name: "x", body: [{:liquid_variable, [variable: [parts: [part: "x"]]]}]]}
-      ]
+      capture: [variable_name: "x", body: [increment: [variable: [parts: [part: "x"]]]]],
+      decrement: [variable: [parts: [part: "y"]]]
     )
   end
 
   test "nested closed tags" do
     test_parse(
       "{% capture variable %}{% capture internal_variable %}{% endcapture %}{% endcapture %}",
-      [{:capture, [variable_name: "variable", body: ["Hello"]]}]
+      capture: [
+        variable_name: "variable",
+        body: [capture: [variable_name: "internal_variable", body: []]]
+      ]
+    )
+  end
+
+  test "block without endblock" do
+    test_combinator_error(
+      "{% capture variable %}{% capture internal_variable %}{% endcapture %}"
+    )
+  end
+
+  test "bad endblock" do
+    test_combinator_error(
+      "{% capture variable %}{% capture internal_variable %}{% endif %}{% endcapture %}"
     )
   end
 end
