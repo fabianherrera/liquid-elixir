@@ -155,14 +155,11 @@ defmodule Liquid.Parser do
   """
   @spec parse(String.t()) :: {:ok | :error, any()}
   def parse(markup) do
-    case Ast.build(markup, [], %{tags: []}) do
-      {:ok, template, %{tags: []}} when is_list(template) ->
-        {:ok, Enum.reverse(template)}
+    case Ast.build(markup, %{tags: []}, []) do
+      {:ok, template, %{tags: []}, ""} ->
+        {:ok, template}
 
-      {:ok, template, %{tags: []}} ->
-        {:ok, [template]}
-
-      {:ok, _, %{tags: [unclosed | _]}} ->
+      {:ok, _, %{tags: [unclosed | _]}, ""} ->
         {:error, "Malformed tag, open without close: '#{unclosed}'", ""}
 
       {:error, message, rest_markup} ->
