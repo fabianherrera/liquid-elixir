@@ -4,7 +4,10 @@ big_literal = File.read!("test/templates/complex/01/big_literal.liquid")
 # big_literal_with_tags = File.read!("test/templates/complex/01/big_literal_with_tags.liquid")
 small_literal = "X"
 assign = "Price in stock {% assign a = 5 %} Final Price"
-capture = "Price is not registered {% capture about_me %} I am {{ age }} and my favorite food is {{ favorite_food }}{% endcapture %} Use new price"
+capture = """
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+Open{% capture first_variable %}Hey{% endcapture %}{% capture second_variable %}Hello{% endcapture %}{% capture last_variable %}{% endcapture %}CloseOpen{% capture first_variable %}Hey{% endcapture %}{% capture second_variable %}Hello{% endcapture %}{% capture last_variable %}{% endcapture %}Close
+"""
 case_tag = "{% case condition %}{% when 1 %} its 1 {% when 2 %} its 2 {% endcase %}"
 comment = "{% comment %} {% if true %} sadsadasd  {% afi true %}{% endcomment %}"
 cycle = "This time {%cycle \"one\", \"two\"%} we win MF!"
