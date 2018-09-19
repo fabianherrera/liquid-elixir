@@ -1,4 +1,4 @@
-defmodule Liquid.Parser do
+defmodule Liquid.AlternativeParser do
   @moduledoc """
   Transform a valid liquid markup in an AST to be executed by `render`.
   """
@@ -150,117 +150,30 @@ defmodule Liquid.Parser do
     ])
   )
 
-  defp process_markup(markup, context) do
-    case __parse__(markup, context: context) do
-      {:ok, [{:end_block, _tag_name}], "", nimble_context, _line, _offset} ->
-        {:ok, [], nimble_context}
+  defp process_liquid_block(markup, ast, context, rest) do
+    case parser(markup, [], context, rest) do
+      {:ok, template, %{tags: []}, rest} when is_list(template) ->
+        {rest, Enum.reverse([acc | ast]), context, rest}
 
-      {:ok, [acc], "", %{tags: []} = nimble_context, _line, _offset} ->
-        {:ok, acc, nimble_context}
+      {:ok, template, %{tags: []}, rest} ->
+        {:ok, [template]}
 
-      {:ok, acc, markup, nimble_context, _line, _offset} ->
-        build_ast(markup, nimble_context, acc)
+      {:ok, _, %{tags: [unclosed | _]}, _rest} ->
+        {:error, "Malformed tag, open without close: '#{unclosed}'", ""}
 
-      {:error, error_message, rest_markup, _nimble_context, _line, _offset} ->
-        {:error, error_message, rest_markup}
-    end
-  end
-
-  # defp build_ast(markup, context, [end_block: _]), do: {:ok, {:end_block, markup}, context}
-
-  # defp build_ast(markup, context, [block: [{tag_name, body}]] = ast) do
-  #   case Tokenizer.tokenize(markup) do
-  #     {literal, ""} -> {:ok, {tag_name, Keyword.put(body, :body, literal)}, context}
-
-  #     {"", liquid} ->
-  #       case process_markup(liquid, context) do
-  #         {:ok, acc, nimble_context} ->
-  #           case acc do
-  #             {:end_block, markup} ->
-  #               {:ok, {tag_name, build_ast(markup, nimble_context, []), %{tags: []}}}
-  #             _ ->
-  #               {:ok, {tag_name, Keyword.put(body, :body, acc)}, nimble_context}
-  #           end
-
-  #         {:error, error_message, rest_markup} -> {:error, error_message, rest_markup}
-  #       end
-
-  #     {literal, liquid} ->
-  #       case process_markup(liquid, context) do
-  #         {:ok, acc, nimble_context} ->
-  #           case acc do
-  #              {:end_block, markup} ->
-  #               {:ok, [{tag_name, Keyword.put(body, :body, [literal])} | clean_build_ast(markup, nimble_context, [])], %{tags: []}}
-  # 	           _ ->
-  #               {:ok, {tag_name, Keyword.put(body, :body, [literal | acc])}, nimble_context}
-  #           end
-
-  #         {:error, error_message, rest_markup} -> {:error, error_message, rest_markup}
-  #       end
-
-  #     _ -> {:ok, [], context}
-  #   end
-  # end
-
-  # defp build_ast(markup, context, ast) do
-  #   case Tokenizer.tokenize(markup) do
-  #     {literal, ""} -> {:ok, [literal | ast], context}
-
-  #     {"", liquid} ->
-  #       case process_markup(liquid, context) do
-  #         {:ok, acc, nimble_context} -> {:ok, [acc | ast] |> List.flatten(), nimble_context}
-
-  #         {:error, error_message, rest_markup} -> {:error, error_message, rest_markup}
-  #       end
-
-  #     {literal, liquid} ->
-  #       case process_markup(liquid, context) do
-  #         {:ok, acc, nimble_context} -> {:ok, [acc | [literal | ast]] |> List.flatten(), nimble_context}
-
-  #         {:error, error_message, rest_markup} -> {:error, error_message, rest_markup}
-  #  end
-  #   end
-
-  # defp clean_build_ast(markup, context, ast) do
-  #   case build_ast(markup, context, ast) do
-  #     {:ok, ast, _context} -> ast
-  #   end
-  # end
-
-  defp construct_body(:error, message, rest), do: {:error, message, rest}
-
-  defp construct_body(:error, [end_block: []], context, ast, rest) do
-    {rest, ast, context}
-  end
-
-  defp construct_body(markup, [end_block: []], context, ast, rest) do
-    {rest, ast, context}
-  end
-
-  defp construct_body(markup, acc, context, ast, rest) do
-    case Tokenizer.tokenize(markup) do
-      {literal, ""} ->
-        {"", [[literal | acc] | ast], context}
-
-      {"", liquid} ->
-        {liquid_markup, liquid_ast, liquid_context, ast, rest} =
-          process_liquid(liquid, acc, context, ast)
-          construct_body(liquid_markup, liquid_ast, liquid_context, ast, rest)
-
-      {literal, liquid} ->
-        {liquid_markup, liquid_ast, liquid_context, ast, rest} =
-          process_liquid(liquid, acc, context, ast)
-          construct_body(liquid_markup, liquid_ast, liquid_context, ast, rest)
+      {:error, message, rest_markup} ->
+        {:error, message, rest_markup}
     end
   end
 
   defp process_liquid(markup, ast, context) do
     case __parse__(markup, context: context) do
-      {:ok, [block: acc], rest, liquid_context, _line, _offset} ->
-        process_liquid_block(rest, acc, liquid_context, ast, rest)
+      {:ok, [block: liquid_acc], rest, liquid_context, _line, _offset} ->
+        {rest, block_acc, liquid_context, rest} = process_liquid_block(rest, liquid_acc, liquid_context, rest) #
+        {rest, [block_acc | ast], context, rest}
 
       {:ok, acc, rest, liquid_context, _line, _offset} ->
-        {rest, [acc | ast], context}
+        {rest, [acc | ast], context, rest}
 
       {:error, error_message, rest_markup, _context, _, _} ->
         {:error, error_message, rest_markup}
@@ -269,21 +182,21 @@ defmodule Liquid.Parser do
 
   defp build_ast(:error, message, rest), do: {:error, message, rest}
 
-  defp build_ast("", ast, context), do: {:ok, ast, context}
+  defp parser("", ast, context, rest), do: {:ok, ast, context, rest}
 
-  defp build_ast(markup, ast, context) do
+  defp parser(markup, acc, context, rest) do
     case Tokenizer.tokenize(markup) do
       {literal, ""} ->
-        {:ok, [literal | ast], context}
+        {:ok, [literal | acc], context, ""}
 
       {"", liquid} ->
-        {liquid_markup, liquid_ast, liquid_context} = process_liquid(liquid, ast, context)
-        build_ast(liquid_markup, liquid_ast, liquid_context)
+        {liquid_markup, liquid_ast, liquid_context, liquid_rest} = process_liquid(liquid, acc, context, rest)
+        parser(liquid_markup, liquid_ast, liquid_context, liquid_rest)
 
       {literal, liquid} ->
-        {liquid_markup, liquid_ast, liquid_context, ast, rest} = process_liquid(liquid, ast, context)
-        build_ast(liquid_markup, liquid_ast, liquid_context, ast, rest)
-         {[[literal | ast] | liquid_processed]}
+        {liquid_markup, liquid_ast, liquid_context, acc, rest} = process_liquid(liquid, acc, context, rest)
+        parser(liquid_markup, liquid_ast, liquid_context, rest)
+         {[[literal | acc] | liquid_processed]}
     end
   end
 
@@ -292,14 +205,14 @@ defmodule Liquid.Parser do
   """
   @spec parse(String.t()) :: {:ok | :error, any()}
   def parse(markup) do
-    case build_ast(markup, [], %{tags: []}) do
-      {:ok, template, %{tags: []}} when is_list(template) ->
+    case parser(markup, [], %{tags: []}, markup) do
+      {:ok, template, %{tags: []}, _rest} when is_list(template) ->
         {:ok, Enum.reverse(template)}
 
-      {:ok, template, %{tags: []}} ->
+      {:ok, template, %{tags: []}, _rest} ->
         {:ok, [template]}
 
-      {:ok, _, %{tags: [unclosed | _]}} ->
+      {:ok, _, %{tags: [unclosed | _]}, _rest} ->
         {:error, "Malformed tag, open without close: '#{unclosed}'", ""}
 
       {:error, message, rest_markup} ->

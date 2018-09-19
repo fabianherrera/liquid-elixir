@@ -24,7 +24,7 @@ defmodule Liquid.Combinators.Tags.EndBlock do
     else
       IO.puts("tag_name diferent of current_tag: #{inspect(tag_name)} closing: #{inspect(current_tag)}")
       {[block_not_closed: acc], context}
-#      {:error, "The '#{tag_name}' #{current_tag} mamaguevos de mierda tag has not been correctly closed"}
+#      {:error, "The '#{tag_name}' #{current_tag} tag has not been correctly closed"}
     end
   end
 end
