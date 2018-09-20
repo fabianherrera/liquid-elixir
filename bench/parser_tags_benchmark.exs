@@ -20,22 +20,22 @@ raw = "{% raw %} {% if true %} this is a raw block {% endraw %}"
 tablerow = "{% tablerow item in array %}{% endtablerow %}"
 
 templates = [
-  literal: big_literal,
-  big_literal_with_tags: big_literal_with_tags,
-  small_literal: small_literal,
-  assign: assign,
-  capture: capture,
-  small_capture: small_capture,
+  # literal: big_literal,
+  # big_literal_with_tags: big_literal_with_tags,
+  # small_literal: small_literal,
+  # assign: assign,
+  # capture: capture,
+  # small_capture: small_capture,
   # case: case_tag,
-   comment: comment,
+   # comment: comment,
   # cycle: cycle,
-   decrement: decrement,
+   # decrement: decrement,
   # for: for_tag,
   # if: if_tag,
-   include: include,
-   increment: increment,
-   raw: raw,
-  # tablerow: tablerow
+   # include: include,
+   # increment: increment,
+   # raw: raw,
+  tablerow: tablerow
 ]
 
 Enum.each(templates,

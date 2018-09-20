@@ -152,4 +152,18 @@ defmodule Liquid.ParserTest do
       ]
     )
   end
+
+  test "tablerow block" do
+    test_parse(
+      "{% tablerow item in array limit:2 %}{% endtablerow %}",
+      tablerow: [
+        statements: [
+          variable: [parts: [part: "item"]],
+          value: {:variable, [parts: [part: "array"]]},
+          params: [limit: [2]]
+        ],
+        body: []
+      ]
+    )
+  end
 end

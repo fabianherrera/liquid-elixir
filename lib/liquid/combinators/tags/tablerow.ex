@@ -84,4 +84,8 @@ defmodule Liquid.Combinators.Tags.Tablerow do
     |> parsec(:ignore_whitespaces)
     |> tag(:statements)
   end
+
+  def tag2 do
+    Tag.define_block("tablerow", &statements/1)
+  end
 end
