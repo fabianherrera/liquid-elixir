@@ -92,4 +92,13 @@ defmodule Liquid.Combinators.Tags.If do
     |> General.conditions()
     |> tag(:conditions)
   end
+
+  # new version
+
+  def tag2, do_tag2("if")
+  def unless_tag, do_tag2("unless")
+
+  defp do_tag2(name) do
+    Tag.define_block(name, &predicate/1)
+  end
 end

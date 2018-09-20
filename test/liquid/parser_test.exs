@@ -134,4 +134,22 @@ defmodule Liquid.ParserTest do
       "{% capture variable %}{% capture internal_variable %}{% endif %}{% endcapture %}"
     )
   end
+
+  test "if block" do
+    test_parse(
+      "{% if a == b or c == d %}Hello{% endif %}",
+      if: [
+        conditions: [
+          {:condition,
+           {{:variable, [parts: [part: "a"]]}, :==, {:variable, [parts: [part: "b"]]}}},
+          logical: [
+            :or,
+            {:condition,
+             {{:variable, [parts: [part: "c"]]}, :==, {:variable, [parts: [part: "d"]]}}}
+          ]
+        ],
+        body: ["Hello"]
+      ]
+    )
+  end
 end
