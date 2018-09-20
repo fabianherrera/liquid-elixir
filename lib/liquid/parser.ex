@@ -138,13 +138,13 @@ defmodule Liquid.Parser do
       parsec(:cycle),
       parsec(:raw),
       parsec(:comment),
-      parsec(:end_block),
       parsec(:if),
       # parsec(:for),
       # parsec(:break_tag),
       # parsec(:continue_tag),
       parsec(:unless),
       parsec(:tablerow),
+      parsec(:end_block),
       # parsec(:case),
       # parsec(:ifchanged)
     ])

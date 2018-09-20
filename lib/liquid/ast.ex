@@ -26,6 +26,12 @@ defmodule Liquid.Ast do
 
   defp process_liquid(markup, context, ast) do
     case Parser.__parse__(markup, context: context) do
+      # {:ok, [{:else_block, _}], rest, nimble_context, _line, _offset} ->
+      #   {:ok, ast, nimble_context, "%{ else_body %}#{rest}"}
+
+      {:ok, [{:error, message}], rest, _, _, _} ->
+        {:error, message, rest}
+
       {:ok, [{:end_block, _}], rest, nimble_context, _line, _offset} ->
         {:ok, ast, nimble_context, rest}
 

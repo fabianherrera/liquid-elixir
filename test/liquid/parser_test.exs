@@ -44,7 +44,9 @@ defmodule Liquid.ParserTest do
   end
 
   test "unclosed block must fails" do
-    test_combinator_error("{% capture variable %}")
+    test_combinator_error("{% capture variable %}",
+      "Malformed tag, open without close: 'capture'"
+    )
   end
 
   test "empty closed tag" do
@@ -52,6 +54,11 @@ defmodule Liquid.ParserTest do
       "{% capture variable %}{% endcapture %}",
       [{:capture, [variable_name: "variable", body: []]}]
     )
+  end
+
+  test "tag without open" do
+    test_combinator_error("{% if true %}{% endiif %}",
+      "The 'if' tag has not been correctly closed")
   end
 
   test "literal left, right and inside block" do
@@ -127,6 +134,13 @@ defmodule Liquid.ParserTest do
 
   test "block without endblock" do
     test_combinator_error("{% capture variable %}{% capture internal_variable %}{% endcapture %}")
+  end
+
+  test "block closed without open" do
+    test_combinator_error(
+      "{% endcapture %}",
+      "The tag 'capture' was not opened"
+    )
   end
 
   test "bad endblock" do

@@ -27,15 +27,15 @@ templates = [
   # capture: capture,
   # small_capture: small_capture,
   # case: case_tag,
-   # comment: comment,
-  # cycle: cycle,
-   # decrement: decrement,
+  # comment: comment,
+  cycle: cycle,
+  # decrement: decrement,
   # for: for_tag,
   # if: if_tag,
-   # include: include,
-   # increment: increment,
-   # raw: raw,
-  tablerow: tablerow
+  # include: include,
+  # increment: increment,
+  # raw: raw,
+  # tablerow: tablerow
 ]
 
 Enum.each(templates,
