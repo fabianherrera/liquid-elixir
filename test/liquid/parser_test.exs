@@ -126,9 +126,7 @@ defmodule Liquid.ParserTest do
   end
 
   test "block without endblock" do
-    test_combinator_error(
-      "{% capture variable %}{% capture internal_variable %}{% endcapture %}"
-    )
+    test_combinator_error("{% capture variable %}{% capture internal_variable %}{% endcapture %}")
   end
 
   test "bad endblock" do
