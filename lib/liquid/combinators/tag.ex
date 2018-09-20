@@ -38,6 +38,13 @@ defmodule Liquid.Combinators.Tag do
     |> tag(String.to_atom(tag_name))
   end
 
+  def define_block(tag_name, combinator_head \\ & &1) do
+    tag_name
+    |> open_tag(combinator_head)
+    |> tag(String.to_atom(tag_name))
+    |> traverse({__MODULE__, :store_tag_in_context, []})
+  end
+
   def define_inverse_open(tag_name, combinator_head \\ & &1) do
     tag_name
     |> open_tag(combinator_head)
@@ -58,5 +65,10 @@ defmodule Liquid.Combinators.Tag do
     |> parsec(:start_tag)
     |> ignore(string("end" <> tag_name))
     |> parsec(:end_tag)
+  end
+
+  def store_tag_in_context(_rest, tag, %{tags: tags} = context, _line, _offset) do
+    tag_name = tag |> Keyword.keys() |> hd() |> to_string()
+    {[block: tag], %{context | tags: [tag_name | tags]}}
   end
 end
