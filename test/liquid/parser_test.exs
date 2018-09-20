@@ -1,6 +1,7 @@
 defmodule Liquid.ParserTest do
   use ExUnit.Case
-  import Liquid.Helpers
+
+  import Liquid.HelpersFast
 
   test "only literal" do
     test_parse("Hello", ["Hello"])
