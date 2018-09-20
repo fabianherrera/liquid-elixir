@@ -83,12 +83,12 @@ defmodule Liquid.NimbleParser do
     :__parse__,
     empty()
     |> choice([
-        parsec(:liquid_literal),
-        parsec(:liquid_tag),
-        parsec(:liquid_variable),
-        parsec(:custom_block),
-        parsec(:custom_tag)
-      ])
+      parsec(:liquid_literal),
+      parsec(:liquid_tag),
+      parsec(:liquid_variable),
+      parsec(:custom_block),
+      parsec(:custom_tag)
+    ])
     |> optional(parsec(:__parse__))
   )
 

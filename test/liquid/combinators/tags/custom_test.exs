@@ -98,7 +98,8 @@ defmodule Liquid.Combinators.Tags.CustomTest do
   end
 
   test "nested custom blocks and tags" do
-    tag = "{% MyCustomBlock %}{% MyCustomTag %}{% MyCustomBlock %}{% MyCustomTag %}{% endMyCustomBlock %}{% endMyCustomBlock %}"
+    tag =
+      "{% MyCustomBlock %}{% MyCustomTag %}{% MyCustomBlock %}{% MyCustomTag %}{% endMyCustomBlock %}{% endMyCustomBlock %}"
 
     test_parse(tag,
       custom_block: [
@@ -111,9 +112,9 @@ defmodule Liquid.Combinators.Tags.CustomTest do
              custom_name: "MyCustomBlock",
              custom_markup: "",
              body: [
-               {:custom_tag, [custom_name: "MyCustomTag", custom_markup: ""]},
+               {:custom_tag, [custom_name: "MyCustomTag", custom_markup: ""]}
              ]
-           ]},
+           ]}
         ]
       ]
     )
