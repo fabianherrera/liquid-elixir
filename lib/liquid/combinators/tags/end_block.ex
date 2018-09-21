@@ -1,7 +1,6 @@
 defmodule Liquid.Combinators.Tags.EndBlock do
   @moduledoc """
   Verifies when block is closed and send the AST to end the block
-  ```
   """
   alias Liquid.Combinators.General
 
