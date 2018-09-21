@@ -183,7 +183,7 @@ defmodule Liquid.ParserTest do
 
   test "unexpected outer else tag" do
     test_combinator_error(
-      "{% else %}",
+      "{% else %}{% increment a %}",
       "Unexpected outer 'else' tag"
     )
   end
@@ -192,6 +192,38 @@ defmodule Liquid.ParserTest do
     test_combinator_error(
       "{% capture z %}{% else %}{% endcapture %}",
       "capture does not expect else tag. The else tag is valid only inside: if, when, elsif, for"
+    )
+  end
+
+  test "for block with break and continue" do
+    test_parse(
+      "{%for i in array.items offset:continue limit:1000 %}{{i}}{%endfor%}",
+      [
+        for: [
+          statements: [
+            variable: [parts: [part: "i"]],
+            value: {:variable, [parts: [part: "array", part: "items"]]},
+            params: [offset: ["continue"], limit: [1000]]
+          ],
+          body: [liquid_variable: [variable: [parts: [part: "i"]]]]
+        ]
+      ]
+    )
+  end
+
+  test "for block with else" do
+    test_parse(
+      "{% for i in array %}x{% endfor %}",
+      [
+        for: [
+          statements: [
+            variable: [parts: [part: "i"]],
+            value: {:variable, [parts: [part: "array"]]},
+            params: []
+          ],
+          body: ["x"], else: ["y"]
+        ]
+      ]
     )
   end
 end

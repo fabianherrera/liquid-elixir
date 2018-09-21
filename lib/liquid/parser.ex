@@ -119,7 +119,7 @@ defmodule Liquid.Parser do
 
   defparsec(:break_tag, For.break_tag())
   defparsec(:continue_tag, For.continue_tag())
-  defparsec(:for, For.tag())
+  defparsec(:for, For.tag2())
 
   defparsec(:tablerow, Tablerow.tag2())
 

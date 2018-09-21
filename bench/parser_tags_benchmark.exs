@@ -12,7 +12,7 @@ case_tag = "{% case condition %}{% when 1 %} its 1 {% when 2 %} its 2 {% endcase
 comment = "{% comment %} {% if true %} This is a commented block  {% afi true %}{% endcomment %}"
 cycle = "This time {%cycle \"one\", \"two\"%} we win MF!"
 decrement = "Total Price: {% decrement a %}"
-for_tag = "{% for item in array %}{% else %}{% endfor %}"
+for_tag = "{%for i in array.items offset:continue limit:1000 %}{{i}}{%endfor%}"
 if_tag = "{% if false %} this text should not go into the output {% endif %}"
 include = "With text {% include 'snippet', my_variable: 'apples', my_other_variable: 'oranges' %} finally!"
 increment = "Price with discount: {% increment a %}"
@@ -28,9 +28,9 @@ templates = [
   # small_capture: small_capture,
   # case: case_tag,
   # comment: comment,
-  cycle: cycle,
+  # cycle: cycle,
   # decrement: decrement,
-  # for: for_tag,
+  for: for_tag,
   # if: if_tag,
   # include: include,
   # increment: increment,
