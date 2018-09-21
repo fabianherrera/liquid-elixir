@@ -180,4 +180,18 @@ defmodule Liquid.ParserTest do
       ]
     )
   end
+
+  test "unexpected outer else tag" do
+    test_combinator_error(
+      "{% else %}",
+      "Unexpected outer 'else' tag"
+    )
+  end
+
+  test "else out of valid tag" do
+    test_combinator_error(
+      "{% capture z %}{% else %}{% endcapture %}",
+      "capture does not expect else tag. The else tag is valid only inside: if, when, elsif, for"
+    )
+  end
 end

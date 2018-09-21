@@ -38,6 +38,15 @@ defmodule Liquid.Combinators.Tag do
     |> tag(String.to_atom(tag_name))
   end
 
+  def define_sub_block(tag_name, allowed_tags) do
+    empty()
+    |> parsec(:start_tag)
+    |> string(tag_name)
+    |> parsec(:end_tag)
+    |> tag(String.to_atom(tag_name))
+    |> traverse({__MODULE__, :check_allowed_tags, [allowed_tags]})
+  end
+
   def define_block(tag_name, combinator_head \\ & &1) do
     tag_name
     |> open_tag(combinator_head)
@@ -70,5 +79,22 @@ defmodule Liquid.Combinators.Tag do
   def store_tag_in_context(_rest, tag, %{tags: tags} = context, _line, _offset) do
     tag_name = tag |> Keyword.keys() |> hd() |> to_string()
     {[block: tag], %{context | tags: [tag_name | tags]}}
+  end
+
+  def check_allowed_tags(_, [{tag, _}], %{tags: []} = context, _, _, _) do
+    {[error: "Unexpected outer '#{tag}' tag"], context}
+  end
+
+  def check_allowed_tags(_, [{sub_tag, _}], %{tags: [tag | _]} = context, _, _, allowed_tags) do
+    if Enum.member?(allowed_tags, tag) do
+      {[sub_tag], context}
+    else
+      {[
+         error:
+           "#{tag} does not expect #{sub_tag} tag. The #{sub_tag} tag is valid only inside: #{
+             Enum.join(allowed_tags, ", ")
+           }"
+       ], context}
+    end
   end
 end

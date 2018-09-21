@@ -5,6 +5,7 @@ defmodule Liquid.Parser do
   import NimbleParsec
 
   alias Liquid.Combinators.{General, LexicalToken}
+  alias Liquid.Combinators.Tags.Generic
   alias Liquid.Ast
 
   alias Liquid.Combinators.Tags.{
@@ -127,6 +128,8 @@ defmodule Liquid.Parser do
   defparsec(:custom_tag, CustomTag.tag())
   defparsec(:custom_block, CustomBlock.block())
 
+  defparsec(:else, Generic.else_tag2())
+
   defparsec(
     :liquid_tag,
     choice([
@@ -139,12 +142,13 @@ defmodule Liquid.Parser do
       parsec(:raw),
       parsec(:comment),
       parsec(:if),
-      # parsec(:for),
-      # parsec(:break_tag),
-      # parsec(:continue_tag),
+      parsec(:for),
+      parsec(:break_tag),
+      parsec(:continue_tag),
       parsec(:unless),
       parsec(:tablerow),
       parsec(:end_block),
+      parsec(:else)
       # parsec(:case),
       # parsec(:ifchanged)
     ])
