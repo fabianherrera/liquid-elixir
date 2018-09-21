@@ -45,6 +45,15 @@ defmodule Liquid.Combinators.Tag do
     |> traverse({__MODULE__, :store_tag_in_context, []})
   end
 
+  def define_sub_block(tag_name) do
+    empty()
+    |> parsec(:start_tag)
+    |> ignore(string(tag_name))
+    |> parsec(:end_tag)
+    |> tag(String.to_atom(tag_name))
+    |> traverse({__MODULE__, :store_sub_tag_in_context, []})
+  end
+
   def define_inverse_open(tag_name, combinator_head \\ & &1) do
     tag_name
     |> open_tag(combinator_head)
@@ -71,4 +80,24 @@ defmodule Liquid.Combinators.Tag do
     tag_name = tag |> Keyword.keys() |> hd() |> to_string()
     {[block: tag], %{context | tags: [tag_name | tags]}}
   end
+
+  def check_tag_in_context(_, [sub_tag_name: [sub_tag]] = acc, %{tags: tag, sub_tags: [last_sub_tag | sub_tags]} = context, _, _) do
+    case check_sub_tag_inside_correct_tag(tag, last_sub_tag) do
+      true ->
+        {[sub_tag: acc], context}
+      _ -> {[error: "The subtag: '#{last_sub_tag}' is not inside a valid block"], context}
+    end
+  end
+
+  def check_closed_sub_tags([], last_sub_tag) do
+    {[error: "The sub tag: '#{last_sub_tag}' should be called inside a valid block"], context}
+  end
+
+  def check_sub_tag_inside_correct_tag(tag, last_sub_tag) do
+    case tag == ("if" or "elseif" or "unless" or "when") and last_sub_tag == ("else") do
+      true -> true
+      _ -> false
+    end
+  end
+
 end
