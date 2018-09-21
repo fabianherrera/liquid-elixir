@@ -387,6 +387,7 @@ defmodule Liquid.Combinators.General do
       parsec(:variable_definition)
     ])
     |> optional(times(parsec(:logical_condition), min: 1))
+    |> tag(:conditions)
   end
 
   @doc """
