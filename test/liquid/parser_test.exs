@@ -44,7 +44,9 @@ defmodule Liquid.ParserTest do
   end
 
   test "unclosed block must fails" do
-    test_combinator_error("{% capture variable %}")
+    test_combinator_error("{% capture variable %}",
+      "Malformed tag, open without close: 'capture'"
+    )
   end
 
   test "empty closed tag" do
@@ -52,6 +54,11 @@ defmodule Liquid.ParserTest do
       "{% capture variable %}{% endcapture %}",
       [{:capture, [variable_name: "variable", body: []]}]
     )
+  end
+
+  test "tag without open" do
+    test_combinator_error("{% if true %}{% endiif %}",
+      "The 'if' tag has not been correctly closed")
   end
 
   test "literal left, right and inside block" do
@@ -129,9 +136,48 @@ defmodule Liquid.ParserTest do
     test_combinator_error("{% capture variable %}{% capture internal_variable %}{% endcapture %}")
   end
 
+  test "block closed without open" do
+    test_combinator_error(
+      "{% endcapture %}",
+      "The tag 'capture' was not opened"
+    )
+  end
+
   test "bad endblock" do
     test_combinator_error(
       "{% capture variable %}{% capture internal_variable %}{% endif %}{% endcapture %}"
+    )
+  end
+
+  test "if block" do
+    test_parse(
+      "{% if a == b or c == d %}Hello{% endif %}",
+      if: [
+        conditions: [
+          {:condition,
+           {{:variable, [parts: [part: "a"]]}, :==, {:variable, [parts: [part: "b"]]}}},
+          logical: [
+            :or,
+            {:condition,
+             {{:variable, [parts: [part: "c"]]}, :==, {:variable, [parts: [part: "d"]]}}}
+          ]
+        ],
+        body: ["Hello"]
+      ]
+    )
+  end
+
+  test "tablerow block" do
+    test_parse(
+      "{% tablerow item in array limit:2 %}{% endtablerow %}",
+      tablerow: [
+        statements: [
+          variable: [parts: [part: "item"]],
+          value: {:variable, [parts: [part: "array"]]},
+          params: [limit: [2]]
+        ],
+        body: []
+      ]
     )
   end
 end

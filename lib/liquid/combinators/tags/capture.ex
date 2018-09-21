@@ -40,7 +40,7 @@ defmodule Liquid.Combinators.Tags.Capture do
   end
 
   def tag2 do
-    Tag.define_open(
+    Tag.define_block(
       "capture",
       fn combinator ->
         choice(combinator, [
@@ -49,11 +49,5 @@ defmodule Liquid.Combinators.Tags.Capture do
         ])
       end
     )
-    |> traverse({__MODULE__, :store_tag_in_context, []})
-  end
-
-  def store_tag_in_context(_rest, tag, %{tags: tags} = context, _line, _offset) do
-    tag_name = tag |> Keyword.keys() |> hd() |> to_string()
-    {[block: tag], %{context | tags: [tag_name | tags]}}
   end
 end

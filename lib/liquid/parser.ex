@@ -112,15 +112,15 @@ defmodule Liquid.Parser do
   defparsec(:include, Include.tag())
 
   defparsec(:body_elsif, If.body_elsif())
-  defparsec(:if, If.tag())
+  defparsec(:if, If.tag2())
   defparsec(:elsif_tag, If.elsif_tag())
-  defparsec(:unless, If.unless_tag())
+  defparsec(:unless, If.unless_tag2())
 
   defparsec(:break_tag, For.break_tag())
   defparsec(:continue_tag, For.continue_tag())
   defparsec(:for, For.tag())
 
-  defparsec(:tablerow, Tablerow.tag())
+  defparsec(:tablerow, Tablerow.tag2())
 
   defparsec(:case, Case.tag())
   defparsec(:clauses, Case.clauses())
@@ -138,13 +138,13 @@ defmodule Liquid.Parser do
       parsec(:cycle),
       parsec(:raw),
       parsec(:comment),
-      parsec(:end_block)
+      parsec(:if),
       # parsec(:for),
       # parsec(:break_tag),
       # parsec(:continue_tag),
-      # parsec(:if),
-      # parsec(:unless),
-      # parsec(:tablerow),
+      parsec(:unless),
+      parsec(:tablerow),
+      parsec(:end_block),
       # parsec(:case),
       # parsec(:ifchanged)
     ])
