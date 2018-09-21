@@ -41,9 +41,10 @@ defmodule Liquid.Combinators.Tag do
   def define_sub_block(tag_name, allowed_tags, combinator \\ & &1) do
     empty()
     |> parsec(:start_tag)
-    |> string(tag_name)
+    |> ignore(string(tag_name))
     |> combinator.()
     |> parsec(:end_tag)
+    |> tag(String.to_atom(tag_name))
     |> tag(:sub_block)
     |> traverse({__MODULE__, :check_allowed_tags, [allowed_tags]})
   end
@@ -52,6 +53,7 @@ defmodule Liquid.Combinators.Tag do
     tag_name
     |> open_tag(combinator_head)
     |> tag(String.to_atom(tag_name))
+    |> tag(:block)
     |> traverse({__MODULE__, :store_tag_in_context, []})
   end
 
@@ -77,9 +79,9 @@ defmodule Liquid.Combinators.Tag do
     |> parsec(:end_tag)
   end
 
-  def store_tag_in_context(_rest, tag, %{tags: tags} = context, _line, _offset) do
+  def store_tag_in_context(_rest, [{:block, tag}] = acc, %{tags: tags} = context, _line, _offset) do
     tag_name = tag |> Keyword.keys() |> hd() |> to_string()
-    {[block: tag], %{context | tags: [tag_name | tags]}}
+    {acc, %{context | tags: [tag_name | tags]}}
   end
 
   def check_allowed_tags(_, acc, %{tags: []} = context, _, _, _) do
