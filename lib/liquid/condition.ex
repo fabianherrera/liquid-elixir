@@ -75,8 +75,7 @@ defmodule Liquid.Condition do
   end
 
   defp eval_operator(left, operator, right)
-       when (is_nil(left) or is_nil(right)) and not (is_nil(left) and is_nil(right)) and
-              operator in [:>=, :>, :<, :<=],
+       when (is_nil(left) or is_nil(right)) and not (is_nil(left) and is_nil(right)) and operator in [:>=, :>, :<, :<=],
        do: false
 
   defp eval_operator([] = left, :==, :empty?), do: Enum.empty?(left)

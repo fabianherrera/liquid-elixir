@@ -16,9 +16,7 @@ defmodule Liquid.IfElse do
     do: ~r/(#{Liquid.quoted_fragment()})\s*([=!<>a-z_]+)?\s*(#{Liquid.quoted_fragment()})?/
 
   def expressions_and_operators do
-    ~r/(?:\b(?:\s?and\s?|\s?or\s?)\b|(?:\s*(?!\b(?:\s?and\s?|\s?or\s?)\b)(?:#{
-      Liquid.quoted_fragment()
-    }|\S+)\s*)+)/
+    ~r/(?:\b(?:\s?and\s?|\s?or\s?)\b|(?:\s*(?!\b(?:\s?and\s?|\s?or\s?)\b)(?:#{Liquid.quoted_fragment()}|\S+)\s*)+)/
   end
 
   def render(output, %Tag{}, context) do

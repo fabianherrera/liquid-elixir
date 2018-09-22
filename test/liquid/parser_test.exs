@@ -44,7 +44,8 @@ defmodule Liquid.ParserTest do
   end
 
   test "unclosed block must fails" do
-    test_combinator_error("{% capture variable %}",
+    test_combinator_error(
+      "{% capture variable %}",
       "Malformed tag, open without close: 'capture'"
     )
   end
@@ -57,8 +58,10 @@ defmodule Liquid.ParserTest do
   end
 
   test "tag without open" do
-    test_combinator_error("{% if true %}{% endiif %}",
-      "The 'if' tag has not been correctly closed")
+    test_combinator_error(
+      "{% if true %}{% endiif %}",
+      "The 'if' tag has not been correctly closed"
+    )
   end
 
   test "literal left, right and inside block" do
@@ -92,8 +95,7 @@ defmodule Liquid.ParserTest do
     test_parse(
       "{% capture x %}X{% decrement x %}{% endcapture %}",
       [
-        {:capture,
-         [variable_name: "x", body: ["X", {:decrement, [variable: [parts: [part: "x"]]]}]]}
+        {:capture, [variable_name: "x", body: ["X", {:decrement, [variable: [parts: [part: "x"]]]}]]}
       ]
     )
   end
@@ -144,9 +146,7 @@ defmodule Liquid.ParserTest do
   end
 
   test "bad endblock" do
-    test_combinator_error(
-      "{% capture variable %}{% capture internal_variable %}{% endif %}{% endcapture %}"
-    )
+    test_combinator_error("{% capture variable %}{% capture internal_variable %}{% endif %}{% endcapture %}")
   end
 
   test "if block" do
@@ -154,12 +154,10 @@ defmodule Liquid.ParserTest do
       "{% if a == b or c == d %}Hello{% endif %}",
       if: [
         conditions: [
-          {:condition,
-           {{:variable, [parts: [part: "a"]]}, :==, {:variable, [parts: [part: "b"]]}}},
+          {:condition, {{:variable, [parts: [part: "a"]]}, :==, {:variable, [parts: [part: "b"]]}}},
           logical: [
             :or,
-            {:condition,
-             {{:variable, [parts: [part: "c"]]}, :==, {:variable, [parts: [part: "d"]]}}}
+            {:condition, {{:variable, [parts: [part: "c"]]}, :==, {:variable, [parts: [part: "d"]]}}}
           ]
         ],
         body: ["Hello"]
@@ -198,31 +196,28 @@ defmodule Liquid.ParserTest do
   test "for block with break and continue" do
     test_parse(
       "{%for i in array.items offset:continue limit:1000 %}{{i}}{%endfor%}",
-      [
-        for: [
-          statements: [
-            variable: [parts: [part: "i"]],
-            value: {:variable, [parts: [part: "array", part: "items"]]},
-            params: [offset: ["continue"], limit: [1000]]
-          ],
-          body: [liquid_variable: [variable: [parts: [part: "i"]]]]
-        ]
+      for: [
+        statements: [
+          variable: [parts: [part: "i"]],
+          value: {:variable, [parts: [part: "array", part: "items"]]},
+          params: [offset: ["continue"], limit: [1000]]
+        ],
+        body: [liquid_variable: [variable: [parts: [part: "i"]]]]
       ]
     )
   end
 
   test "for block with else" do
     test_parse(
-      "{% for i in array %}x{% else %}y{% endfor %}",
-      [
-        for: [
-          statements: [
-            variable: [parts: [part: "i"]],
-            value: {:variable, [parts: [part: "array"]]},
-            params: []
-          ],
-          body: ["x"], else: ["y"]
-        ]
+      "{% for i in array %}x{% else %}y{% else %}z{% endfor %}",
+      for: [
+        statements: [
+          variable: [parts: [part: "i"]],
+          value: {:variable, [parts: [part: "array"]]},
+          params: []
+        ],
+        body: ["x"],
+        else: ["y"]
       ]
     )
   end
@@ -230,15 +225,14 @@ defmodule Liquid.ParserTest do
   test "for block with when" do
     test_parse(
       "{% for i in array %}x{% when x > 5 %}y{% endfor %}",
-      [
-        for: [
-          statements: [
-            variable: [parts: [part: "i"]],
-            value: {:variable, [parts: [part: "array"]]},
-            params: []
-          ],
-          body: ["x"], else: ["y"]
-        ]
+      for: [
+        statements: [
+          variable: [parts: [part: "i"]],
+          value: {:variable, [parts: [part: "array"]]},
+          params: []
+        ],
+        body: ["x"],
+        else: ["y"]
       ]
     )
   end

@@ -16,8 +16,7 @@ defmodule Liquid.Capture do
   Renders the Capture markup adding the rendered parts to the output list and returning it,
   in a tuple, with the new context.
   """
-  @spec render(list(), %Block{}, %Context{}) ::
-          {list(), %Context{}} | {list(), %Block{}, %Context{}}
+  @spec render(list(), %Block{}, %Context{}) :: {list(), %Context{}} | {list(), %Block{}, %Context{}}
   def render(output, %Block{markup: markup, nodelist: content}, %Context{} = context) do
     variable_name = Liquid.variable_parser() |> Regex.run(markup) |> hd
     {block_output, context} = Render.render([], content, context)

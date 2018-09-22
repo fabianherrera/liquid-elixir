@@ -225,8 +225,7 @@ defmodule Liquid.TableRow do
   defp get_loop_indexes(%{"index" => index} = loop, val, offset) when index > offset do
     remainder = rem(loop["col"], val)
 
-    {remainder + 1, loop["rindex0"] == 1 or remainder == val - 1,
-     div(loop["index"] - offset, val) + 1}
+    {remainder + 1, loop["rindex0"] == 1 or remainder == val - 1, div(loop["index"] - offset, val) + 1}
   end
 
   defp get_loop_indexes(loop, _cols, _offset), do: {loop["col"], false, loop["row"]}

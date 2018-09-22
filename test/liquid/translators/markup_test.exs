@@ -3,9 +3,8 @@ defmodule Liquid.Translators.MarkupTest do
   alias Liquid.Translators.Markup
 
   test "transforms {:parts} tag" do
-    assert Markup.literal(
-             {:parts, [{:part, "company"}, {:part, "name"}, {:part, "employee"}, {:index, 0}]}
-           ) == "company.name.employee[0]"
+    assert Markup.literal({:parts, [{:part, "company"}, {:part, "name"}, {:part, "employee"}, {:index, 0}]}) ==
+             "company.name.employee[0]"
 
     assert Markup.literal(
              {:parts,
@@ -19,12 +18,10 @@ defmodule Liquid.Translators.MarkupTest do
   end
 
   test "transforms {:variable} tag" do
-    assert Markup.literal({:variable, [parts: [part: "store", part: "state", index: 1]]}) ==
-             "store.state[1]"
+    assert Markup.literal({:variable, [parts: [part: "store", part: "state", index: 1]]}) == "store.state[1]"
 
-    assert Markup.literal(
-             {:variable, [parts: [part: "store", part: "state", index: 0, index: 0, index: 1]]}
-           ) == "store.state[0][0][1]"
+    assert Markup.literal({:variable, [parts: [part: "store", part: "state", index: 0, index: 0, index: 1]]}) ==
+             "store.state[0][0][1]"
 
     assert Markup.literal({:variable, [parts: [part: "var", index: "a:b c", index: "paged"]]}) ==
              "var[\"a:b c\"][\"paged\"]"
@@ -40,8 +37,7 @@ defmodule Liquid.Translators.MarkupTest do
 
   test "transforms {:conditions} tag" do
     assert Markup.literal(
-             {:conditions,
-              [variable: [parts: [part: "a"]], logical: [:or, {:variable, [parts: [part: "b"]]}]]}
+             {:conditions, [variable: [parts: [part: "a"]], logical: [:or, {:variable, [parts: [part: "b"]]}]]}
            ) == "a or b"
   end
 
@@ -50,8 +46,7 @@ defmodule Liquid.Translators.MarkupTest do
   end
 
   test "transforms {:filters} tag" do
-    assert Markup.literal({:filters, [filter: ["date", {:params, [value: "%w"]}]]}) ==
-             " | date: \"%w\""
+    assert Markup.literal({:filters, [filter: ["date", {:params, [value: "%w"]}]]}) == " | date: \"%w\""
   end
 
   test "transforms {:assignment} tag" do
