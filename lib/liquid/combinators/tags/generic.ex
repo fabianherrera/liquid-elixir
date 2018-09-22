@@ -17,6 +17,6 @@ defmodule Liquid.Combinators.Tags.Generic do
   @spec else_tag() :: NimbleParsec.t()
   def else_tag, do: Tag.define_inverse_open("else")
 
-  def else_tag, do: Tag.define_sub_block("else")
+  def else_tag2, do: Tag.define_sub_block("else")
 
 end
