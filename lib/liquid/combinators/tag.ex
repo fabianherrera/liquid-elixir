@@ -38,20 +38,23 @@ defmodule Liquid.Combinators.Tag do
     |> tag(String.to_atom(tag_name))
   end
 
+  def define_sub_block(tag_name, allowed_tags, combinator \\ & &1) do
+    empty()
+    |> parsec(:start_tag)
+    |> ignore(string(tag_name))
+    |> combinator.()
+    |> parsec(:end_tag)
+    |> tag(String.to_atom(tag_name))
+    |> tag(:sub_block)
+    |> traverse({__MODULE__, :check_allowed_tags, [allowed_tags]})
+  end
+
   def define_block(tag_name, combinator_head \\ & &1) do
     tag_name
     |> open_tag(combinator_head)
     |> tag(String.to_atom(tag_name))
+    |> tag(:block)
     |> traverse({__MODULE__, :store_tag_in_context, []})
-  end
-
-  def define_sub_block(tag_name) do
-    empty()
-    |> parsec(:start_tag)
-    |> ignore(string(tag_name))
-    |> parsec(:end_tag)
-    |> tag(String.to_atom(tag_name))
-    |> traverse({__MODULE__, :store_sub_tag_in_context, []})
   end
 
   def define_inverse_open(tag_name, combinator_head \\ & &1) do
@@ -76,28 +79,31 @@ defmodule Liquid.Combinators.Tag do
     |> parsec(:end_tag)
   end
 
-  def store_tag_in_context(_rest, tag, %{tags: tags} = context, _line, _offset) do
+  def store_tag_in_context(_rest, [{:block, tag}] = acc, %{tags: tags} = context, _line, _offset) do
     tag_name = tag |> Keyword.keys() |> hd() |> to_string()
-    {[block: tag], %{context | tags: [tag_name | tags]}}
+    {acc, %{context | tags: [tag_name | tags]}}
   end
 
-  def check_tag_in_context(_, [sub_tag_name: [sub_tag]] = acc, %{tags: tag, sub_tags: [last_sub_tag | sub_tags]} = context, _, _) do
-    case check_sub_tag_inside_correct_tag(tag, last_sub_tag) do
-      true ->
-        {[sub_tag: acc], context}
-      _ -> {[error: "The subtag: '#{last_sub_tag}' is not inside a valid block"], context}
+  def check_allowed_tags(_, acc, %{tags: []} = context, _, _, _) do
+    tag_name = tag_name(acc)
+    {[error: "Unexpected outer '#{tag_name}' tag"], context}
+  end
+
+  def check_allowed_tags(_, acc, %{tags: [tag | _]} = context, _, _, allowed_tags) do
+    tag_name = tag_name(acc)
+
+    if Enum.member?(allowed_tags, tag) do
+      {acc, context}
+    else
+      {[
+         error:
+           "#{tag} does not expect #{tag_name} tag. The #{tag_name} tag is valid only inside: #{
+             Enum.join(allowed_tags, ", ")
+           }"
+       ], context}
     end
   end
 
-  def check_closed_sub_tags([], last_sub_tag) do
-    {[error: "The sub tag: '#{last_sub_tag}' should be called inside a valid block"], context}
-  end
-
-  def check_sub_tag_inside_correct_tag(tag, last_sub_tag) do
-    case tag == ("if" or "elseif" or "unless" or "when") and last_sub_tag == ("else") do
-      true -> true
-      _ -> false
-    end
-  end
-
+  defp tag_name([{:sub_block, [{tag, _}]}]), do: tag
+  defp tag_name([{:sub_block, [tag]}]), do: tag
 end

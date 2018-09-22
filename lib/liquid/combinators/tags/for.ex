@@ -112,6 +112,7 @@ defmodule Liquid.Combinators.Tags.For do
   """
   @spec tag() :: NimbleParsec.t()
   def tag, do: Tag.define_closed("for", &statements/1, &body/1)
+  def tag2, do: Tag.define_block("for", &statements/1)
 
   defp body(combinator) do
     combinator
