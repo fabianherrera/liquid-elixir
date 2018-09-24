@@ -56,8 +56,7 @@ defmodule Liquid.Translators.Tags.IncludeTest do
        %{"echo1" => "test123", "more_echos" => %{"echo2" => "test321"}}},
       {"{% include 'body' %}", %{}},
       {"{% include 'nested_template' %}", %{}},
-      {"{% include 'nested_product_template' with product %}",
-       %{"product" => %{"title" => "Draft 151cm"}}},
+      {"{% include 'nested_product_template' with product %}", %{"product" => %{"title" => "Draft 151cm"}}},
       {"{% include 'nested_product_template' for products %}",
        %{"products" => [%{"title" => "Draft 151cm"}, %{"title" => "Element 155cm"}]}},
       {"{% include 'cart' %}", %{"cart" => %{"title" => "Draft 151cm"}}}

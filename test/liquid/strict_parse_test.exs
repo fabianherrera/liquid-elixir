@@ -37,8 +37,7 @@ defmodule Liquid.StrictParseTest do
   test "syntax error" do
     template = "{{ 16  | divided_by: 0 }}"
 
-    assert "Liquid error: divided by 0" ==
-             template |> Template.parse() |> Template.render() |> elem(1)
+    assert "Liquid error: divided by 0" == template |> Template.parse() |> Template.render() |> elem(1)
   end
 
   test "missing endtag parse time error" do

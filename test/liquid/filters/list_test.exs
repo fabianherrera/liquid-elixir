@@ -56,8 +56,7 @@ defmodule Liquid.Filters.ListTest do
   test :uniq do
     assert [1, 3, 2, 4] == List.uniq([1, 1, 3, 2, 3, 1, 4, 3, 2, 1])
 
-    assert [{"a", 1}, {"a", 3}, {"a", 2}] ==
-             List.uniq([{"a", 1}, {"a", 3}, {"a", 1}, {"a", 2}], "a")
+    assert [{"a", 1}, {"a", 3}, {"a", 2}] == List.uniq([{"a", 1}, {"a", 3}, {"a", 1}, {"a", 2}], "a")
 
     # testdrop = TestDrop.new
     # assert [testdrop] == List.uniq([testdrop, TestDrop.new], "test")

@@ -62,8 +62,7 @@ defmodule Liquid.TemplateTest do
   test "check if you can assign registers" do
     t = Template.parse("{{ foo }}")
 
-    {:ok, rendered, context} =
-      Template.render(t, %{"foo" => "from assigns"}, registers: %{test: "hallo"})
+    {:ok, rendered, context} = Template.render(t, %{"foo" => "from assigns"}, registers: %{test: "hallo"})
 
     assert "from assigns" == rendered
     assert %{test: "hallo"} == context.registers

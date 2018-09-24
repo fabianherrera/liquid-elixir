@@ -229,8 +229,7 @@ defmodule Liquid.Filters.Math do
     iex> Liquid.Filters.Math.modulo(31,4)
     3
   """
-  @spec modulo(integer() | number() | String.t(), integer() | number() | String.t()) ::
-          integer() | number()
+  @spec modulo(integer() | number() | String.t(), integer() | number() | String.t()) :: integer() | number()
   def modulo(0, _), do: 0
 
   def modulo(input, operand) when is_number(input) and is_number(operand) and input > 0,

@@ -51,6 +51,7 @@ defmodule Liquid.HelpersFast do
   def test_combinator_error(markup, expected_message \\ nil) do
     {:error, message, _rest} = Parser.parse(markup)
     assert message != ""
+
     if expected_message do
       assert expected_message == message
     end

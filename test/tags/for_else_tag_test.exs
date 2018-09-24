@@ -262,8 +262,7 @@ defmodule ForElseTagTest do
     # test break does nothing when unreached
     assigns = %{"array" => %{"items" => [1, 2, 3, 4, 5]}}
 
-    markup =
-      "{% for i in array.items %}{% if i == 9999 %}{% break %}{% endif %}{{ i }}{% endfor %}"
+    markup = "{% for i in array.items %}{% if i == 9999 %}{% break %}{% endif %}{{ i }}{% endfor %}"
 
     expected = "12345"
     assert_result(expected, markup, assigns)
@@ -274,9 +273,7 @@ defmodule ForElseTagTest do
     # and not all of them.
     assigns = %{"array" => [[1, 2], [3, 4], [5, 6]]}
 
-    markup =
-      "{% for item in array %}" <>
-        "{% for i in item %}" <> "{{ i }}" <> "{% endfor %}" <> "{% endfor %}"
+    markup = "{% for item in array %}" <> "{% for i in item %}" <> "{{ i }}" <> "{% endfor %}" <> "{% endfor %}"
 
     expected = "123456"
     assert_result(expected, markup, assigns)
@@ -290,8 +287,7 @@ defmodule ForElseTagTest do
     markup =
       "{% for item in array %}" <>
         "{% for i in item %}" <>
-        "{% if i == 1 %}" <>
-        "{% break %}" <> "{% endif %}" <> "{{ i }}" <> "{% endfor %}" <> "{% endfor %}"
+        "{% if i == 1 %}" <> "{% break %}" <> "{% endif %}" <> "{{ i }}" <> "{% endfor %}" <> "{% endfor %}"
 
     expected = "3456"
     assert_result(expected, markup, assigns)
@@ -312,14 +308,12 @@ defmodule ForElseTagTest do
     expected = ""
     assert_result(expected, markup, assigns)
 
-    markup =
-      "{% for i in array.items %}{% if i > 3 %}{% continue %}{% endif %}{{ i }}{% endfor %}"
+    markup = "{% for i in array.items %}{% if i > 3 %}{% continue %}{% endif %}{{ i }}{% endfor %}"
 
     expected = "123"
     assert_result(expected, markup, assigns)
 
-    markup =
-      "{% for i in array.items %}{% if i == 3 %}{% continue %}{% else %}{{ i }}{% endif %}{% endfor %}"
+    markup = "{% for i in array.items %}{% if i == 3 %}{% continue %}{% else %}{{ i }}{% endif %}{% endfor %}"
 
     expected = "1245"
     assert_result(expected, markup, assigns)
@@ -330,8 +324,7 @@ defmodule ForElseTagTest do
     markup =
       "{% for item in array %}" <>
         "{% for i in item %}" <>
-        "{% if i == 1 %}" <>
-        "{% continue %}" <> "{% endif %}" <> "{{ i }}" <> "{% endfor %}" <> "{% endfor %}"
+        "{% if i == 1 %}" <> "{% continue %}" <> "{% endif %}" <> "{{ i }}" <> "{% endfor %}" <> "{% endfor %}"
 
     expected = "23456"
     assert_result(expected, markup, assigns)
@@ -339,8 +332,7 @@ defmodule ForElseTagTest do
     # test continue does nothing when unreached
     assigns = %{"array" => %{"items" => [1, 2, 3, 4, 5]}}
 
-    markup =
-      "{% for i in array.items %}{% if i == 9999 %}{% continue %}{% endif %}{{ i }}{% endfor %}"
+    markup = "{% for i in array.items %}{% if i == 9999 %}{% continue %}{% endif %}{{ i }}{% endfor %}"
 
     expected = "12345"
     assert_result(expected, markup, assigns)
@@ -350,8 +342,7 @@ defmodule ForElseTagTest do
     # test continue does nothing when unreached
     assigns = %{"array" => %{"items" => [1, 2, 3, 4, 5]}}
 
-    markup =
-      "{% for i in array.items %}{% if i == 9999 %}{% continue %}{% endif %}{{ i }}{% endfor %}"
+    markup = "{% for i in array.items %}{% if i == 9999 %}{% continue %}{% endif %}{{ i }}{% endfor %}"
 
     expected = "12345"
     assert_result(expected, markup, assigns)
@@ -372,8 +363,7 @@ defmodule ForElseTagTest do
         "{{forloop.length}}-" <>
         "{{forloop.index0}}-" <>
         "{{forloop.rindex}}-" <>
-        "{{forloop.rindex0}}-" <>
-        "{{forloop.first}}-" <> "{{forloop.last}}-" <> "{{val}}{%endfor%}",
+        "{{forloop.rindex0}}-" <> "{{forloop.first}}-" <> "{{forloop.last}}-" <> "{{val}}{%endfor%}",
       %{"string" => "test string"}
     )
   end

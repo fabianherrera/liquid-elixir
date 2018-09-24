@@ -115,9 +115,7 @@ defmodule Liquid.Combinators.Tags.CommentTest do
 
   test "comment must fails with this one" do
     {result, _, _, _, _, _} =
-      Parser.comment(
-        "{% comment %} {% if true %} {% comment %} {% aendcomment %} {% acomment %} {% endcomment %}"
-      )
+      Parser.comment("{% comment %} {% if true %} {% comment %} {% aendcomment %} {% acomment %} {% endcomment %}")
 
     assert result == :error
 

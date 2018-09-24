@@ -43,8 +43,11 @@ defmodule Liquid.Combinators.Tags.CaseTest do
 
   test "case with body" do
     test_parse("{% case condition %} hit {% else %} else {% endcase %}",
-      case: [{:conditions, [variable: [parts: [part: "condition"]]]},
-             " hit ", {:else, [" else "]}]
+      case: [
+        {:conditions, [variable: [parts: [part: "condition"]]]},
+        " hit ",
+        {:else, [" else "]}
+      ]
     )
   end
 
@@ -163,8 +166,6 @@ defmodule Liquid.Combinators.Tags.CaseTest do
 
     test_combinator_error("{% case condition %}{% when 5  hit {% else %} else {% endcase %}")
 
-    test_combinator_error(
-      "{% case condition condition condition2 %}{% when 5 %} hit {% else %} else {% endcase %}"
-    )
+    test_combinator_error("{% case condition condition condition2 %}{% when 5 %} hit {% else %} else {% endcase %}")
   end
 end

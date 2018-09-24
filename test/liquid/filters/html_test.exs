@@ -30,10 +30,7 @@ defmodule Liquid.Filters.HTMLTest do
     assert "test" == HTML.strip_html("<div>test</div>")
     assert "test" == HTML.strip_html(~s{<div id="test">test</div>})
 
-    assert "" ==
-             HTML.strip_html(
-               ~S{<script type="text/javascript">document.write("some stuff");</script>}
-             )
+    assert "" == HTML.strip_html(~S{<script type="text/javascript">document.write("some stuff");</script>})
 
     assert "" == HTML.strip_html(~S{<style type="text/css">foo bar</style>})
     assert "test" == HTML.strip_html(~S{<div\nclass="multiline">test</div>})
