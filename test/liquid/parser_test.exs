@@ -217,22 +217,21 @@ defmodule Liquid.ParserTest do
           params: []
         ],
         body: ["x"],
-        else: ["y"]
+        else: [body: ["y"]],
+        else: [body: ["z"]]
       ]
     )
   end
 
-  test "for block with when" do
+  test "case block with when" do
     test_parse(
-      "{% for i in array %}x{% when x > 5 %}y{% endfor %}",
+      "{% case x %}useless{% when x > 10 %}y{% when x > 1 %}z{% endfor %}",
       for: [
-        statements: [
-          variable: [parts: [part: "i"]],
-          value: {:variable, [parts: [part: "array"]]},
-          params: []
+        conditions: [
+          variable: [parts: [part: "x"]]
         ],
-        body: ["x"],
-        else: ["y"]
+        body: ["useless"],
+          else: [body: ["y"]]
       ]
     )
   end
