@@ -9,6 +9,7 @@ defmodule Liquid.Block do
             blank: false,
             strict: true
 
+  alias Liquid.Ast
   alias Liquid.Tag, as: Tag
   alias Liquid.Block, as: Block
 
@@ -36,5 +37,30 @@ defmodule Liquid.Block do
     Enum.split_while(nodelist, fn x ->
       !(is_map(x) and x.__struct__ == Tag and Enum.member?(namelist, x.name))
     end)
+  end
+
+  def build(markup, block, sub_blocks, bodies, context, ast),
+    do: markup |> Ast.build(context, []) |> do_build(block, sub_blocks, bodies, ast)
+
+  defp do_build({:ok, [[{:sub_block, [sub_block]}] | body], context, rest}, block, sub_blocks, bodies, ast) do
+    build(rest, block, [sub_block | sub_blocks], [body | bodies], context, ast)
+  end
+
+  defp do_build({:ok, [[{:end_block, _}] | last_body], context, rest}, block, sub_blocks, bodies, ast),
+    do: Ast.build(rest, context, [close(block, sub_blocks, bodies, last_body) | ast])
+
+  defp do_build({:ok, acc, context, rest}, _, _, _, ast), do: {:ok, [acc | ast], context, rest}
+
+  defp do_build({:error, error, rest}, _, _, _, _), do: {:error, error, rest}
+
+  defp close({tag, body_block}, sub_blocks, bodies, last_body) do
+    all_blocks = [body_block | close(sub_blocks, bodies, last_body, [])] |> List.flatten()
+    {tag, all_blocks}
+  end
+
+  defp close([], [], last_body, all_blocks), do: [{:body, Enum.reverse(last_body)} | all_blocks]
+
+  defp close([{sub_block, params} | sub_blocks], [body | bodies], current_body, all_blocks) do
+    close(sub_blocks, bodies, body, [{sub_block, Enum.reverse(Keyword.put(params, :body, current_body))} | all_blocks])
   end
 end

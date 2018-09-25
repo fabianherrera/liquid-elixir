@@ -217,23 +217,57 @@ defmodule Liquid.ParserTest do
           params: []
         ],
         body: ["x"],
-        else: ["y"]
+        else: [body: ["y"]],
+        else: [body: ["z"]]
       ]
     )
   end
 
-  test "for block with when" do
+  test "if block with elsif" do
     test_parse(
-      "{% for i in array %}x{% when x > 5 %}y{% endfor %}",
-      for: [
-        statements: [
-          variable: [parts: [part: "i"]],
-          value: {:variable, [parts: [part: "array"]]},
-          params: []
+      "{% if a == b or c == d %}Hello{% elsif z > x %}bye{% endif %}",
+      if: [
+        conditions: [
+          {:condition, {{:variable, [parts: [part: "a"]]}, :==, {:variable, [parts: [part: "b"]]}}},
+          logical: [
+            :or,
+            {:condition, {{:variable, [parts: [part: "c"]]}, :==, {:variable, [parts: [part: "d"]]}}}
+          ]
         ],
-        body: ["x"],
-        else: ["y"]
+        body: ["Hello"],
+        elsif: [
+          conditions: [
+            {:condition, {{:variable, [parts: [part: "z"]]}, :>, {:variable, [parts: [part: "x"]]}}}
+          ],
+          body: ["bye"]
+        ]
       ]
     )
   end
+
+  test "if block with several elsif" do
+    test_parse(
+      "{% if true %}Hello{% elsif true %}culo{% elsif false %}bye{% else %}clear{% endif %}",
+      if: [
+        conditions: [true],
+        body: ["Hello"],
+        elsif: [conditions: [true], body: ["culo"]],
+        elsif: [conditions: [false], body: ["bye"]],
+        else: [body: ["clear"]]
+      ]
+    )
+  end
+
+  # test "case block with when" do
+  #   test_parse(
+  #     "{% case x %}useless{% when x > 10 %}y{% when x > 1 %}z{% endfor %}",
+  #     for: [
+  #       conditions: [
+  #         variable: [parts: [part: "x"]]
+  #       ],
+  #       body: ["useless"],
+  #         else: [body: ["y"]]
+  #     ]
+  #   )
+  # end
 end

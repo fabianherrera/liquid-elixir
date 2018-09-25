@@ -92,6 +92,8 @@ defmodule Liquid.Combinators.Tags.If do
   def tag2, do: do_tag2("if")
   def unless_tag2, do: do_tag2("unless")
 
+  def elsif_tag2, do: Tag.define_sub_block("elsif", ["if", "unless"], &General.conditions/1)
+
   defp do_tag2(name) do
     Tag.define_block(name, &General.conditions/1)
   end

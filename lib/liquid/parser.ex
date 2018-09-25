@@ -112,9 +112,9 @@ defmodule Liquid.Parser do
 
   defparsec(:include, Include.tag())
 
-  defparsec(:body_elsif, If.body_elsif())
+  # defparsec(:body_elsif, If.body_elsif())
   defparsec(:if, If.tag2())
-  defparsec(:elsif_tag, If.elsif_tag())
+  defparsec(:elsif, If.elsif_tag2())
   defparsec(:unless, If.unless_tag2())
 
   defparsec(:break_tag, For.break_tag())
@@ -150,7 +150,8 @@ defmodule Liquid.Parser do
       parsec(:tablerow),
       parsec(:end_block),
       parsec(:else),
-      parsec(:when)
+      parsec(:when),
+      parsec(:elsif)
       # parsec(:case),
       # parsec(:ifchanged)
     ])
@@ -161,7 +162,7 @@ defmodule Liquid.Parser do
   """
   @spec parse(String.t()) :: {:ok | :error, any()}
   def parse(markup) do
-    case Ast.build(markup, %{tags: [], sub_blocks: []}, []) do
+    case Ast.build(markup, %{tags: []}, []) do
       {:ok, template, %{tags: []}, ""} ->
         {:ok, template}
 
