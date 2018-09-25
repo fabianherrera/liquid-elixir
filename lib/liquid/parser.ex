@@ -162,7 +162,7 @@ defmodule Liquid.Parser do
   """
   @spec parse(String.t()) :: {:ok | :error, any()}
   def parse(markup) do
-    case Ast.build(markup, %{tags: [], sub_blocks: []}, []) do
+    case Ast.build(markup, %{tags: []}, []) do
       {:ok, template, %{tags: []}, ""} ->
         {:ok, template}
 

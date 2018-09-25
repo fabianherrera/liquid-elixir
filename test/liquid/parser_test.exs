@@ -95,8 +95,7 @@ defmodule Liquid.ParserTest do
     test_parse(
       "{% capture x %}X{% decrement x %}{% endcapture %}",
       [
-        {:capture,
-         [variable_name: "x", body: ["X", {:decrement, [variable: [parts: [part: "x"]]]}]]}
+        {:capture, [variable_name: "x", body: ["X", {:decrement, [variable: [parts: [part: "x"]]]}]]}
       ]
     )
   end
@@ -147,9 +146,7 @@ defmodule Liquid.ParserTest do
   end
 
   test "bad endblock" do
-    test_combinator_error(
-      "{% capture variable %}{% capture internal_variable %}{% endif %}{% endcapture %}"
-    )
+    test_combinator_error("{% capture variable %}{% capture internal_variable %}{% endif %}{% endcapture %}")
   end
 
   test "if block" do
@@ -157,12 +154,10 @@ defmodule Liquid.ParserTest do
       "{% if a == b or c == d %}Hello{% endif %}",
       if: [
         conditions: [
-          {:condition,
-           {{:variable, [parts: [part: "a"]]}, :==, {:variable, [parts: [part: "b"]]}}},
+          {:condition, {{:variable, [parts: [part: "a"]]}, :==, {:variable, [parts: [part: "b"]]}}},
           logical: [
             :or,
-            {:condition,
-             {{:variable, [parts: [part: "c"]]}, :==, {:variable, [parts: [part: "d"]]}}}
+            {:condition, {{:variable, [parts: [part: "c"]]}, :==, {:variable, [parts: [part: "d"]]}}}
           ]
         ],
         body: ["Hello"]
@@ -233,19 +228,16 @@ defmodule Liquid.ParserTest do
       "{% if a == b or c == d %}Hello{% elsif z > x %}bye{% endif %}",
       if: [
         conditions: [
-          {:condition,
-           {{:variable, [parts: [part: "a"]]}, :==, {:variable, [parts: [part: "b"]]}}},
+          {:condition, {{:variable, [parts: [part: "a"]]}, :==, {:variable, [parts: [part: "b"]]}}},
           logical: [
             :or,
-            {:condition,
-             {{:variable, [parts: [part: "c"]]}, :==, {:variable, [parts: [part: "d"]]}}}
+            {:condition, {{:variable, [parts: [part: "c"]]}, :==, {:variable, [parts: [part: "d"]]}}}
           ]
         ],
         body: ["Hello"],
         elsif: [
           conditions: [
-            {:condition,
-             {{:variable, [parts: [part: "z"]]}, :>, {:variable, [parts: [part: "x"]]}}}
+            {:condition, {{:variable, [parts: [part: "z"]]}, :>, {:variable, [parts: [part: "x"]]}}}
           ],
           body: ["bye"]
         ]
