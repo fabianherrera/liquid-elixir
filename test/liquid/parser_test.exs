@@ -1,6 +1,6 @@
 defmodule Liquid.ParserTest do
   use ExUnit.Case
-
+  alias Liquid.{Template, Tag, Block}
   import Liquid.HelpersFast
 
   test "only literal" do
@@ -16,31 +16,22 @@ defmodule Liquid.ParserTest do
   end
 
   test "test literal + liquid open tag" do
-    test_parse(
-      "Hello {% assign a = 5 %}",
-      ["Hello ", {:assign, [variable_name: "a", value: 5]}]
-    )
+    test_parse("Hello {% assign a = 5 %}", ["Hello ", {:assign, [variable_name: "a", value: 5]}])
   end
 
   test "test liquid open tag + literal" do
-    test_parse(
-      "{% assign a = 5 %} Hello",
-      [{:assign, [variable_name: "a", value: 5]}, " Hello"]
-    )
+    test_parse("{% assign a = 5 %} Hello", [{:assign, [variable_name: "a", value: 5]}, " Hello"])
   end
 
   test "test literal + liquid open tag + literal" do
-    test_parse(
-      "Hello {% assign a = 5 %} Hello",
-      ["Hello ", {:assign, [variable_name: "a", value: 5]}, " Hello"]
-    )
+    test_parse("Hello {% assign a = 5 %} Hello", ["Hello ", {:assign, [variable_name: "a", value: 5]}, " Hello"])
   end
 
   test "test multiple open tags" do
-    test_parse(
-      "{% assign a = 5 %}{% increment a %}",
-      [{:assign, [variable_name: "a", value: 5]}, {:increment, [variable: [parts: [part: "a"]]]}]
-    )
+    test_parse("{% assign a = 5 %}{% increment a %}", [
+      {:assign, [variable_name: "a", value: 5]},
+      {:increment, [variable: [parts: [part: "a"]]]}
+    ])
   end
 
   test "unclosed block must fails" do
@@ -51,10 +42,7 @@ defmodule Liquid.ParserTest do
   end
 
   test "empty closed tag" do
-    test_parse(
-      "{% capture variable %}{% endcapture %}",
-      [{:capture, [variable_name: "variable", body: []]}]
-    )
+    test_parse("{% capture variable %}{% endcapture %}", [{:capture, [variable_name: "variable", body: []]}])
   end
 
   test "tag without open" do
@@ -65,10 +53,11 @@ defmodule Liquid.ParserTest do
   end
 
   test "literal left, right and inside block" do
-    test_parse(
-      "Hello{% capture variable %}World{% endcapture %}Here",
-      ["Hello", {:capture, [variable_name: "variable", body: ["World"]]}, "Here"]
-    )
+    test_parse("Hello{% capture variable %}World{% endcapture %}Here", [
+      "Hello",
+      {:capture, [variable_name: "variable", body: ["World"]]},
+      "Here"
+    ])
   end
 
   test "multiple closed tags" do
@@ -85,35 +74,28 @@ defmodule Liquid.ParserTest do
   end
 
   test "tag inside block" do
-    test_parse(
-      "{% capture x %}{% decrement x %}{% endcapture %}",
-      [{:capture, [variable_name: "x", body: [{:decrement, [variable: [parts: [part: "x"]]]}]]}]
-    )
+    test_parse("{% capture x %}{% decrement x %}{% endcapture %}", [
+      {:capture, [variable_name: "x", body: [{:decrement, [variable: [parts: [part: "x"]]]}]]}
+    ])
   end
 
   test "literal and tag inside block" do
-    test_parse(
-      "{% capture x %}X{% decrement x %}{% endcapture %}",
-      [
-        {:capture, [variable_name: "x", body: ["X", {:decrement, [variable: [parts: [part: "x"]]]}]]}
-      ]
-    )
+    test_parse("{% capture x %}X{% decrement x %}{% endcapture %}", [
+      {:capture, [variable_name: "x", body: ["X", {:decrement, [variable: [parts: [part: "x"]]]}]]}
+    ])
   end
 
   test "two tags inside block" do
-    test_parse(
-      "{% capture x %}{% decrement x %}{% decrement x %}{% endcapture %}",
-      [
-        {:capture,
-         [
-           variable_name: "x",
-           body: [
-             {:decrement, [variable: [parts: [part: "x"]]]},
-             {:decrement, [variable: [parts: [part: "x"]]]}
-           ]
-         ]}
-      ]
-    )
+    test_parse("{% capture x %}{% decrement x %}{% decrement x %}{% endcapture %}", [
+      {:capture,
+       [
+         variable_name: "x",
+         body: [
+           {:decrement, [variable: [parts: [part: "x"]]]},
+           {:decrement, [variable: [parts: [part: "x"]]]}
+         ]
+       ]}
+    ])
   end
 
   test "tag inside block with tag ending" do
@@ -297,7 +279,8 @@ defmodule Liquid.ParserTest do
   end
 
   test "multi tags" do
-    test_parse("{% decrement a %}{% increment b %}{% decrement c %}{% increment d %}",
+    test_parse(
+      "{% decrement a %}{% increment b %}{% decrement c %}{% increment d %}",
       decrement: [variable: [parts: [part: "a"]]],
       increment: [variable: [parts: [part: "b"]]],
       decrement: [variable: [parts: [part: "c"]]],
@@ -319,12 +302,23 @@ defmodule Liquid.ParserTest do
           conditions: [condition: {{:variable, [parts: [part: "x"]]}, :>, 1}],
           body: ["z"]
         ],
-          else: [body: ["A"]]
+        else: [body: ["A"]]
       ]
     )
   end
 
-defmodule MinusOneTag do
+  defmodule MinusOneTag do
+    def parse(%Tag{} = tag, %Template{} = context) do
+      {tag, context}
+    end
+
+    def render(output, tag, context) do
+      number = tag.markup |> Integer.parse() |> elem(0)
+      {["#{number - 1}"] ++ output, context}
+    end
+  end
+
+  defmodule MundoTag do
     def parse(%Tag{} = tag, %Template{} = context) do
       {tag, context}
     end
@@ -337,35 +331,41 @@ defmodule MinusOneTag do
 
   setup_all do
     Liquid.Registers.register("minus_one", MinusOneTag, Tag)
+    Liquid.Registers.register("Mundo", MundoTag, Block)
     Liquid.start()
     on_exit(fn -> Liquid.stop() end)
     :ok
   end
 
   test "custom tag from example(almost random now :)" do
-    assert_template_result("123", "123{% assign qwe = 5 %}")
-    assert_template_result("4", "{% minus_one 5 %}")
-    assert_template_result("a1b", "a{% minus_one 2 %}b")
+    test_parse("{% minus_one  5 %}", custom: [{:custom_name, ["minus_one"]} | {:custom_markup, "5 "}])
   end
 
-  defp assert_template_result(expected, markup, assigns \\ %{}) do
-    assert_result(expected, markup, assigns)
+  test "custom block from example(almost random now :)" do
+    test_parse(
+      "{% Mundo 5 %}my body{% endMundo %}",
+      custom: [
+        custom_name: ["Mundo"],
+        custom_markup: "5 ",
+        body: ["my body"]
+      ]
+    )
   end
 
-  defp assert_result(expected, markup, assigns) do
-    template = Template.parse(markup)
+  test "custom tag error" do
+    test_combinator_error(
+      "{% hola 5 %}",
+      "The 'hola' tag has not been registered"
+    )
 
-    with {:ok, result, _} <- Template.render(template, assigns) do
-      assert result == expected
-    else
-      {:error, message, _} ->
-        assert message == expected
-    end
+    test_combinator_error(
+      "{% hola %}body{% endhola a %}",
+      "The 'hola' tag has not been registered"
+    )
+
+    test_combinator_error(
+      "{% Mundo 10 %}body{% endMunda %}",
+      "The 'Mundo' tag has not been correctly closed"
+    )
   end
-
-
-
-
-
-
 end
