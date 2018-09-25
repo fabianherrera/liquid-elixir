@@ -31,16 +31,20 @@ defmodule Liquid.Combinators.Tags.CustomTag do
     |> traverse({__MODULE__, :check_customs, []})
   end
 
-  def check_customs(_, [tag | params], %{tags: tags} = context, _, _) do
-    name = String.to_atom(tag)
+  def check_customs(_, [params | tag], %{tags: tags} = context, _, _) do
+    [tag_name] = tag
+    name = String.to_atom(tag_name)
+
     Application.get_env(:liquid, :extra_tags, %{})
     |> Map.get(name)
     |> case do
       nil ->
         {[error: "The '#{tag}' tag has not been registered"], context}
-      {_, :liquid_block} ->
-        {[block: [custom: [{:custom_name, tag} | params]]], %{context | tags: [tag | tags]}}
-      {_, :liquid_tag} ->
+
+      {_, Liquid.Block} ->
+        {[block: [custom: [{:custom_name, tag}, params]]], %{context | tags: [tag_name | tags]}}
+
+      {_, Liquid.Tag} ->
         {[custom: [{:custom_name, tag} | params]], context}
     end
   end
