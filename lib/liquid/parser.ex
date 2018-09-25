@@ -123,11 +123,11 @@ defmodule Liquid.Parser do
 
   defparsec(:tablerow, Tablerow.tag2())
 
-  defparsec(:case, Case.tag())
-  defparsec(:clauses, Case.clauses())
+  defparsec(:case, Case.tag2())
+  defparsec(:when, Case.when_tag2())
+
   defparsec(:custom_tag, CustomTag.tag())
   defparsec(:custom_block, CustomBlock.block())
-  defparsec(:when, Case.when_tag2())
 
   defparsec(:else, Generic.else_tag2())
 
@@ -151,8 +151,8 @@ defmodule Liquid.Parser do
       parsec(:end_block),
       parsec(:else),
       parsec(:when),
-      parsec(:elsif)
-      # parsec(:case),
+      parsec(:elsif),
+      parsec(:case)
       # parsec(:ifchanged)
     ])
   )

@@ -1,5 +1,6 @@
 Liquid.start()
 
+complex = "{% increment a %}{% if true %}{% decrement b %}{% if false %}{% increment c %}One{% decrement d %}{% elsif true %}Two{% else %}Three{% endif %}{% endif %}{% decrement d %}{% if false %}Four{% endif %}Last"
 big_literal = File.read!("test/templates/complex/01/big_literal.liquid")
 big_literal_with_tags = File.read!("test/templates/complex/01/big_literal_with_tags.liquid")
 small_literal = "X"

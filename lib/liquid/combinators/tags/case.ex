@@ -63,8 +63,10 @@ defmodule Liquid.Combinators.Tags.Case do
     |> tag(:when)
   end
 
+  def tag2, do: Tag.define_block("case", &General.conditions/1)
+
   def when_tag2 do
-    Tag.define_sub_block("when", ["for"], &General.conditions/1)
+    Tag.define_sub_block("when", ["case"], &General.conditions/1)
   end
 
   defp body(combinator) do

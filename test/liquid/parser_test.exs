@@ -189,7 +189,7 @@ defmodule Liquid.ParserTest do
   test "else out of valid tag" do
     test_combinator_error(
       "{% capture z %}{% else %}{% endcapture %}",
-      "capture does not expect else tag. The else tag is valid only inside: if, when, elsif, for"
+      "capture does not expect else tag. The else tag is valid only inside: if, unless, case, for"
     )
   end
 
@@ -247,27 +247,80 @@ defmodule Liquid.ParserTest do
 
   test "if block with several elsif" do
     test_parse(
-      "{% if true %}Hello{% elsif true %}culo{% elsif false %}bye{% else %}clear{% endif %}",
+      "{% if true %}Hello{% elsif true %}second{% decrement a %}third{% elsif false %}bye{% else %}clear{% endif %}",
       if: [
         conditions: [true],
         body: ["Hello"],
-        elsif: [conditions: [true], body: ["culo"]],
+        elsif: [conditions: [true], body: ["second", {:decrement, [variable: [parts: [part: "a"]]]}, "third"]],
         elsif: [conditions: [false], body: ["bye"]],
         else: [body: ["clear"]]
       ]
     )
   end
 
-  # test "case block with when" do
-  #   test_parse(
-  #     "{% case x %}useless{% when x > 10 %}y{% when x > 1 %}z{% endfor %}",
-  #     for: [
-  #       conditions: [
-  #         variable: [parts: [part: "x"]]
-  #       ],
-  #       body: ["useless"],
-  #         else: [body: ["y"]]
-  #     ]
-  #   )
-  # end
+  test "multi blocks with subblocks" do
+    test_parse(
+      "{% if true %}{% if false %}One{% elsif true %}Two{% else %}Three{% endif %}{% endif %}{% if false %}Four{% endif %}",
+      if: [
+        conditions: [true],
+        body: [
+          if: [
+            conditions: [false],
+            body: ["One"],
+            elsif: [
+              conditions: [true],
+              body: ["Two"]
+            ],
+            else: [
+              body: ["Three"]
+            ]
+          ]
+        ]
+      ],
+      if: [
+        conditions: [false],
+        body: ["Four"]
+      ]
+    )
+  end
+
+  test "multi blocks order" do
+    test_parse(
+      "{% assign a = 5 %}{% capture a %}body_a{% capture a_1 %}body_a_1{% endcapture %}{% endcapture %}{% capture b %}body_b{% endcapture %}",
+      assign: [variable_name: "a", value: 5],
+      capture: [
+        variable_name: "a",
+        body: ["body_a", {:capture, [variable_name: "a_1", body: ["body_a_1"]]}]
+      ],
+      capture: [variable_name: "b", body: ["body_b"]]
+    )
+  end
+
+  test "multi tags" do
+    test_parse("{% decrement a %}{% increment b %}{% decrement c %}{% increment d %}",
+      decrement: [variable: [parts: [part: "a"]]],
+      increment: [variable: [parts: [part: "b"]]],
+      decrement: [variable: [parts: [part: "c"]]],
+      increment: [variable: [parts: [part: "d"]]]
+    )
+  end
+
+  test "case block with when" do
+    test_parse(
+      "{% case x %}useless{% when x > 10 %}y{% when x > 1 %}z{% else %}A{% endcase %}",
+      case: [
+        conditions: [variable: [parts: [part: "x"]]],
+        body: ["useless"],
+        when: [
+          conditions: [condition: {{:variable, [parts: [part: "x"]]}, :>, 10}],
+          body: ["y"]
+        ],
+        when: [
+          conditions: [condition: {{:variable, [parts: [part: "x"]]}, :>, 1}],
+          body: ["z"]
+        ],
+          else: [body: ["A"]]
+      ]
+    )
+  end
 end

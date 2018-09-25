@@ -16,7 +16,7 @@ defmodule Liquid.Ast do
   def build({literal, ""}, context, ast), do: {:ok, Enum.reverse([literal | ast]), context, ""}
   def build({"", markup}, context, ast), do: parse_liquid(markup, context, ast)
   def build({literal, markup}, context, ast), do: parse_liquid(markup, context, [literal | ast])
-  def build("", context, ast), do: {:ok, ast, context, ""}
+  def build("", context, ast), do: {:ok, Enum.reverse(ast), context, ""}
   def build(markup, context, ast), do: markup |> Tokenizer.tokenize() |> build(context, ast)
 
   @spec build({:error, binary(), binary()}) :: {:error, binary(), binary()}
@@ -27,7 +27,6 @@ defmodule Liquid.Ast do
   defp do_parse_liquid({:ok, [{:block, _}], _, _, _, _} = liquid, ast), do: block(liquid, ast)
   defp do_parse_liquid({:ok, [{:sub_block, _}] = tag, rest, context, _, _}, ast), do: {:ok, [tag | ast], context, rest}
   defp do_parse_liquid({:ok, [{:end_block, _}] = tag, rest, context, _, _}, ast), do: {:ok, [tag | ast], context, rest}
-  defp do_parse_liquid({:ok, [tags], "", context, _, _}, ast), do: {:ok, Enum.reverse([tags | ast]), context, ""}
   defp do_parse_liquid({:ok, [tags], rest, context, _, _}, ast), do: build(rest, context, [tags | ast])
   defp do_parse_liquid({:error, message, rest, _, _, _}, _), do: {:error, message, rest}
 
