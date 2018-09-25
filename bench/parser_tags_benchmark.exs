@@ -13,29 +13,29 @@ comment = "{% comment %} {% if true %} This is a commented block  {% afi true %}
 cycle = "This time {%cycle \"one\", \"two\"%} we win MF!"
 decrement = "Total Price: {% decrement a %}"
 for_tag = "{%for i in array.items offset:continue limit:1000 %}{{i}}{%endfor%}"
-if_tag = "{% if false %} this text should not go into the output {% endif %}"
+if_tag = "{% if false %} this text should not {% elsif true %} tests {% else %} go into the output {% endif %}"
 include = "With text {% include 'snippet', my_variable: 'apples', my_other_variable: 'oranges' %} finally!"
 increment = "Price with discount: {% increment a %}"
 raw = "{% raw %} {% if true %} this is a raw block {% endraw %}"
 tablerow = "{% tablerow item in array %}{% endtablerow %}"
 
 templates = [
-  # literal: big_literal,
-  # big_literal_with_tags: big_literal_with_tags,
-  # small_literal: small_literal,
-  # assign: assign,
-  # capture: capture,
-  # small_capture: small_capture,
-  # case: case_tag,
-  # comment: comment,
-  # cycle: cycle,
-  # decrement: decrement,
+  literal: big_literal,
+  big_literal_with_tags: big_literal_with_tags,
+  small_literal: small_literal,
+  assign: assign,
+  capture: capture,
+  small_capture: small_capture,
+  case: case_tag,
+  comment: comment,
+  cycle: cycle,
+  decrement: decrement,
   for: for_tag,
-  # if: if_tag,
-  # include: include,
-  # increment: increment,
-  # raw: raw,
-  # tablerow: tablerow
+  if: if_tag,
+  include: include,
+  increment: increment,
+  raw: raw,
+  tablerow: tablerow
 ]
 
 Enum.each(templates,
