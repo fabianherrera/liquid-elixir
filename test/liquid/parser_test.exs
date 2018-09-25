@@ -351,4 +351,21 @@ defmodule Liquid.ParserTest do
       ]
     )
   end
+
+  test "custom tag error" do
+    test_combinator_error(
+      "{% hola 5 %}",
+      "The 'hola' tag has not been registered"
+    )
+
+    test_combinator_error(
+      "{% hola %}body{% endhola a %}",
+      "The 'hola' tag has not been registered"
+    )
+
+    test_combinator_error(
+      "{% Mundo 10 %}body{% endMunda %}",
+      "The 'Mundo' tag has not been correctly closed"
+    )
+  end
 end
