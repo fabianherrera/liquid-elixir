@@ -22,6 +22,33 @@ defmodule Liquid.Combinators.Tags.CustomTag do
   structure of the tag (arguments).
   """
   @spec tag() :: NimbleParsec.t()
+  def tag2 do
+    empty()
+    |> parsec(:start_tag)
+    |> concat(General.valid_tag_name())
+    |> optional(markup())
+    |> parsec(:end_tag)
+    |> traverse({__MODULE__, :check_customs, []})
+  end
+
+  def check_customs(_, [params | tag], %{tags: tags} = context, _, _) do
+    [tag_name] = tag
+    name = String.to_atom(tag_name)
+
+    Application.get_env(:liquid, :extra_tags, %{})
+    |> Map.get(name)
+    |> case do
+      nil ->
+        {[error: "The '#{tag}' tag has not been registered"], context}
+
+      {_, Liquid.Block} ->
+        {[block: [custom: [{:custom_name, tag}, params]]], %{context | tags: [tag_name | tags]}}
+
+      {_, Liquid.Tag} ->
+        {[custom: [{:custom_name, tag} | params]], context}
+    end
+  end
+
   def tag do
     parsec(:start_tag)
     |> concat(name())
@@ -180,11 +207,8 @@ defmodule Liquid.Combinators.Tags.CustomTag do
   `{key, Block}`
 
   """
-  @spec simplify({key :: atom, {tag_name :: atom, tag_type :: String.t()}}) :: Tupple.t()
-  def simplify({key, {tag_name, tag_type}}), do: simplify_helper({key, {tag_name, tag_type}})
-
-  defp simplify_helper({key, {_, Liquid.Block}}), do: {key, Block}
-  defp simplify_helper({key, {_, Block}}), do: {key, Block}
-  defp simplify_helper({key, {_, Tag}}), do: {key, Tag}
-  defp simplify_helper({key, {_, Liquid.Tag}}), do: {key, Tag}
+  defp simplify({key, {_, Liquid.Block}}), do: {key, Block}
+  defp simplify({key, {_, Block}}), do: {key, Block}
+  defp simplify({key, {_, Tag}}), do: {key, Tag}
+  defp simplify({key, {_, Liquid.Tag}}), do: {key, Tag}
 end

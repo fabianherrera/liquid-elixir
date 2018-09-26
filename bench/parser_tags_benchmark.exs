@@ -1,5 +1,6 @@
 Liquid.start()
 
+complex = "{% increment a %}{% if true %}{% decrement b %}{% if false %}{% increment c %}One{% decrement d %}{% elsif true %}Two{% else %}Three{% endif %}{% endif %}{% decrement d %}{% if false %}Four{% endif %}Last"
 big_literal = File.read!("test/templates/complex/01/big_literal.liquid")
 big_literal_with_tags = File.read!("test/templates/complex/01/big_literal_with_tags.liquid")
 small_literal = "X"
@@ -13,13 +14,14 @@ comment = "{% comment %} {% if true %} This is a commented block  {% afi true %}
 cycle = "This time {%cycle \"one\", \"two\"%} we win MF!"
 decrement = "Total Price: {% decrement a %}"
 for_tag = "{%for i in array.items offset:continue limit:1000 %}{{i}}{%endfor%}"
-if_tag = "{% if false %} this text should not go into the output {% endif %}"
+if_tag = "{% if false %} this text should not {% elsif true %} tests {% else %} go into the output {% endif %}"
 include = "With text {% include 'snippet', my_variable: 'apples', my_other_variable: 'oranges' %} finally!"
 increment = "Price with discount: {% increment a %}"
 raw = "{% raw %} {% if true %} this is a raw block {% endraw %}"
 tablerow = "{% tablerow item in array %}{% endtablerow %}"
 
 templates = [
+  complex: complex,
   # literal: big_literal,
   # big_literal_with_tags: big_literal_with_tags,
   # small_literal: small_literal,
@@ -30,7 +32,7 @@ templates = [
   # comment: comment,
   # cycle: cycle,
   # decrement: decrement,
-  for: for_tag,
+  # for: for_tag,
   # if: if_tag,
   # include: include,
   # increment: increment,
