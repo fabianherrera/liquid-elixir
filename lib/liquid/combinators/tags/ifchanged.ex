@@ -25,4 +25,6 @@ defmodule Liquid.Combinators.Tags.Ifchanged do
       optional(combinator, parsec(:__parse__))
     end)
   end
+
+  def tag2, do: Tag.define_block("ifchanged")
 end

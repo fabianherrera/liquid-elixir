@@ -1,7 +1,7 @@
 defmodule Liquid.Combinators.Tags.CustomTest do
   use ExUnit.Case
   import Liquid.Helpers
-  alias Liquid.Tag
+  alias Liquid.{Tag, Block, Registers}
 
   defmodule MyCustomTag do
     def render(output, tag, context) do
@@ -16,8 +16,8 @@ defmodule Liquid.Combinators.Tags.CustomTest do
   end
 
   setup_all do
-    Liquid.Registers.register("MyCustomTag", MyCustomTag, Tag)
-    Liquid.Registers.register("MyCustomBlock", MyCustomBlock, Block)
+    Registers.register("MyCustomTag", MyCustomTag, Tag)
+    Registers.register("MyCustomBlock", MyCustomBlock, Block)
     Liquid.start()
     on_exit(fn -> Liquid.stop() end)
     :ok
