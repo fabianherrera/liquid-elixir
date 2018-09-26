@@ -1,7 +1,7 @@
 defmodule Liquid.ParserTest do
   use ExUnit.Case
   alias Liquid.{Template, Tag, Block, Registers}
-  import Liquid.HelpersFast
+  import Liquid.Helpers
 
   test "only literal" do
     test_parse("Hello", ["Hello"])

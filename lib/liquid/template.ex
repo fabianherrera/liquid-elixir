@@ -4,7 +4,7 @@ defmodule Liquid.Template do
   """
 
   defstruct root: nil, presets: %{}, blocks: [], errors: []
-  alias Liquid.{Template, Render, Context}
+  alias Liquid.{Template, Parser, NimbleTranslator, Render, Context}
 
   @doc """
   Function that renders passed template and context to string
@@ -61,11 +61,11 @@ defmodule Liquid.Template do
   def parse(value, presets \\ %{})
 
   def parse(<<markup::binary>>, presets) do
-    result = Liquid.NimbleParser.parse(markup)
+    result = Parser.parse(markup)
 
     template =
       case result do
-        {:ok, _value} -> Liquid.NimbleTranslator.translate(result)
+        {:ok, _value} -> NimbleTranslator.translate(result)
         {:error, value} -> raise value
         _ -> ""
       end
