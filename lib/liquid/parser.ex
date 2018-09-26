@@ -147,14 +147,14 @@ defmodule Liquid.Parser do
       parsec(:increment),
       parsec(:decrement),
       parsec(:include),
+      parsec(:ifchanged),
       parsec(:else),
       parsec(:when),
       parsec(:elsif),
       parsec(:break_tag),
       parsec(:continue_tag),
       parsec(:end_block),
-      parsec(:custom),
-      parsec(:ifchanged)
+      parsec(:custom)
     ])
   )
 
