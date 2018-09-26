@@ -8,7 +8,7 @@ defmodule Liquid.Combinators.Tags.CaptureTest do
       "{% capture about_me %} I am {{ age }} and my favorite food is {{ favorite_food }}{% endcapture %}",
       capture: [
         variable_name: "about_me",
-        parts: [
+        body: [
           " I am ",
           {:liquid_variable, [variable: [parts: [part: "age"]]]},
           " and my favorite food is ",
