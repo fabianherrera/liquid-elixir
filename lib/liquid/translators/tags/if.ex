@@ -11,22 +11,53 @@ defmodule Liquid.Translators.Tags.If do
   """
   @spec translate(If.conditional_body()) :: Block.t()
   def translate(conditions: [value], body: body) when is_bitstring(value) do
-    nodelist = Enum.filter(body, fn tag -> !General.conditional_statement?(tag) end)
-    else_list = Enum.filter(body, &General.else?/1)
-    create_block_if("\"#{Markup.literal(value)}\"", nodelist, else_list)
+    create_block_if("\"#{Markup.literal(value)}\"", body)
+  end
+
+  def translate([{:conditions, [value]}, {:body, body_parts} | elselist]) when is_bitstring(value) do
+    create_block_if("\"#{Markup.literal(value)}\"", body_parts, normalize_elselist(elselist))
   end
 
   def translate(conditions: conditions, body: body) do
-    nodelist = Enum.filter(body, fn tag -> !General.conditional_statement?(tag) end)
-    else_list = Enum.filter(body, &General.else?/1)
-    create_block_if(Markup.literal(conditions), nodelist, else_list)
+    create_block_if("#{Markup.literal(conditions)}", body)
+  end
+
+  def translate([{:conditions, conditions}, {:body, body_parts} | elselist]) do
+    create_block_if("#{Markup.literal(conditions)}", body_parts, normalize_elselist(elselist))
+  end
+
+  defp normalize_elselist([{:elsif, _} | [_]] = else_list) do
+    {list, _} = Enum.reduce_while(else_list, {[], nil}, fn x, {list, last} ->
+      if {:elsif, _} = x do
+        {:cont, {[x | list], x}}
+      else
+        {tag, params} = last
+        final_list = List.replace_at(list, length(list), {tag, params ++ x})
+        {:halt, {final_list, nil}}
+      end
+    end)
+    list
+  end
+
+  defp normalize_elselist(else_list), do: else_list
+
+  defp create_block_if(markup, nodelist) do
+    block = %Liquid.Block{
+      name: :if,
+      markup: markup,
+      nodelist: nodelist |> NimbleTranslator.process_node() |> General.types_only_list(),
+      # General.types_only_list(NimbleTranslator.process_node(nodelist)),
+      blank: Blank.blank?(nodelist)
+    }
+
+    IfElse.parse_conditions(block)
   end
 
   defp create_block_if(markup, nodelist, else_list) do
     block = %Liquid.Block{
       name: :if,
       markup: markup,
-      nodelist: General.types_only_list(NimbleTranslator.process_node(nodelist)),
+      nodelist: nodelist |> NimbleTranslator.process_node() |> General.types_only_list(),
       blank: Blank.blank?(nodelist) and Blank.blank?(else_list),
       elselist:
         else_list
