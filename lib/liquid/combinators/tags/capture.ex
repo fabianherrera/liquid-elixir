@@ -17,7 +17,7 @@ defmodule Liquid.Combinators.Tags.Capture do
 
   @type markup :: [
           variable_name: String.t(),
-          parts: Liquid.NimbleParser.t()
+          body: Liquid.NimbleParser.t()
         ]
 
   @doc """
