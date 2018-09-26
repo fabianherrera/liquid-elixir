@@ -1,6 +1,6 @@
 defmodule Liquid.ParserTest do
   use ExUnit.Case
-  alias Liquid.{Template, Tag, Block}
+  alias Liquid.{Template, Tag, Block, Registers}
   import Liquid.HelpersFast
 
   test "only literal" do
@@ -330,8 +330,8 @@ defmodule Liquid.ParserTest do
   end
 
   setup_all do
-    Liquid.Registers.register("minus_one", MinusOneTag, Tag)
-    Liquid.Registers.register("Mundo", MundoTag, Block)
+    Registers.register("minus_one", MinusOneTag, Tag)
+    Registers.register("Mundo", MundoTag, Block)
     Liquid.start()
     on_exit(fn -> Liquid.stop() end)
     :ok
@@ -366,6 +366,11 @@ defmodule Liquid.ParserTest do
     test_combinator_error(
       "{% Mundo 10 %}body{% endMunda %}",
       "The 'Mundo' tag has not been correctly closed"
+    )
+
+    test_combinator_error(
+      "{% Mundo 10 %}body",
+      "Malformed tag, open without close: 'Mundo'"
     )
   end
 end

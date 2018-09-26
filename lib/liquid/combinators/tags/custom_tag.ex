@@ -185,7 +185,7 @@ defmodule Liquid.Combinators.Tags.CustomTag do
   end
 
   @doc """
-  It checks correct end tags for a given open tag.
+  Checks correct end tags for a given open tag.
   """
   @spec end_register_tag_name() :: List.t()
   def end_register_tag_name do
@@ -201,12 +201,6 @@ defmodule Liquid.Combinators.Tags.CustomTag do
     end
   end
 
-  @doc """
-  Returns a Keyword resulting of transformation of custom tag and type (tag or block).
-  `{key, Tag}`
-  `{key, Block}`
-
-  """
   defp simplify({key, {_, Liquid.Block}}), do: {key, Block}
   defp simplify({key, {_, Block}}), do: {key, Block}
   defp simplify({key, {_, Tag}}), do: {key, Tag}
