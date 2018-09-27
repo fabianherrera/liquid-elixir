@@ -15,7 +15,7 @@ defmodule Liquid.Translators.Tags.For do
   def translate(
         statements: [variable: variable, value: value, params: params],
         body: body,
-        else: else_body
+        else: [body: else_body]
       ) do
     create_block_for(variable, value, params, body, else_body)
   end
