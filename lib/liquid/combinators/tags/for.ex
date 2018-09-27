@@ -131,4 +131,7 @@ defmodule Liquid.Combinators.Tags.For do
     |> parsec(:ignore_whitespaces)
     |> tag(:statements)
   end
+
+  def tag2, do: Tag.define_block("for", &statements/1)
+
 end

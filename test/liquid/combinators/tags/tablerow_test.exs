@@ -18,7 +18,8 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
             variable: [parts: [part: "item"]],
             value: {:variable, [parts: [part: "array"]]},
             params: []
-          ]
+          ],
+          body: []
         ]
       )
     end)
@@ -40,7 +41,8 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
             variable: [parts: [part: "item"]],
             value: {:variable, [parts: [part: "array"]]},
             params: [limit: [2]]
-          ]
+          ],
+          body: []
         ]
       )
     end)
@@ -61,7 +63,8 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
             variable: [parts: [part: "item"]],
             value: {:variable, [parts: [part: "array"]]},
             params: [offset: [2]]
-          ]
+          ],
+          body: []
         ]
       )
     end)
@@ -82,7 +85,8 @@ defmodule Liquid.Combinators.Tags.TablerowTest do
             variable: [parts: [part: "item"]],
             value: {:variable, [parts: [part: "array"]]},
             params: [cols: [2]]
-          ]
+          ],
+          body: []
         ]
       )
     end)

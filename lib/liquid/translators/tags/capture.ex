@@ -10,7 +10,7 @@ defmodule Liquid.Translators.Tags.Capture do
   Takes the markup of the new AST, creates a `Liquid.Block` struct (old AST) and fill the keys needed to render a Capture tag.
   """
   @spec translate(Capture.markup()) :: Block.t()
-  def translate([variable, parts: parts]) do
+  def translate([variable, body: parts]) do
     nodelist =
       parts
       |> Liquid.NimbleTranslator.process_node()
