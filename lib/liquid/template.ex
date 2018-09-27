@@ -66,7 +66,7 @@ defmodule Liquid.Template do
     template =
       case result do
         {:ok, _value} -> NimbleTranslator.translate(result)
-        {:error, value} -> raise value
+        {:error, value, _} -> raise value
         _ -> ""
       end
 

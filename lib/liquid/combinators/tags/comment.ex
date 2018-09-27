@@ -49,7 +49,7 @@ defmodule Liquid.Combinators.Tags.Comment do
       combinator
       |> optional(parsec(:comment_content))
       |> reduce({Markup, :literal, []})
-    end)
+    end, "")
   end
 
   @doc """

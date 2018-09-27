@@ -24,9 +24,10 @@ defmodule Liquid.Combinators.Tag do
       MyParser.ignorable("{% ignorable T12 %}")
       #=> {:ok, {:ignorable, [12]}, "", %{}, {1, 0}, 2}
   """
-  def define_closed(tag_name, combinator_head \\ & &1, combinator_body \\ & &1) do
+  def define_closed(tag_name, combinator_head \\ & &1, combinator_body \\ & &1, separator \\ " ")
+  def define_closed(tag_name, combinator_head, combinator_body, separator) do
     tag_name
-    |> open_tag(combinator_head)
+    |> open_tag(combinator_head, separator)
     |> combinator_body.()
     |> close_tag(tag_name)
     |> tag(String.to_atom(tag_name))
@@ -49,9 +50,10 @@ defmodule Liquid.Combinators.Tag do
     |> traverse({__MODULE__, :check_allowed_tags, [allowed_tags]})
   end
 
-  def define_block(tag_name, combinator_head \\ & &1) do
+  def define_block(tag_name, combinator_head \\ & &1, separator \\ " ")
+  def define_block(tag_name, combinator_head, separator) do
     tag_name
-    |> open_tag(combinator_head)
+    |> open_tag(combinator_head, separator)
     |> tag(String.to_atom(tag_name))
     |> tag(:block)
     |> traverse({__MODULE__, :store_tag_in_context, []})
@@ -64,10 +66,11 @@ defmodule Liquid.Combinators.Tag do
     |> tag(String.to_atom(tag_name))
   end
 
-  def open_tag(tag_name, combinator \\ & &1) do
+  def open_tag(tag_name, combinator \\ & &1, separator \\ " ")
+  def open_tag(tag_name, combinator, separator) do
     empty()
     |> parsec(:start_tag)
-    |> ignore(string(tag_name <> " "))
+    |> ignore(string(tag_name <> separator))
     |> combinator.()
     |> parsec(:end_tag)
   end
