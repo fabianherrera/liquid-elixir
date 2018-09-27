@@ -26,5 +26,13 @@ defmodule Liquid.Combinators.Tags.Ifchanged do
     end)
   end
 
-  def tag2, do: Tag.define_block("ifchanged")
+  def tag2 do
+    empty()
+    |> parsec(:start_tag)
+    |> ignore(string("ifchanged"))
+    |> parsec(:end_tag)
+    |> tag(:ifchanged)
+    |> tag(:block)
+    |> traverse({Tag, :store_tag_in_context, []})
+  end
 end

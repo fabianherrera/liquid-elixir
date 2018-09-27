@@ -14,15 +14,17 @@ defmodule Liquid.Combinators.Tags.IfchangedTest do
       test_parse(
         tag,
         ifchanged: [
-          "<h3>",
-          {:liquid_variable,
-           [
-             variable: [
-               parts: [part: "product", part: "created_at"],
-               filters: [filter: ["date", {:params, [value: "%w"]}]]
-             ]
-           ]},
-          "</h3>"
+          body: [
+            "<h3>",
+            {:liquid_variable,
+             [
+               variable: [
+                 parts: [part: "product", part: "created_at"],
+                 filters: [filter: ["date", {:params, [value: "%w"]}]]
+               ]
+             ]},
+            "</h3>"
+          ]
         ]
       )
     end)
