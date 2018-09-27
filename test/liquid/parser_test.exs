@@ -355,12 +355,12 @@ defmodule Liquid.ParserTest do
   test "custom tag error" do
     test_combinator_error(
       "{% hola 5 %}",
-      "The 'hola' tag has not been registered"
+      "Error processing tag 'hola'. It is malformed or you are creating a custom 'hola' without register it"
     )
 
     test_combinator_error(
       "{% hola %}body{% endhola a %}",
-      "The 'hola' tag has not been registered"
+      "Error processing tag 'hola'. It is malformed or you are creating a custom 'hola' without register it"
     )
 
     test_combinator_error(

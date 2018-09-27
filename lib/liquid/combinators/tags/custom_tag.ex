@@ -39,7 +39,9 @@ defmodule Liquid.Combinators.Tags.CustomTag do
     |> Map.get(name)
     |> case do
       nil ->
-        {[error: "The '#{tag}' tag has not been registered"], context}
+        {[error:
+          "Error processing tag '#{tag}'. It is malformed or you are creating a custom '#{tag}' without register it"
+          ], context}
 
       {_, Liquid.Block} ->
         {[block: [custom: [{:custom_name, tag}, params]]], %{context | tags: [tag_name | tags]}}
