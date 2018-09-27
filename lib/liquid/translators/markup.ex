@@ -55,7 +55,7 @@ defmodule Liquid.Translators.Markup do
   def literal(elem), do: to_string(elem)
 
   # This is to manage the strings and nulls to string
-  defp normalize_value(value) when is_nil(value), do: "null"
-  defp normalize_value(value) when is_bitstring(value), do: "\"#{literal(value)}\""
-  defp normalize_value(value), do: literal(value)
+  def normalize_value(value) when is_nil(value), do: "null"
+  def normalize_value(value) when is_bitstring(value), do: "\"#{value}\""
+  def normalize_value(value), do: literal(value)
 end

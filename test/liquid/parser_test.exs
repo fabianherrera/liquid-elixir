@@ -338,7 +338,7 @@ defmodule Liquid.ParserTest do
   end
 
   test "custom tag from example(almost random now :)" do
-    test_parse("{% minus_one  5 %}", custom: [{:custom_name, ["minus_one"]} | {:custom_markup, "5 "}])
+    test_parse("{% minus_one  5 %}", custom: [{:custom_name, ["minus_one"]}, {:custom_markup, "5 "}])
   end
 
   test "custom block from example(almost random now :)" do
