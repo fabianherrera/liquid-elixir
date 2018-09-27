@@ -45,7 +45,7 @@ defmodule Liquid.Combinators.Tags.CustomTag do
         {[block: [custom: [{:custom_name, tag}, params]]], %{context | tags: [tag_name | tags]}}
 
       {_, Liquid.Tag} ->
-        {[custom: [{:custom_name, tag} | params]], context}
+        {[custom: [{:custom_name, tag}, params]], context}
     end
   end
 

@@ -27,31 +27,23 @@ defmodule Liquid.Combinators.Tags.CustomTest do
     tags = [
       {"{% MyCustomTag             argument = 1 %}",
        [
-         custom_tag: [
-           custom_name: "MyCustomTag",
-           custom_markup: "argument = 1 "
+         custom: [
+           {:custom_name, ["MyCustomTag"]},
+           {:custom_markup, "argument = 1 "}
          ]
        ]},
       {"{%MyCustomTag  argument = 1%}",
        [
-         custom_tag: [
-           custom_name: "MyCustomTag",
-           custom_markup: "argument = 1"
+         custom: [
+           {:custom_name, ["MyCustomTag"]},
+           {:custom_markup, "argument = 1"}
          ]
        ]},
       {"{% MyCustomTag             argument            =            1        %}",
        [
-         custom_tag: [
-           custom_name: "MyCustomTag",
-           custom_markup: "argument            =            1        "
-         ]
-       ]},
-      # Non-existent tag is parsed. Render phase will validate if exist.
-      {"{% MyCustomTaget             argument            =            1        %}",
-       [
-         custom_tag: [
-           custom_name: "MyCustomTaget",
-           custom_markup: "argument            =            1        "
+         custom: [
+           {:custom_name, ["MyCustomTag"]},
+           {:custom_markup, "argument            =            1        "}
          ]
        ]}
     ]
@@ -65,29 +57,26 @@ defmodule Liquid.Combinators.Tags.CustomTest do
     tags = [
       {"{% MyCustomBlock             argument = 1 %}{% if true %}this is true{% endif %}{% endMyCustomBlock %}",
        [
-         custom_block: [
-           custom_name: "MyCustomBlock",
+         custom: [
+           custom_name: ["MyCustomBlock"],
            custom_markup: "argument = 1 ",
-           body: [
-             if: [
-               conditions: [true],
-               body: ["this is true"]
-             ]
-           ]
+           body: [if: [conditions: [true], body: ["this is true"]]]
          ]
        ]},
       {"{%MyCustomBlock  argument = 1%}{%endMyCustomBlock%}",
        [
-         custom_block: [
-           custom_name: "MyCustomBlock",
-           custom_markup: "argument = 1"
+         custom: [
+           custom_name: ["MyCustomBlock"],
+           custom_markup: "argument = 1",
+           body: []
          ]
        ]},
       {"{% MyCustomBlock            argument            =            1        %}{%      endMyCustomBlock      %}",
        [
-         custom_block: [
-           custom_name: "MyCustomBlock",
-           custom_markup: "argument            =            1        "
+         custom: [
+           custom_name: ["MyCustomBlock"],
+           custom_markup: "argument            =            1        ",
+           body: []
          ]
        ]}
     ]
@@ -101,20 +90,26 @@ defmodule Liquid.Combinators.Tags.CustomTest do
     tag =
       "{% MyCustomBlock %}{% MyCustomTag %}{% MyCustomBlock %}{% MyCustomTag %}{% endMyCustomBlock %}{% endMyCustomBlock %}"
 
-    test_parse(tag,
-      custom_block: [
-        custom_name: "MyCustomBlock",
+    test_parse(
+      tag,
+      custom: [
+        custom_name: ["MyCustomBlock"],
         custom_markup: "",
         body: [
-          {:custom_tag, [custom_name: "MyCustomTag", custom_markup: ""]},
-          {:custom_block,
-           [
-             custom_name: "MyCustomBlock",
-             custom_markup: "",
-             body: [
-               {:custom_tag, [custom_name: "MyCustomTag", custom_markup: ""]}
-             ]
-           ]}
+          custom: [
+            {:custom_name, ["MyCustomTag"]},
+            {:custom_markup, ""}
+          ],
+          custom: [
+            custom_name: ["MyCustomBlock"],
+            custom_markup: "",
+            body: [
+              custom: [
+                {:custom_name, ["MyCustomTag"]},
+                {:custom_markup, ""}
+              ]
+            ]
+          ]
         ]
       ]
     )
