@@ -28,7 +28,6 @@ defmodule Liquid.Combinators.Tags.If do
           ]
         ]
 
-  # new version
   @doc """
   Parses a `Liquid` If tag, creates a Keyword list where the key is the name of the tag
   (if in this case) and the value is another keyword list which represent the internal
