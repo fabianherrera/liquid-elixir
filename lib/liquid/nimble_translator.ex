@@ -21,9 +21,7 @@ defmodule Liquid.NimbleTranslator do
     LiquidVariable,
     Raw,
     Tablerow,
-    Unless,
-    CustomTag,
-    CustomBlock
+    CustomTag
   }
 
   @doc """
@@ -67,9 +65,8 @@ defmodule Liquid.NimbleTranslator do
         :if -> If.translate(:if, markup)
         :unless -> If.translate(:unless, markup)
         :elsif -> If.translate(:if, markup)
-        :else ->
-          [body: body_parts] = markup
-          process_node(body_parts)
+        :else -> [body: body_parts] = markup
+        process_node(body_parts)
         :include -> Include.translate(markup)
         :increment -> Increment.translate(markup)
         :tablerow -> Tablerow.translate(markup)
@@ -78,8 +75,7 @@ defmodule Liquid.NimbleTranslator do
         :break -> Break.translate(markup)
         :continue -> Continue.translate(markup)
         :case -> Case.translate(markup)
-        :custom_tag -> CustomTag.translate(markup)
-        :custom_block -> CustomBlock.translate(markup)
+        :custom -> CustomTag.translate(markup)
       end
 
     check_blank(translated)
