@@ -55,7 +55,7 @@ defmodule Liquid.StrictParseTest do
                    Template.parse("{% if 1 =! 2 %}ok{% endif %}")
                  end
 
-    assert_raise RuntimeError, "expected string \"{%\"", fn ->
+    assert_raise RuntimeError, "expected utf8 codepoint in the range ?A..?Z or in the range ?a..?z or equal to ?_", fn ->
       Template.parse("{{%%%}}")
     end
   end
