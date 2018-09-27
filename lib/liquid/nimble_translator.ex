@@ -64,10 +64,12 @@ defmodule Liquid.NimbleTranslator do
         :cycle -> Cycle.translate(markup)
         :decrement -> Decrement.translate(markup)
         :for -> For.translate(markup)
-        :if -> If.translate(markup)
-        :unless -> Unless.translate(markup)
-        :elsif -> If.translate(markup)
-        :else -> process_node(markup)
+        :if -> If.translate(:if, markup)
+        :unless -> If.translate(:unless, markup)
+        :elsif -> If.translate(:if, markup)
+        :else ->
+          [body: body_parts] = markup
+          process_node(body_parts)
         :include -> Include.translate(markup)
         :increment -> Increment.translate(markup)
         :tablerow -> Tablerow.translate(markup)
