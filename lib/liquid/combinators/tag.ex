@@ -67,7 +67,7 @@ defmodule Liquid.Combinators.Tag do
   def open_tag(tag_name, combinator \\ & &1) do
     empty()
     |> parsec(:start_tag)
-    |> ignore(string(tag_name))
+    |> ignore(string(tag_name <> " "))
     |> combinator.()
     |> parsec(:end_tag)
   end
