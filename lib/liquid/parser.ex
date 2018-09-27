@@ -23,8 +23,7 @@ defmodule Liquid.Parser do
     Case,
     Capture,
     Ifchanged,
-    CustomTag,
-    CustomBlock
+    CustomTag
   }
 
   @type t :: [
@@ -107,26 +106,26 @@ defmodule Liquid.Parser do
   defparsecp(:raw_content, Raw.raw_content())
   defparsec(:raw, Raw.tag())
 
-  defparsec(:capture, Capture.tag2())
+  defparsec(:capture, Capture.tag())
 
-  defparsec(:if, If.tag2())
-  defparsec(:elsif, If.elsif_tag2())
-  defparsec(:unless, If.unless_tag2())
+  defparsec(:if, If.tag())
+  defparsec(:elsif, If.elsif_tag())
+  defparsec(:unless, If.unless_tag())
 
-  defparsec(:for, For.tag2())
+  defparsec(:for, For.tag())
   defparsec(:break_tag, For.break_tag())
   defparsec(:continue_tag, For.continue_tag())
 
-  defparsec(:ifchanged, Ifchanged.tag2())
+  defparsec(:ifchanged, Ifchanged.tag())
 
-  defparsec(:tablerow, Tablerow.tag2())
+  defparsec(:tablerow, Tablerow.tag())
 
-  defparsec(:case, Case.tag2())
-  defparsec(:when, Case.when_tag2())
+  defparsec(:case, Case.tag())
+  defparsec(:when, Case.when_tag())
 
-  defparsec(:else, Generic.else_tag2())
+  defparsec(:else, Generic.else_tag())
 
-  defparsec(:custom, CustomTag.tag2())
+  defparsec(:custom, CustomTag.tag())
 
   defparsec(:end_block, EndBlock.tag())
 

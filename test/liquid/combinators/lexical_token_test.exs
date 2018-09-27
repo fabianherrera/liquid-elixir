@@ -1,7 +1,7 @@
 defmodule Liquid.Combinators.LexicalTokenTest do
   use ExUnit.Case
   import Liquid.Helpers
-  alias Liquid.NimbleParser, as: Parser
+  alias Liquid.Parser, as: Parser
 
   test "integer value" do
     test_combinator("5", &Parser.value/1, value: 5)

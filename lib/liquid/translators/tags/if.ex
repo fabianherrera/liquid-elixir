@@ -50,7 +50,6 @@ defmodule Liquid.Translators.Tags.If do
       name: name,
       markup: markup,
       nodelist: nodelist |> NimbleTranslator.process_node() |> General.types_only_list(),
-      # General.types_only_list(NimbleTranslator.process_node(nodelist)),
       blank: Blank.blank?(nodelist)
     }
 
