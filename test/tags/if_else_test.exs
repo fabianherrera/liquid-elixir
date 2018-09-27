@@ -218,5 +218,13 @@ defmodule IfElseTagTest do
     t = Template.parse(markup)
     {:ok, rendered, _} = Template.render(t, assigns)
     assert rendered == expected
+    ast = quote do
+      cond do
+        1 == 1 or 3 == 3 -> 55
+        2 == 2 -> 2
+        true -> 3
+      end
+    end
+    Code.eval_quoted(ast)
   end
 end
