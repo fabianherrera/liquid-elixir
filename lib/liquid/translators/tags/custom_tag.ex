@@ -3,6 +3,7 @@ defmodule Liquid.Translators.Tags.CustomTag do
   Translates new AST to old AST for the Custom tag.
   """
   alias Liquid.{Template, Tag, Block}
+  alias Liquid.Translators.General
 
   @doc """
   Takes the markup of the new AST, creates a `Liquid.Tag` struct (old AST) and fill the keys needed to render a Custom tag.
