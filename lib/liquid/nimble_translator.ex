@@ -21,9 +21,7 @@ defmodule Liquid.NimbleTranslator do
     LiquidVariable,
     Raw,
     Tablerow,
-    Unless,
-    CustomTag,
-    CustomBlock
+    CustomTag
   }
 
   @doc """
