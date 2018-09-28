@@ -14,16 +14,6 @@ defmodule Liquid.Translators.Tags.Case do
     to_case_block(Markup.literal(condition), Enum.flat_map(when_list, &process_clauses/1))
   end
 
-  # defp process_clauses({:when, [conditions: condition, body: values]}) do
-  #   tag = %Liquid.Tag{
-  #     name: :when,
-  #     markup: Markup.normalize_value()
-  #   }
-
-  #   result = NimbleTranslator.process_node(values)
-  #   [tag, result]
-  # end
-
   defp process_clauses({:when, [condition, body: values]}) do
     tag = %Liquid.Tag{
       name: :when,

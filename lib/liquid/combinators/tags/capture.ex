@@ -27,27 +27,11 @@ defmodule Liquid.Combinators.Tags.Capture do
   """
   @spec tag() :: NimbleParsec.t()
   def tag do
-    Tag.define_closed(
-      "capture",
-      fn combinator ->
-        choice(combinator, [
-          parsec(:quoted_variable_name),
-          parsec(:variable_name)
-        ])
-      end,
-      fn combinator -> optional(combinator, parsec(:__parse__) |> tag(:parts)) end
-    )
-  end
-
-  def tag2 do
-    Tag.define_block(
-      "capture",
-      fn combinator ->
-        choice(combinator, [
-          parsec(:quoted_variable_name),
-          parsec(:variable_name)
-        ])
-      end
-    )
+    Tag.define_block("capture", fn combinator ->
+      choice(combinator, [
+        parsec(:quoted_variable_name),
+        parsec(:variable_name)
+      ])
+    end)
   end
 end

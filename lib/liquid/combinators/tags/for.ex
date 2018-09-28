@@ -66,31 +66,6 @@ defmodule Liquid.Combinators.Tags.For do
           ]
         ]
 
-  defp reversed_param do
-    empty()
-    |> parsec(:ignore_whitespaces)
-    |> ignore(string("reversed"))
-    |> parsec(:ignore_whitespaces)
-    |> tag(:reversed)
-  end
-
-  defp params do
-    empty()
-    |> optional(
-      times(
-        choice([General.tag_param("offset"), General.tag_param("limit"), reversed_param()]),
-        min: 1
-      )
-    )
-    |> tag(:params)
-  end
-
-  defp body do
-    empty()
-    |> optional(parsec(:__parse__))
-    |> tag(:body)
-  end
-
   @doc """
   Parses a `Liquid` Continue tag, this is used for a internal behavior of the `for` tag,
   creates a keyword list with a key `continue` and the value is an empty list.
@@ -111,14 +86,7 @@ defmodule Liquid.Combinators.Tags.For do
   structure of the tag.
   """
   @spec tag() :: NimbleParsec.t()
-  def tag, do: Tag.define_closed("for", &statements/1, &body/1)
-  def tag2, do: Tag.define_block("for", &statements/1)
-
-  defp body(combinator) do
-    combinator
-    |> concat(body())
-    |> optional(Generic.else_tag())
-  end
+  def tag, do: Tag.define_block("for", &statements/1)
 
   defp statements(combinator) do
     combinator
@@ -130,5 +98,24 @@ defmodule Liquid.Combinators.Tags.For do
     |> optional(params())
     |> parsec(:ignore_whitespaces)
     |> tag(:statements)
+  end
+
+  defp reversed_param do
+    empty()
+    |> parsec(:ignore_whitespaces)
+    |> ignore(string("reversed"))
+    |> parsec(:ignore_whitespaces)
+    |> tag(:reversed)
+  end
+
+  defp params do
+    empty()
+    |> optional(
+      times(
+        choice([General.tag_param("offset"), General.tag_param("limit"), reversed_param()]),
+        min: 1
+      )
+    )
+    |> tag(:params)
   end
 end

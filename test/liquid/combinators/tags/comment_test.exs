@@ -2,7 +2,6 @@ defmodule Liquid.Combinators.Tags.CommentTest do
   use ExUnit.Case
 
   import Liquid.Helpers
-  alias Liquid.NimbleParser, as: Parser
 
   test "comment tag parser" do
     test_parse(
@@ -114,21 +113,10 @@ defmodule Liquid.Combinators.Tags.CommentTest do
   end
 
   test "comment must fails with this one" do
-    {result, _, _, _, _, _} =
-      Parser.comment("{% comment %} {% if true %} {% comment %} {% aendcomment %} {% acomment %} {% endcomment %}")
-
-    assert result == :error
-
-    {result, _, _, _, _, _} = Parser.comment("{% comment %}{%}{% endcomment %}")
-    assert result == :error
-
-    {result, _} = Parser.parse("{% comment %} {% comment %} {% endcomment %}")
-    assert result == :error
-
-    {result, _} = Parser.parse("{%comment%}{%comment%}{%endcomment%}")
-    assert result == :error
-
-    {result, _} = Parser.parse("{% comment %} {% endcomment %} {% endcomment %}")
-    assert result == :error
+    test_combinator_error("{% comment %} {% if true %} {% comment %} {% aendcomment %} {% acomment %} {% endcomment %}")
+    test_combinator_error("{% comment %}{%}{% endcomment %}")
+    test_combinator_error("{% comment %} {% comment %} {% endcomment %}")
+    test_combinator_error("{%comment%}{%comment%}{%endcomment%}")
+    test_combinator_error("{% comment %} {% endcomment %} {% endcomment %}")
   end
 end

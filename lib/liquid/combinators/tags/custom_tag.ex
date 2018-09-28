@@ -22,7 +22,7 @@ defmodule Liquid.Combinators.Tags.CustomTag do
   structure of the tag (arguments).
   """
   @spec tag() :: NimbleParsec.t()
-  def tag2 do
+  def tag do
     empty()
     |> parsec(:start_tag)
     |> concat(General.valid_tag_name())
@@ -39,9 +39,10 @@ defmodule Liquid.Combinators.Tags.CustomTag do
     |> Map.get(name)
     |> case do
       nil ->
-        {[error:
-          "Error processing tag '#{tag}'. It is malformed or you are creating a custom '#{tag}' without register it"
-          ], context}
+        {[
+           error:
+             "Error processing tag '#{tag}'. It is malformed or you are creating a custom '#{tag}' without register it"
+         ], context}
 
       {_, Liquid.Block} ->
         {[block: [custom: [{:custom_name, tag}, params]]], %{context | tags: [tag_name | tags]}}
@@ -49,19 +50,6 @@ defmodule Liquid.Combinators.Tags.CustomTag do
       {_, Liquid.Tag} ->
         {[custom: [{:custom_name, tag}, params]], context}
     end
-  end
-
-  def tag do
-    parsec(:start_tag)
-    |> concat(name())
-    |> concat(markup())
-    |> parsec(:end_tag)
-    |> tag(:custom_tag)
-  end
-
-  defp name do
-    valid_name()
-    |> unwrap_and_tag(:custom_name)
   end
 
   defp markup do
@@ -75,136 +63,4 @@ defmodule Liquid.Combinators.Tags.CustomTag do
   defp valid_markup() do
     repeat_until(utf8_char([]), [string("{%"), string("%}"), string("{{"), string("}}")])
   end
-
-  @doc """
-  Parses a `Liquid` Custom tag's name, isolates custom tag name from markup.
-  """
-  @spec string_name() :: NimbleParsec.t()
-  def string_name do
-    repeat_until(utf8_char([]), [
-      string(" "),
-      string("%}"),
-      ascii_char([
-        General.codepoints().horizontal_tab,
-        General.codepoints().carriage_return,
-        General.codepoints().newline,
-        General.codepoints().space
-      ])
-    ])
-    |> reduce({List, :to_string, []})
-  end
-
-  defp valid_name() do
-    string_name()
-    |> traverse({Liquid.Combinators.Tags.CustomTag, :check_string, []})
-  end
-
-  @doc """
-  It returns Custom tag's name. If tag is called equal to Liquid registered tag, this function returns a map with an error causing
-  Nimble Parser stops its excecution.
-  """
-  @spec check_string(
-          rest :: String.t(),
-          args :: String.t(),
-          context :: Map.t(),
-          line :: Integer.t(),
-          offset :: Integer.t()
-        ) :: Keyword.t()
-  def check_string(_rest, args, context, _line, _offset) do
-    case liquid_tag_name?(args) do
-      true ->
-        {:error,
-         "Error processing tag '#{args}'. The tag is malformed or you are using a reserved tag name to define a Custom Tag"}
-
-      false ->
-        {args, context}
-    end
-  end
-
-  defp liquid_tag_name?([string]) when is_bitstring(string) do
-    case string in all_tags() do
-      true -> true
-      false -> false
-    end
-  end
-
-  defp liquid_tag_name?([_]), do: false
-
-  defp register_tags() do
-    case Application.get_env(:liquid, :extra_tags) do
-      nil ->
-        false
-
-      map ->
-        Enum.map(map, &simplify(&1))
-        |> Enum.filter(fn {_key, type} -> type == Block end)
-        |> Enum.map(fn {key, _type} -> "#{key}" end)
-    end
-  end
-
-  defp all_tags do
-    List.flatten([
-      Liquid.Combinators.Tags.CustomTag.end_register_tag_name()
-      | Liquid.Combinators.Tags.CustomTag.liquid_tags()
-    ])
-  end
-
-  @doc """
-  This function returns a List of Liquid reserved tag's name, also contains end block types names. It is used in order to verify
-  custom tags will not be called with a registered tag's name.
-  """
-  @spec liquid_tags() :: List.t()
-  def liquid_tags do
-    [
-      "case",
-      "endcase",
-      "when",
-      "assign",
-      "decrement",
-      "increment",
-      "if",
-      "endif",
-      "unless",
-      "endunless",
-      "capture",
-      "endcapture",
-      "raw",
-      "endraw",
-      "for",
-      "endfor",
-      "break",
-      "continue",
-      "ifchanged",
-      "endifchanged",
-      "else",
-      "comment",
-      "endcomment",
-      "tablerow",
-      "endtablerow",
-      "elsif",
-      ""
-    ]
-  end
-
-  @doc """
-  Checks correct end tags for a given open tag.
-  """
-  @spec end_register_tag_name() :: List.t()
-  def end_register_tag_name do
-    list = register_tags()
-
-    case list do
-      false ->
-        []
-
-      _ ->
-        new_list = Enum.map(list, fn x -> "end#{x}" end)
-        [new_list | register_tags()]
-    end
-  end
-
-  defp simplify({key, {_, Liquid.Block}}), do: {key, Block}
-  defp simplify({key, {_, Block}}), do: {key, Block}
-  defp simplify({key, {_, Tag}}), do: {key, Tag}
-  defp simplify({key, {_, Liquid.Tag}}), do: {key, Tag}
 end

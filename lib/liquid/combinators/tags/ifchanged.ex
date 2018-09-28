@@ -11,7 +11,6 @@ defmodule Liquid.Combinators.Tags.Ifchanged do
      ...
   {% endfor %}
   """
-  import NimbleParsec
   alias Liquid.Combinators.Tag
 
   @doc """
@@ -20,11 +19,5 @@ defmodule Liquid.Combinators.Tags.Ifchanged do
   structure of the tag.
   """
   @spec tag() :: NimbleParsec.t()
-  def tag do
-    Tag.define_closed("ifchanged", & &1, fn combinator ->
-      optional(combinator, parsec(:__parse__))
-    end)
-  end
-
-  def tag2, do: Tag.define_block("ifchanged", & &1, "")
+  def tag, do: Tag.define_block("ifchanged", & &1, "")
 end
