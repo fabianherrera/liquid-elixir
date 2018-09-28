@@ -25,10 +25,12 @@ Enum.each(templates,
     Benchee.run(
       %{
         # "#{name}-regex" => fn -> Liquid.Template.old_parse(template) end,
-        "#{name}-parser" => fn -> Liquid.Template.parse(template) end,
+        # "#{name}-parser" => fn -> Liquid.Template.parse(template) end,
+        "#{name}-regex" => fn -> Regex.split(~r/\{%|{{|}}|\%}/, template) end,
         "#{name}-tokenize2" => fn -> Liquid.Tokenizer.tokenize2(template) end
-      }
+      },
+      warmup: 5,
+      time: 20
     )
   end
 )
-
