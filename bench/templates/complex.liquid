@@ -1,0 +1,101 @@
+{% comment %}This is a page to do benchmarks to parser. This use all tags, variables and some filters{% endcomment %}
+<div>
+Aliquam erat volutpat.  Nunc eleifend leo vitae magna.  In id erat non orci commodo lobortis.  Proin neque massa, cursus ut, gravida ut, lobortis eget, lacus.  Sed diam.  Praesent fermentum tempor tellus.  Nullam tempus.  Mauris ac felis vel velit tristique imperdiet.  Donec at pede.  Etiam vel neque nec dui dignissim bibendum.  Vivamus id enim.  Phasellus neque orci, porta a, aliquet quis, semper a, massa.  Phasellus purus.  Pellentesque tristique imperdiet tortor.  Nam euismod tellus id erat.
+</div>
+<div>
+  {% for collection in collections %}
+    {% for product in collection.products %}
+      {% for variant in product.variants %}
+        <h1>{{ collection.title | upcase }}/br{{ collection.title }}</h1>
+        {% if collection.description.size > 0 %}
+          <div>{{ collection.description }}</div>
+        {% endif %}
+        <ul>
+          <li>
+            <form action="/cart/add" method="post">
+              <div>
+                <div>
+                  <div>
+                    <h2><a href="{{ product.url }}">{{ product.title }}</a></h2>
+                    <p>{{ product.description | truncatewords: 15 }}</p>
+                  </div>
+                  <a href="{{product.url}}"><img src="{{ product.featured_image }}" alt="{{ product.title | escape }}"/></a>
+                </div>
+                <div>
+                  Aliquam erat volutpat.  Nunc eleifend leo vitae magna.  In id erat non orci commodo lobortis.  Proin neque massa, cursus ut, gravida ut, lobortis eget, lacus.  Sed diam.  Praesent fermentum tempor tellus.  Nullam tempus.  Mauris ac felis vel velit tristique imperdiet.  Donec at pede.  Etiam vel neque nec dui dignissim bibendum.  Vivamus id enim.  Phasellus neque orci, porta a, aliquet quis, semper a, massa.  Phasellus purus.  Pellentesque tristique imperdiet tortor.  Nam euismod tellus id erat.
+                </div>
+                <div>
+                  <p>
+                    <span>
+                      <input type="radio" name="id" value="{{ variant.id }}" {%if forloop.first %} checked="checked" {% endif %} />
+                      <label for="radio_{{variant.id}}">{{ variant.price }} - {{ variant.title }}</label>
+                    </span>
+                  </p>
+                  <div>
+                    Aliquam erat volutpat.  Nunc eleifend leo vitae magna.  In id erat non orci commodo lobortis.  Proin neque massa, cursus ut, gravida ut, lobortis eget, lacus.  Sed diam.  Praesent fermentum tempor tellus.  Nullam tempus.  Mauris ac felis vel velit tristique imperdiet.  Donec at pede.  Etiam vel neque nec dui dignissim bibendum.  Vivamus id enim.  Phasellus neque orci, porta a, aliquet quis, semper a, massa.  Phasellus purus.  Pellentesque tristique imperdiet tortor.  Nam euismod tellus id erat.
+                  </div>
+                  <input type="submit"Add to Basket" />
+                  <p>
+                    <a href="{{product.url}}">View Details</a>
+                    <span>
+                      {% if product.compare_at_price %}
+                        {% if product.price_min != product.compare_at_price %}
+                          {{ product.compare_at_price }} -
+                          {% endif %}
+                      {% endif %}
+                      <strong>
+                        {{ product.price_min }}
+                      </strong>
+                    </span>
+                  </p>
+                </div>
+                "{% include 'snippet', my_variable: 'apples', my_other_variable: 'oranges' %}
+                <div>
+                  Aliquam erat volutpat.  Nunc eleifend leo vitae magna.  In id erat non orci commodo lobortis.  Proin neque massa, cursus ut, gravida ut, lobortis eget, lacus.  Sed diam.  Praesent fermentum tempor tellus.  Nullam tempus.  Mauris ac felis vel velit tristique imperdiet.  Donec at pede.  Etiam vel neque nec dui dignissim bibendum.  Vivamus id enim.  Phasellus neque orci, porta a, aliquet quis, semper a, massa.  Phasellus purus.  Pellentesque tristique imperdiet tortor.  Nam euismod tellus id erat.
+                </div>
+              </div>
+            </form>
+          </li>
+        </ul>
+        <div>
+          Aliquam erat volutpat.  Nunc eleifend leo vitae magna.  In id erat non orci commodo lobortis.  Proin neque massa, cursus ut, gravida ut, lobortis eget, lacus.  Sed diam.  Praesent fermentum tempor tellus.  Nullam tempus.  Mauris ac felis vel velit tristique imperdiet.  Donec at pede.  Etiam vel neque nec dui dignissim bibendum.  Vivamus id enim.  Phasellus neque orci, porta a, aliquet quis, semper a, massa.  Phasellus purus.  Pellentesque tristique imperdiet tortor.  Nam euismod tellus id erat.
+        </div>
+        <p>
+          {% capture product %} I am {{ price }} and my favorite food is {{ price }}{% endcapture %}
+          {% case product.price %}{% when 10 %}Expensive{% when 5 %}Regular{% else %}Cheap{% endcase %}
+          {{ product.price | plus: 1000}}
+          {{ product.price | divide_by: 1000}}
+          {{ product.price | minus: 1000}}
+          {% assign all_products = collection.products %}
+          {% increment product.price %}
+          {% decrement product.price %}
+          {% for item in all_products  %}
+            {{ item }}
+            {{ all_products | sort | join: ", " }}
+            {% case product.vendor%}
+              {% when 'Nikon' %}
+                This is a camera
+              {% when 'Stormtech' %}
+                This is a Sweater
+              {% else %}
+                This is not a camera nor a Sweater
+            {% endcase %}
+          {% endfor %}
+        </p>
+      {% endfor %}
+    {% endfor %}
+  {% endfor %}
+  {% assign fruits = "apples, oranges, peaches" | split: ", " %}
+  {% assign vegetables = "carrots, turnips, potatoes" | split: ", " %}
+  {% for item in fruits %}
+    - {{ item }}
+  {% endfor %}
+
+  {% tablerow item in array cols:2 %}
+    Aliquam erat volutpat.  Nunc eleifend leo vitae magna.  In id erat non orci commodo lobortis.  Proin neque massa, cursus ut, gravida ut, lobortis eget, lacus.  Sed diam.  Praesent fermentum tempor tellus.  Nullam tempus.  Mauris ac felis vel velit tristique imperdiet.  Donec at pede.  Etiam vel neque nec dui dignissim bibendum.  Vivamus id enim.  Phasellus neque orci, porta a, aliquet quis, semper a, massa.  Phasellus purus.  Pellentesque tristique imperdiet tortor.  Nam euismod tellus id erat.
+  {% endtablerow %}
+  {% for item in vegetables %}
+    - {{ item }}
+  {% endfor %}
+</div>
+{% raw %}This is a page to do benchmarks to parser. This use all tags, variables and some filters{% endraw %}

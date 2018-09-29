@@ -15,9 +15,9 @@ simple = """
   {% for item in array %} Repeat this {% else %} Array Empty {% endfor %}
 """
 
-empty = ""
+empty = "{% cycle 1, 2, 3 %}"
 
-templates = [complex: complex]
+templates = [empty: empty]
 
 Enum.each(templates,
   fn {name, template} ->
@@ -26,8 +26,8 @@ Enum.each(templates,
       %{
         # "#{name}-regex" => fn -> Liquid.Template.old_parse(template) end,
         # "#{name}-parser" => fn -> Liquid.Template.parse(template) end,
-        "#{name}-regex" => fn -> Regex.split(~r/\{%|{{|}}|\%}/, template) end,
-        "#{name}-tokenize2" => fn -> Liquid.Tokenizer.tokenize2(template) end
+        "#{name}-parse" => fn -> Liquid.Parser.parse(template) end,
+        "#{name}-parallel" => fn -> Liquid.ParallelParser.parse(template) end
       },
       warmup: 5,
       time: 20

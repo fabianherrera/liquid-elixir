@@ -1,6 +1,6 @@
 Liquid.start()
 
-complex = File.read!("test/templates/complex/01/input.liquid")
+complex = File.read!("bench/templates/complex.liquid")
 
 middle = """
   <h1>{{ product.name }}</h1>
@@ -21,14 +21,12 @@ templates = [complex: complex]
 
 Enum.each(templates,
   fn {name, template} ->
-    IO.puts "running: #{name}"
     Benchee.run(
       %{
-        # "#{name}-regex" => fn -> Liquid.Template.old_parse(template) end,
-        "#{name}-parser" => fn -> Liquid.Template.parse(template) end,
-        "#{name}-tokenize2" => fn -> Liquid.Tokenizer.tokenize2(template) end
-      }
+        "#{name}" => fn -> Liquid.Parser.parse(template) end
+      },
+      warmup: 5,
+      time: 60
     )
   end
 )
-
