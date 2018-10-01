@@ -151,7 +151,7 @@ defmodule Liquid.Combinators.LexicalToken do
       range_value(),
       variable_value()
     ])
-    |> concat(parsec(:ignore_whitespaces))
+    |> parsec(:ignore_whitespaces)
   end
 
   def variable_value, do: tag(object_value(), :variable)
@@ -193,7 +193,7 @@ defmodule Liquid.Combinators.LexicalToken do
     string("[")
     |> ignore()
     |> parsec(:ignore_whitespaces)
-    |> concat(optional(list_definition()))
+    |> optional(list_definition())
     |> parsec(:ignore_whitespaces)
     |> ignore(string("]"))
     |> unwrap_and_tag(:index)

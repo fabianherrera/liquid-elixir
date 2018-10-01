@@ -102,7 +102,7 @@ defmodule Liquid.Combinators.General do
   """
   def cleaned_comma do
     ignore_whitespaces()
-    |> concat(ascii_char([@comma]))
+    |> ascii_char([@comma])
     |> concat(ignore_whitespaces())
     |> ignore()
   end
@@ -122,7 +122,7 @@ defmodule Liquid.Combinators.General do
   """
   def end_tag do
     ignore_whitespaces()
-    |> concat(string(@end_tag))
+    |> string(@end_tag)
     |> ignore()
   end
 
@@ -292,20 +292,20 @@ defmodule Liquid.Combinators.General do
 
   def single_quoted_token do
     parsec(:ignore_whitespaces)
-    |> concat(utf8_char([@single_quote]))
-    |> concat(repeat(utf8_char(not: @comma, not: @single_quote)))
-    |> concat(utf8_char([@single_quote]))
+    |> utf8_char([@single_quote])
+    |> repeat(utf8_char(not: @comma, not: @single_quote))
+    |> utf8_char([@single_quote])
     |> reduce({List, :to_string, []})
-    |> concat(parsec(:ignore_whitespaces))
+    |> parsec(:ignore_whitespaces)
   end
 
   def double_quoted_token do
     parsec(:ignore_whitespaces)
-    |> concat(utf8_char([@double_quote]))
-    |> concat(repeat(utf8_char(not: @comma, not: @double_quote)))
-    |> concat(utf8_char([@double_quote]))
+    |> utf8_char([@double_quote])
+    |> repeat(utf8_char(not: @comma, not: @double_quote))
+    |> utf8_char([@double_quote])
     |> reduce({List, :to_string, []})
-    |> concat(parsec(:ignore_whitespaces))
+    |> parsec(:ignore_whitespaces)
   end
 
   def quoted_token do

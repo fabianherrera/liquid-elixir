@@ -76,7 +76,7 @@ defmodule Liquid.Combinators.Tags.Comment do
   def string_with_endcomment do
     utf8_char([])
     |> concat(string_without_comment())
-    |> concat(string("endcomment"))
+    |> string("endcomment")
     |> optional(string_without_comment())
   end
 
@@ -86,7 +86,7 @@ defmodule Liquid.Combinators.Tags.Comment do
   @spec string_with_comment() :: NimbleParsec.t()
   def string_with_comment do
     string_without_comment()
-    |> concat(string("comment"))
+    |> string("comment")
     |> concat(string_without_comment())
   end
 
